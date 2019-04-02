@@ -1,4 +1,4 @@
-> module Isomorphism
+> module Basic.Isomorphism
 >
 > import Basic.Category
 >

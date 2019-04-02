@@ -1,4 +1,4 @@
-> module NaturalIsomorphism
+> module Basic.NaturalIsomorphism
 >
 > import Basic.Category
 > import Basic.Functor

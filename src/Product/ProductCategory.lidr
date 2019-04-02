@@ -1,4 +1,4 @@
-> module ProductCategory
+> module Product.ProductCategory
 >
 > import Basic.Category
 > import Basic.Functor
