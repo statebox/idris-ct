@@ -1,6 +1,12 @@
 package idris-ct
 
 modules =
+  Basic.Category,
+  Basic.Functor,
+  Basic.NaturalTransformation,
+  Product.ProductCategory,
+  Product.ProductFunctor,
+  Utils
 
 sourcedir = src
 
