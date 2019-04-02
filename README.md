@@ -9,7 +9,7 @@ The code is written in [Idris](https://idris-lang.org/), which allows us to writ
 We are actually using literate Idris, so that we can integrate seamlessly code
 and documentation.
 
-If you want a more detailed e slow introduction to this library, please have a look at the series of blog posts we are writing:
+If you want a more detailed and slow introduction to the library, please have a look at the series of blog posts we are writing:
 
 - https://blog.statebox.org/fun-with-categories-70c64649b8e0
 - https://blog.statebox.org/concrete-categories-af444d5f055e
