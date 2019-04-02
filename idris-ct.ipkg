@@ -6,6 +6,7 @@ modules =
   Basic.Isomorphism,
   Basic.NaturalIsomorphism,
   Basic.NaturalTransformation,
+  Cats.CatsAsCAtegory,
   Product.ProductCategory,
   Product.ProductFunctor,
   Utils
