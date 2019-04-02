@@ -3,6 +3,8 @@ package idris-ct
 modules =
   Basic.Category,
   Basic.Functor,
+  Basic.Isomorphism,
+  Basic.NaturalIsomorphism,
   Basic.NaturalTransformation,
   Product.ProductCategory,
   Product.ProductFunctor,
