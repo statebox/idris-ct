@@ -124,7 +124,7 @@ The code above is everything we need to define what a natural transformation is.
 >   where
 >     constructor MkNaturalTranformation
 >     component : (a : obj cat1) -> mor cat2 (mapObj fun1 a) (mapObj fun2 a)
->     commutativity : {a, b : obj cat1}
+>     commutativity : (a, b : obj cat1)
 >                  -> (f : mor cat1 a b)
 >                  -> compose cat2
 >                             (mapObj fun1 a)
