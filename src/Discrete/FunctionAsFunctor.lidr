@@ -1,4 +1,4 @@
-> module Discrete.FunctionsAsFunctors
+> module Discrete.FunctionAsFunctor
 >
 > import Basic.Category
 > import Basic.Functor
