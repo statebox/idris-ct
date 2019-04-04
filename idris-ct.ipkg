@@ -17,6 +17,7 @@ modules =
   Monoid.MonoidMorphism,
   Monoid.MonoidMorphismAsFunctor,
   Monoid.MonoidsCategory,
+  PointedTypes.PointedTypesAsCategory,
   Preorder.MonotoneMap,
   Preorder.MonotoneMapAsFunctor,
   Preorder.PreorderAsCategory,
