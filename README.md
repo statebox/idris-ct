@@ -48,3 +48,11 @@ You can build manually all the code using
 ```
 idris --checkpkg idris-ct.ipkg
 ```
+
+### Build with Elba
+
+Alternatively you can build the library with [elba](https://github.com/elba/elba) using
+
+```
+elba build
+```
