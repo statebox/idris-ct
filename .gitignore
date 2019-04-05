@@ -1,1 +1,3 @@
 *.ibc
+target
+elba.lock

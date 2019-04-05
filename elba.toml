@@ -1,0 +1,38 @@
+[package]
+name = "statebox/idris-ct"
+version = "0.1.0"
+authors = []
+
+[targets.lib]
+path = "src/"
+mods = [ "Basic.Category"
+       , "Basic.Functor"
+       , "Basic.Isomorphism"
+       , "Basic.NaturalIsomorphism"
+       , "Basic.NaturalTransformation"
+       , "Cats.CatsAsCategory"
+       , "Discrete.DiscreteCategory"
+       , "Discrete.FunctionAsFunctor"
+       , "Idris.FunctorAsCFunctor"
+       , "Idris.TypesAsCategory"
+       , "Idris.TypesAsCategoryExtensional"
+       , "Monoid.Monoid"
+       , "Monoid.MonoidAsCategory"
+       , "Monoid.MonoidMorphism"
+       , "Monoid.MonoidMorphismAsFunctor"
+       , "Monoid.MonoidsCategory"
+       , "MonoidalCategory.MonoidalCategory"
+       , "MonoidalCategory.MonoidalCategoryHelpers"
+       , "MonoidalCategory.StrictMonoidalCategory"
+       , "MonoidalCategory.SymmetricMonoidalCategory"
+       , "MonoidalCategory.SymmetricMonoidalCategoryHelpers"
+       , "PointedTypes.PointedTypesAsCategory"
+       , "Preorder.MonotoneMap"
+       , "Preorder.MonotoneMapAsFunctor"
+       , "Preorder.PreorderAsCategory"
+       , "Preorder.UniquePreorder"
+       , "Product.ProductCategory"
+       , "Product.ProductFunctor"
+       , "Utils"
+       ]
+idris_opts = ["-p", "contrib"]
