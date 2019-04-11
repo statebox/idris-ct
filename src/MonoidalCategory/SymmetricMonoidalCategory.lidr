@@ -35,11 +35,11 @@
 -- >                                                         symmetry
 -- >                                                         a)
 
->     -> ((a, b, c : obj (cat monoidalCategory)) -> AssociativityCoherence (cat monoidalCategory)
->                                                                          (tensor monoidalCategory)
+>     -> {-((a, b, c : obj (cat monoidalCategory)) -> -} AssociativityCoherence (cat monoidalCategory)
+>                                                                          -- (tensor monoidalCategory)
 >                                                                          (associator monoidalCategory)
 >                                                                          {- symmetry -}
->                                                                          a b c)
+>                                                                          -- a b c)
 
 -- >     -> ((a, b : obj (cat monoidalCategory)) -> InverseLaw (cat monoidalCategory)
 -- >                                                           (tensor monoidalCategory)
