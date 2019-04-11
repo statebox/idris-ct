@@ -7,5 +7,8 @@
 > %access public export
 > %default total
 >
+> FreeMonoid : Type -> Monoid
+> FreeMonoid t = MkMonoid (List t) %implementation
+>
 > finSetToFreeMonoid : Nat -> Monoid
-> finSetToFreeMonoid n = MkMonoid (List (Fin n)) %implementation
+> finSetToFreeMonoid n = FreeMonoid (Fin n)
