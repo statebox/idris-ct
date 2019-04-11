@@ -113,19 +113,23 @@
 >      (cat : Category)
 >   -> (tensor : CFunctor (productCategory cat cat) cat)
 >   -> (associator : Associator cat tensor)
->   -> (symmetry : NaturalIsomorphism (productCategory cat cat)
->                                     cat
->                                     tensor
->                                     (functorComposition (productCategory cat cat)
->                                                         (productCategory cat cat)
->                                                         cat
->                                                         (swapFunctor cat cat)
->                                                         tensor))
+
+-- >   -> (symmetry : NaturalIsomorphism (productCategory cat cat)
+-- >                                     cat
+-- >                                     tensor
+-- >                                     (functorComposition (productCategory cat cat)
+-- >                                                         (productCategory cat cat)
+-- >                                                         cat
+-- >                                                         (swapFunctor cat cat)
+-- >                                                         tensor))
+
 >   -> (a, b, c : obj cat)
 >   -> Type
-> AssociativityCoherence cat tensor associator symmetry a b c =
->   associativityLeft  cat tensor associator symmetry a b c =
->   associativityRight cat tensor associator symmetry a b c
+> AssociativityCoherence cat tensor associator {-symmetry-} a b c = ()
+
+-- >   associativityLeft  cat tensor associator symmetry a b c =
+-- >   associativityRight cat tensor associator symmetry a b c
+
 >
 > InverseLaw :
 >      (cat : Category)
