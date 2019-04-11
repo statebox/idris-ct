@@ -2,6 +2,7 @@
 >
 > import Basic.Category
 > import Basic.Functor
+> import Data.List
 > import Data.Fin
 > import Discrete.DiscreteCategory
 > import Monoid.FreeMonoid
@@ -73,20 +74,38 @@ generatorsToCat n gs =
      (finSetToFreeMonoid n)
      ?wat
 
-> data FreeMorphism : (t : Type) -> (List (t, t)) -> (domain : List t) -> (codomain : List t) -> Type where
->   MkIdFreeMorphims : (l : List (t, t)) -> (x : t) -> FreeMorphism t l [x] [x]
->   MkCompositionFreeMorphism : (l : List (t, t)) -> FreeMorphism t l a b -> FreeMorphism t l b c -> FreeMorphism t l a c
->   MkJustapositionFreeMorphism : (l : List (t, t)) -> FreeMorphism t l a b -> FreeMorphism t l c d -> FreeMorphism t l (a ++ c) (c ++ d)
->   MkGeneratingFreeMorphism : (Eq t) => (l : List (t, t)) -> (e : (t, t)) {- -> proof that e is in l -} -> FreeMorphism t l [Basics.fst e] [Basics.snd e]
+> data FreeMorphism : (t : Type) -> (domain : List t) -> (codomain : List t) -> Type where
+>   MkUnitFreeMorphism : FreeMorphism t [] []
+>   MkIdFreeMorphism : (x : t) -> FreeMorphism t [x] [x]
+>   MkCompositionFreeMorphism : FreeMorphism t a b -> FreeMorphism t b c -> FreeMorphism t a c
+>   MkJuxtapositionFreeMorphism  : FreeMorphism t a b -> FreeMorphism t c d -> FreeMorphism t (a ++ c) (b ++ d)
+>   MkGeneratingFreeMorphism : (l : List (List t, List t)) -> (e : (List t, List t)) -> Elem e l -> FreeMorphism t (Basics.fst e) (Basics.snd e)
 >
 
--- > generateFreeSymmetricMonoidalCategory : (t : Type) -> (t -> t -> Type) -> Category
--- > generateFreeSymmetricMonoidalCategory t generatingMorphisms =
--- >   MkCategory
--- >     (set (FreeMonoid t))
--- >     (FreeMorphism t)
--- >     ?ident
--- >     ?comp
--- >     ?lid
--- >     ?rid
--- >     ?assoc
+> identitie : (ts : List t) -> FreeMorphism t ts ts
+> identitie {t} []      = MkUnitFreeMorphism
+> identitie {t} (x::xs) = MkJuxtapositionFreeMorphism (MkIdFreeMorphism x) (identitie xs)
+
+> postulate
+> lid : (as, bs : List t) -> (fm : FreeMorphism t as bs) -> MkCompositionFreeMorphism (identitie as) fm = fm
+
+> postulate
+> rid : (as, bs : List t) -> (fm : FreeMorphism t as bs) -> MkCompositionFreeMorphism fm (identitie bs) = fm
+
+> postulate
+> assoc : (as, bs, cs, ds : List t) 
+>      -> (fm1 : FreeMorphism t as bs) 
+>      -> (fm2 : FreeMorphism t bs cs) 
+>      -> (fm3 : FreeMorphism t cs ds) 
+>      -> MkCompositionFreeMorphism fm1 (MkCompositionFreeMorphism fm2 fm3) = MkCompositionFreeMorphism (MkCompositionFreeMorphism fm1 fm2) fm3
+
+> generateFreeSymmetricMonoidalCategory : (t : Type) -> (List (t, t)) -> Category
+> generateFreeSymmetricMonoidalCategory t generatingMorphisms =
+>   MkCategory
+>     (set (FreeMonoid t))
+>     (FreeMorphism t)
+>     (identitie)
+>     (\as,bs,cs,fm1,fm2 => MkCompositionFreeMorphism fm1 fm2)
+>     lid
+>     rid
+>     assoc
