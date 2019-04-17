@@ -14,7 +14,7 @@
 > -- f^readOut : S -> X_2
 >
 > data DDS : Type -> Type -> Type where
->   MkDDS : (x1, x2, s : Type) -> (fupd : (x1, s) -> s) -> (frdt : s -> x2) -> DDS x1 x2
+>   MkDDS : (s : Type) -> (fupd : (x1, s) -> s) -> (frdt : s -> x2) -> DDS x1 x2
 >
 > data DDSMorphism : DDS x1 x2 -> DDS x1 x2 -> Type
 >
@@ -52,9 +52,7 @@
 >   -> WiringDiagramMorphism wd1 wd2
 >   -> (DDS (fst wd1) (snd wd1))
 >   -> (DDS (fst wd2) (snd wd2))
-> ddsAlgebraMapMorMapObj wd1 wd2 (MkWiringDiagramMorphism f1 f2) (MkDDS (fst wd1) (snd wd1) s fupd frdt) = MkDDS
->   (fst wd2)
->   (snd wd2)
+> ddsAlgebraMapMorMapObj wd1 wd2 (MkWiringDiagramMorphism f1 f2) (MkDDS s fupd frdt) = MkDDS
 >   s
 >   (fupd . (pairMorphism f1 id) . tupleAssociativity . (pairMorphism id (pairMorphism frdt id)) . (pairMorphism id delta))
 >   (f2 . frdt)
@@ -79,3 +77,65 @@
 >   ddsAlgebraMapMor
 >   ?presId
 >   ?presComp
+>
+> -- examples of DDS
+>
+> data S1 = A | B
+>
+> fupd1 : (Bool, S1) -> S1
+> fupd1 (False, A) = B
+> fupd1 (False, B) = B
+> fupd1 (True,  A) = A
+> fupd1 (True,  B) = B
+>
+> frdt1 : S1 -> Bool
+> frdt1 A = False
+> frdt1 B = True
+>
+> -- this is the NOT machine
+> notDDS : DDS Bool Bool
+> notDDS = MkDDS
+>   S1
+>   fupd1
+>   frdt1
+>
+> data S2 = R | S | T
+>
+> fupd2 : (Bool, S2) -> S2
+> fupd2 (False, R) = R
+> fupd2 (False, S) = R
+> fupd2 (False, T) = R
+> fupd2 (True,  R) = S
+> fupd2 (True,  S) = T
+> fupd2 (True,  T) = T
+>
+> frdt2 : S2 -> Bool
+> frdt2 R = False
+> frdt2 S = False
+> frdt2 T = True
+>
+> -- this is the TrueTrue-detector machine
+> trueTrueDDS : DDS Bool Bool
+> trueTrueDDS = MkDDS
+>   S2
+>   fupd2
+>   frdt2
+>
+> -- wiring diagram composition
+>
+> -- parallel composition
+>
+> ddsTensor : DDS a b -> DDS c d -> DDS (a, c) (b, d)
+> ddsTensor (MkDDS s1 fupd1 frdt1) (MkDDS s2 fupd2 frdt2) = MkDDS
+>   (s1, s2)
+>   (\((a1, c1), x, y) => (fupd1 (a1, x), fupd2 (c1, y)))
+>   (\(x, y) => (frdt1 x, frdt2 y))
+>
+> -- serial composition
+>
+> zeroZeroDetector : DDS Bool Bool
+> zeroZeroDetector = ddsAlgebraMapMorMapObj
+>   ((Bool, Bool), (Bool, Bool))
+>   (Bool, Bool)
+>   (serial Bool Bool Bool)
+>   (ddsTensor notDDS trueTrueDDS)
