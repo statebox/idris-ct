@@ -77,3 +77,9 @@ Alternatively you can build the library with [elba](https://github.com/elba/elba
 ```
 elba build
 ```
+
+### License
+
+Unless explicitly stated otherwise all files in this repository are licensed under the GNU Affero General Public License.
+
+Copyright © 2019 [Stichting Statebox](https://statebox.nl).
