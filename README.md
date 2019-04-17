@@ -19,9 +19,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+[![Build Status](https://travis-ci.com/statebox/idris-ct.svg?branch=master)](https://travis-ci.com/statebox/idris-ct) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
 # Idris category theory
 
-[![Build Status](https://travis-ci.com/statebox/idris-ct.svg?branch=master)](https://travis-ci.com/statebox/idris-ct)
 
 This repository contains several definitions from category theory.
 
