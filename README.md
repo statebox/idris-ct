@@ -55,11 +55,7 @@ For additional targets, have a look at the instructions in [default.nix](default
 
 ### Prerequisites
 
-You'll need
-
-- [lhs2tex](https://github.com/kosmikus/lhs2tex/blob/master/INSTALL)
-- [latexmk](https://mg.readthedocs.io/latexmk.html)
-- [Idris](https://www.idris-lang.org/).
+You'll need [lhs2tex](https://github.com/kosmikus/lhs2tex/blob/master/INSTALL), [latexmk](https://mg.readthedocs.io/latexmk.html) and [Idris](https://www.idris-lang.org/).
 
 ### Generate documentation
 
