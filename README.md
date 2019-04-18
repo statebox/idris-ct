@@ -26,10 +26,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 This repository contains several definitions from category theory.
 
-The code is written in [Idris](https://idris-lang.org/), which allows us to write explicitly properties and proofs.
+The project is written in [Idris](https://idris-lang.org/), which allows us to
+state properties (logical propositions) of the code, along with their formal
+proofs, in the code itself. These provide guarantees that the code is
+correct by construction.
 
-We are actually using literate Idris, so that we can integrate seamlessly code
-and documentation.
+Moreover, we are using *literate* Idris, so that we can seamlessly integrate
+code and documentation, and produce prose documentation alongside the compiled
+artifacts.
 
 If you want a more detailed and slow introduction to the library, please have a look at the series of blog posts we are writing:
 
