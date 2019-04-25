@@ -63,6 +63,8 @@ Use `make` to generate the PDF documentation. You will find it in the
 `docs` directory.
 Look directly in the [Makefile](Makefile) for additional options.
 
+You can also consult the documentation directly [here](https://github.com/statebox/idris-ct-docs/blob/master/idris-ct-docs.pdf).
+
 ### Build code
 
 You can build manually all the code using
