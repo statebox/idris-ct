@@ -35,75 +35,87 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 >
-> data FreeMorphism : (t : Type) -> (domain : List t) -> (codomain : List t) -> Type where
->   MkUnitFreeMorphism : FreeMorphism t [] []
->   MkIdFreeMorphism : (x : t) -> FreeMorphism t [x] [x]
->   MkCompositionFreeMorphism : FreeMorphism t a b -> FreeMorphism t b c -> FreeMorphism t a c
->   MkJuxtapositionFreeMorphism  : FreeMorphism t a b -> FreeMorphism t c d -> FreeMorphism t (a ++ c) (b ++ d)
->   MkGeneratingFreeMorphism : (l : List (List t, List t))
->                           -> (e : (List t, List t))
->                           -> Elem e l
->                           -> FreeMorphism t (Basics.fst e) (Basics.snd e)
+> data FreeMorphism : (t : Type) -> (generatingMorphisms : List (List t, List t)) -> (domain : List t) -> (codomain : List t) -> Type where
+
+-- >   MkUnitFreeMorphism : FreeMorphism t [] []
+-- >   MkIdFreeMorphism : (x : t) -> FreeMorphism t [x] [x]
+
+>   MkIdFreeMorphism            : (x : List t) -> FreeMorphism t generatingMorphisms x x
+>   MkCompositionFreeMorphism   : FreeMorphism t generatingMorphisms a b
+>                              -> FreeMorphism t generatingMorphisms b c
+>                              -> FreeMorphism t generatingMorphisms a c
+>   MkJuxtapositionFreeMorphism : FreeMorphism t generatingMorphisms a b
+>                              -> FreeMorphism t generatingMorphisms c d
+>                              -> FreeMorphism t generatingMorphisms (a ++ c) (b ++ d)
+>   MkGeneratingFreeMorphism    : (l : List (List t, List t))
+>                              -> (e : (List t, List t))
+>                              -> Elem e l
+>                              -> FreeMorphism t l (Basics.fst e) (Basics.snd e)
 >
-> freeIdentity : (ts : List t) -> FreeMorphism t ts ts
-> freeIdentity []      = MkUnitFreeMorphism
-> freeIdentity (x::xs) = MkJuxtapositionFreeMorphism (MkIdFreeMorphism x) (freeIdentity xs)
+> freeIdentity : (ts : List t) -> FreeMorphism t generatingMorphisms ts ts
+> freeIdentity = MkIdFreeMorphism
+
+-- > freeIdentity []      = MkUnitFreeMorphism
+-- > freeIdentity (x::xs) = MkJuxtapositionFreeMorphism (MkIdFreeMorphism x) (freeIdentity xs)
+
 >
 > freeComposition :
 >      (as, bs, cs : List t)
->   -> (fm1 : FreeMorphism t as bs)
->   -> (fm2 : FreeMorphism t bs cs)
->   -> FreeMorphism t as cs
+>   -> (fm1 : FreeMorphism t generatingMorphisms as bs)
+>   -> (fm2 : FreeMorphism t generatingMorphisms bs cs)
+>   -> FreeMorphism t generatingMorphisms as cs
 > freeComposition as bs cs fm1 fm2 = MkCompositionFreeMorphism fm1 fm2
 >
 > postulate
 > freeLeftIdentity :
 >      (as, bs : List t)
->   -> (fm : FreeMorphism t as bs)
+>   -> (fm : FreeMorphism t generatingMorphisms as bs)
 >   -> MkCompositionFreeMorphism (freeIdentity as) fm = fm
 >
 > postulate
 > freeRightIdentity :
 >      (as, bs : List t)
->   -> (fm : FreeMorphism t as bs)
+>   -> (fm : FreeMorphism t generatingMorphisms as bs)
 >   -> MkCompositionFreeMorphism fm (freeIdentity bs) = fm
 >
 > postulate
 > freeAssociativity :
 >      (as, bs, cs, ds : List t)
->   -> (fm1 : FreeMorphism t as bs)
->   -> (fm2 : FreeMorphism t bs cs)
->   -> (fm3 : FreeMorphism t cs ds)
+>   -> (fm1 : FreeMorphism t generatingMorphisms as bs)
+>   -> (fm2 : FreeMorphism t generatingMorphisms bs cs)
+>   -> (fm3 : FreeMorphism t generatingMorphisms cs ds)
 >   -> MkCompositionFreeMorphism fm1 (MkCompositionFreeMorphism fm2 fm3)
 >    = MkCompositionFreeMorphism (MkCompositionFreeMorphism fm1 fm2) fm3
 >
-> generateFreeCategory : (t : Type) -> List (t, t) -> Category
+> generateFreeCategory : (t : Type) -> List (List t, List t) -> Category
 > generateFreeCategory t generatingMorphisms =
 >   MkCategory
 >     (List t)
->     (FreeMorphism t)
+>     (FreeMorphism t generatingMorphisms)
 >     freeIdentity
 >     freeComposition
 >     freeLeftIdentity
 >     freeRightIdentity
 >     freeAssociativity
 >
+> freeTensorObject : (List t, List t) -> List t
+> freeTensorObject pair = fst pair ++ snd pair
+>
 > freeTensorMorphism :
 >      (a, b : (List t, List t))
 >   -> ProductMorphism (generateFreeCategory t generatingMorphisms)
 >                      (generateFreeCategory t generatingMorphisms)
 >                      a b
->   -> FreeMorphism t (fst a ++ snd a) (fst b ++ snd b)
+>   -> FreeMorphism t generatingMorphisms (fst a ++ snd a) (fst b ++ snd b)
 > freeTensorMorphism a b (MkProductMorphism f1 f2) = MkJuxtapositionFreeMorphism f1 f2
 >
-
 > freeTensor :
 >      (t : Type)
->   -> (generatingMorphisms : List (t, t))
+>   -> (generatingMorphisms : List (List t, List t))
 >   -> CFunctor (productCategory (generateFreeCategory t generatingMorphisms) (generateFreeCategory t generatingMorphisms))
 >               (generateFreeCategory t generatingMorphisms)
 > freeTensor t generatingMorphisms = MkCFunctor
->   (\(as, bs) => as ++ bs)
+>   freeTensorObject
 >   freeTensorMorphism
 >   ?preserveId
 >   ?preserveCompose
