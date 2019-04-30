@@ -35,11 +35,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 >
-> data FreeMorphism : (t : Type) -> (generatingMorphisms : List (List t, List t)) -> (domain : List t) -> (codomain : List t) -> Type where
-
--- >   MkUnitFreeMorphism : FreeMorphism t [] []
--- >   MkIdFreeMorphism : (x : t) -> FreeMorphism t [x] [x]
-
+> data FreeMorphism :
+>      (t : Type)
+>   -> (generatingMorphisms : List (List t, List t))
+>   -> (domain : List t)
+>   -> (codomain : List t)
+>   -> Type
+> where
 >   MkIdFreeMorphism            : (x : List t) -> FreeMorphism t generatingMorphisms x x
 >   MkCompositionFreeMorphism   : FreeMorphism t generatingMorphisms a b
 >                              -> FreeMorphism t generatingMorphisms b c
@@ -54,10 +56,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > freeIdentity : (ts : List t) -> FreeMorphism t generatingMorphisms ts ts
 > freeIdentity = MkIdFreeMorphism
-
--- > freeIdentity []      = MkUnitFreeMorphism
--- > freeIdentity (x::xs) = MkJuxtapositionFreeMorphism (MkIdFreeMorphism x) (freeIdentity xs)
-
 >
 > freeComposition :
 >      (as, bs, cs : List t)
@@ -109,24 +107,55 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> FreeMorphism t generatingMorphisms (fst a ++ snd a) (fst b ++ snd b)
 > freeTensorMorphism a b (MkProductMorphism f1 f2) = MkJuxtapositionFreeMorphism f1 f2
 >
+> postulate
+> freeTensorPreserveId :
+>      (a : (List t, List t))
+>   -> freeTensorMorphism a a (MkProductMorphism (freeIdentity (fst a)) (freeIdentity (snd a)))
+>    = freeIdentity (freeTensorObject a)
+>
+> postulate
+> freeTensorPreserveCompose :
+>      (a, b, c : (List t, List t))
+>   -> (f : ProductMorphism (generateFreeCategory t generatingMorphisms)
+>                           (generateFreeCategory t generatingMorphisms)
+>                           a b)
+>   -> (g : ProductMorphism (generateFreeCategory t generatingMorphisms)
+>                           (generateFreeCategory t generatingMorphisms)
+>                           b c)
+>   -> freeTensorMorphism a c (productCompose a b c f g)
+>    = freeComposition (freeTensorObject a)
+>                      (freeTensorObject b)
+>                      (freeTensorObject c)
+>                      (freeTensorMorphism a b f)
+>                      (freeTensorMorphism b c g)
+>
 > freeTensor :
 >      (t : Type)
 >   -> (generatingMorphisms : List (List t, List t))
->   -> CFunctor (productCategory (generateFreeCategory t generatingMorphisms) (generateFreeCategory t generatingMorphisms))
+>   -> CFunctor (productCategory (generateFreeCategory t generatingMorphisms)
+>                                (generateFreeCategory t generatingMorphisms))
 >               (generateFreeCategory t generatingMorphisms)
 > freeTensor t generatingMorphisms = MkCFunctor
 >   freeTensorObject
 >   freeTensorMorphism
->   ?preserveId
->   ?preserveCompose
-
--- >
--- > generateFreeMonoidalCategory : (t : Type) -> List (t, t) -> StrictMonoidalCategory
--- > generateFreeMonoidalCategory t generatingMorphisms = MkStrictMonoidalCategory
--- >   (generateFreeCategory t generatingMorphisms)
--- >   (freeTensor t generatingMorphisms)
--- >   []
--- >   ?leftUnitor
--- >   ?rightUnitor
--- >   ?associativeObj
--- >   ?associativeMor
+>   freeTensorPreserveId
+>   freeTensorPreserveCompose
+>
+> postulate
+> freeTensorAssociative :
+>      (a, b, c, d, e, f : List t)
+>   -> (g : FreeMorphism t generatingMorphisms a b)
+>   -> (h : FreeMorphism t generatingMorphisms c d)
+>   -> (k : FreeMorphism t generatingMorphisms e f)
+>   -> MkJuxtapositionFreeMorphism g (MkJuxtapositionFreeMorphism h k)
+>    = MkJuxtapositionFreeMorphism (MkJuxtapositionFreeMorphism g h) k
+>
+> generateFreeMonoidalCategory : (t : Type) -> List (List t, List t) -> StrictMonoidalCategory
+> generateFreeMonoidalCategory t generatingMorphisms = MkStrictMonoidalCategory
+>   (generateFreeCategory t generatingMorphisms)
+>   (freeTensor t generatingMorphisms)
+>   []
+>   (\a => Refl)
+>   appendNilRightNeutral
+>   appendAssociative
+>   freeTensorAssociative
