@@ -40,7 +40,7 @@ As we did for the previous modules, to implement |NaturalTransformation| we will
 <   (fun1 : CFunctor cat1 cat2)
 <   (fun2 : CFunctor cat1 cat2)
 <   where
-<     constructor MkNaturalTranformation
+<     constructor MkNaturalTransformation
 %
 %
 %
@@ -143,7 +143,7 @@ The code above is everything we need to define what a natural transformation is.
 >   (fun1 : CFunctor cat1 cat2)
 >   (fun2 : CFunctor cat1 cat2)
 >   where
->     constructor MkNaturalTranformation
+>     constructor MkNaturalTransformation
 >     component : (a : obj cat1) -> mor cat2 (mapObj fun1 a) (mapObj fun2 a)
 >     commutativity : (a, b : obj cat1)
 >                  -> (f : mor cat1 a b)
