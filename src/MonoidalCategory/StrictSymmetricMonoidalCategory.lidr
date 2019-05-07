@@ -103,11 +103,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                                                     (tensorIsAssociativeObj smcat)
 >                                                                     symmetry
 >                                                                     a b c)
-
--- >     -> ((a, b : obj (cat smcat)) -> StrictInverseLaw (cat smcat)
--- >                                                      (tensor smcat)
--- >                                                      symmetry
-
+>     -> ((a, b : obj (cat smcat)) -> InverseLaw (cat smcat)
+>                                                (tensor smcat)
+>                                                symmetry
+>                                                a b)
 >     -> StrictSymmetricMonoidalCategory
-
--- >
