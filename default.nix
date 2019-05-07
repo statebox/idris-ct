@@ -80,6 +80,6 @@ let
   stdenv = usepkgs.stdenvAdapters.keepDebugInfo usepkgs.stdenv;
 
 in {
-  idris-stbx-core = usepkgs.callPackage ./idris-ct.nix {};
-  idris-stbx-core-doc = usepkgs.callPackage ./idris-ct-doc.nix {};
+  idris-ct = usepkgs.callPackage ./idris-ct.nix {};
+  idris-ct-doc = usepkgs.callPackage ./idris-ct-doc.nix {};
 }
