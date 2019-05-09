@@ -23,12 +23,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Basic.Isomorphism
+> import Basic.NaturalIsomorphism
+> import Basic.NaturalTransformation
 > import Data.List
 > import Data.Fin
 > import Discrete.DiscreteCategory
 > import Monoid.FreeMonoid
 > import Monoid.Monoid
 > import MonoidalCategory.StrictMonoidalCategory
+> import MonoidalCategory.StrictSymmetricMonoidalCategory
+> import MonoidalCategory.SymmetricMonoidalCategoryHelpers
 > import Product.ProductCategory
 > import Syntax.PreorderReasoning
 >
@@ -43,6 +48,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> Type
 > where
 >   MkIdFreeMorphism            : (x : List t) -> FreeMorphism t generatingMorphisms x x
+>   MkSymmetryFreeMorphism      : (x, y : List t) -> FreeMorphism t generatingMorphisms (x ++ y) (y ++ x)
 >   MkCompositionFreeMorphism   : FreeMorphism t generatingMorphisms a b
 >                              -> FreeMorphism t generatingMorphisms b c
 >                              -> FreeMorphism t generatingMorphisms a c
@@ -159,3 +165,79 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   appendNilRightNeutral
 >   appendAssociative
 >   freeTensorAssociative
+>
+> swapConcat : (x : (List t, List t)) -> snd x ++ fst x = fst (swap x) ++ snd (swap x)
+> swapConcat (x1, x2) = Refl
+>
+> freeSymmetryCommutativity :
+>      (a, b : (List t, List t))
+>   -> (f : ProductMorphism (generateFreeCategory t generatingMorphisms) (generateFreeCategory t generatingMorphisms) a b)
+>   -> compose (generateFreeCategory t generatingMorphisms)
+>              (mapObj (freeTensor t generatingMorphisms) a)
+>              (mapObj (functorComposition (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (generateFreeCategory t generatingMorphisms)
+>                                             (swapFunctor (generateFreeCategory t generatingMorphisms)
+>                                                          (generateFreeCategory t generatingMorphisms))
+>                                             (freeTensor t generatingMorphisms)) a)
+>              (mapObj (functorComposition (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (generateFreeCategory t generatingMorphisms)
+>                                             (swapFunctor (generateFreeCategory t generatingMorphisms)
+>                                                          (generateFreeCategory t generatingMorphisms))
+>                                             (freeTensor t generatingMorphisms)) b)
+>              (rewrite sym (swapConcat a) in MkSymmetryFreeMorphism (fst a) (snd a))
+>              (mapMor (functorComposition (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (generateFreeCategory t generatingMorphisms)
+>                                             (swapFunctor (generateFreeCategory t generatingMorphisms)
+>                                                          (generateFreeCategory t generatingMorphisms))
+>                                             (freeTensor t generatingMorphisms)) a b f)
+>    = compose (generateFreeCategory t generatingMorphisms)
+>              (mapObj (freeTensor t generatingMorphisms) a)
+>              (mapObj (freeTensor t generatingMorphisms) b)
+>              (mapObj (functorComposition (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (generateFreeCategory t generatingMorphisms)
+>                                             (swapFunctor (generateFreeCategory t generatingMorphisms)
+>                                                          (generateFreeCategory t generatingMorphisms))
+>                                             (freeTensor t generatingMorphisms)) b)
+>              (mapMor (freeTensor t generatingMorphisms) a b f)
+>              (rewrite sym (swapConcat b) in MkSymmetryFreeMorphism (fst b) (snd b))
+> freeSymmetryCommutativity (a1, a2) (b1, b2) (MkProductMorphism f1 f2) = ?asdf
+>
+> freeSymmetry :
+>      (t : Type)
+>   -> (generatingMorphisms : List (List t, List t))
+>   -> NaturalIsomorphism (productCategory (generateFreeCategory t generatingMorphisms)
+>                                          (generateFreeCategory t generatingMorphisms))
+>                         (generateFreeCategory t generatingMorphisms)
+>                         (freeTensor t generatingMorphisms)
+>                         (functorComposition (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (productCategory (generateFreeCategory t generatingMorphisms)
+>                                                              (generateFreeCategory t generatingMorphisms))
+>                                             (generateFreeCategory t generatingMorphisms)
+>                                             (swapFunctor (generateFreeCategory t generatingMorphisms)
+>                                                          (generateFreeCategory t generatingMorphisms))
+>                                             (freeTensor t generatingMorphisms))
+> freeSymmetry t generatingMorphisms = MkNaturalIsomorphism
+>   (MkNaturalTransformation (\a => rewrite sym (swapConcat a) in MkSymmetryFreeMorphism (fst a) (snd a))
+>                            (\a, b, f => freeSymmetryCommutativity a b f))
+>   (\a => ?isIso)
+>
+> generateFreeSymmetricMonoidalCategory : (t : Type) -> List (List t, List t) -> StrictSymmetricMonoidalCategory
+> generateFreeSymmetricMonoidalCategory t generatingMorphisms = MkStrictSymmetricMonoidalCategory
+>   (generateFreeMonoidalCategory t generatingMorphisms)
+>   (freeSymmetry t generatingMorphisms)
+>   ?unitCoherence
+>   ?associativityCoherence
+>   ?inverseLaw
