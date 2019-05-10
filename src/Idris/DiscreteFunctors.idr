@@ -6,6 +6,8 @@ import Basic.Category
 import Basic.Functor
 import Discrete.DiscreteCategory
 
+%default total
+
 infixr 6 ||>
 
 (||>) : CFunctor a b -> CFunctor b c -> CFunctor a c
@@ -60,3 +62,24 @@ typeCatAsNaturalTransformation = MkCategory
   typeCatLeftId
   typeCatRightId
   typeCatAssoc
+
+askForInput : () -> IO String
+askForInput () = getLine
+
+printText : String -> IO ()
+printText text = putStrLn $ "you wrote: " ++ text
+
+askAndPrint : () -> IO ()
+askAndPrint () = askForInput () >>= printText
+
+liftedAskAndPrint : () -*> IO ()
+liftedAskAndPrint = DiscreteFunctor (askAndPrint)
+
+partial
+forever : IO b -> IO b
+forever a = do a; forever a
+
+partial
+liftLoop : a -*> IO b -> a -*> IO b
+liftLoop computation = DiscreteFunctor (\a => forever (mapObj computation a))
+
