@@ -169,6 +169,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > swapConcat : (x : (List t, List t)) -> snd x ++ fst x = fst (swap x) ++ snd (swap x)
 > swapConcat (x1, x2) = Refl
 >
+> postulate
+> freeTensorPreserveSwap :
+>      (a, b, c, d : List t)
+>   -> (f : FreeMorphism t generatingMorphisms a c)
+>   -> (g : FreeMorphism t generatingMorphisms b d)
+>   -> MkCompositionFreeMorphism (MkSymmetryFreeMorphism a b) (MkJuxtapositionFreeMorphism g f)
+>    = MkCompositionFreeMorphism (MkJuxtapositionFreeMorphism f g) (MkSymmetryFreeMorphism c d)
+>
 > freeSymmetryCommutativity :
 >      (a, b : (List t, List t))
 >   -> (f : ProductMorphism (generateFreeCategory t generatingMorphisms) (generateFreeCategory t generatingMorphisms) a b)
@@ -212,7 +220,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                             (freeTensor t generatingMorphisms)) b)
 >              (mapMor (freeTensor t generatingMorphisms) a b f)
 >              (rewrite sym (swapConcat b) in MkSymmetryFreeMorphism (fst b) (snd b))
-> freeSymmetryCommutativity (a1, a2) (b1, b2) (MkProductMorphism f1 f2) = ?asdf
+> freeSymmetryCommutativity (a1, a2) (b1, b2) (MkProductMorphism f1 f2) = freeTensorPreserveSwap a1 a2 b1 b2 f1 f2
 >
 > freeSymmetry :
 >      (t : Type)
