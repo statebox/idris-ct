@@ -222,6 +222,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >              (rewrite sym (swapConcat b) in MkSymmetryFreeMorphism (fst b) (snd b))
 > freeSymmetryCommutativity (a1, a2) (b1, b2) (MkProductMorphism f1 f2) = freeTensorPreserveSwap a1 a2 b1 b2 f1 f2
 >
+> postulate
+> freeSymmetryIsInvolution :
+>      (a, b : List t)
+>   -> MkCompositionFreeMorphism (MkSymmetryFreeMorphism a b) (MkSymmetryFreeMorphism b a)
+>    = MkIdFreeMorphism (a ++ b)
+>
 > freeSymmetry :
 >      (t : Type)
 >   -> (generatingMorphisms : List (List t, List t))
@@ -240,12 +246,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > freeSymmetry t generatingMorphisms = MkNaturalIsomorphism
 >   (MkNaturalTransformation (\a => rewrite sym (swapConcat a) in MkSymmetryFreeMorphism (fst a) (snd a))
 >                            (\a, b, f => freeSymmetryCommutativity a b f))
->   (\a => ?isIso)
+>   (\(a1, a2) => MkIsomorphism (MkSymmetryFreeMorphism a2 a1)
+>                               (freeSymmetryIsInvolution a1 a2)
+>                               (freeSymmetryIsInvolution a2 a1))
+>
+> postulate
+> freeUnitCoherence :
+>      (a : List t)
+>   -> MkSymmetryFreeMorphism a []
+>    = MkIdFreeMorphism a
+>
+> postulate
+> freeAssociativityCoherence :
+>      (a, b, c : List t)
+>   -> MkSymmetryFreeMorphism a (b ++ c)
+>    = MkCompositionFreeMorphism (MkJuxtapositionFreeMorphism (MkSymmetryFreeMorphism a b) (MkIdFreeMorphism c))
+>                                (rewrite sym (appendAssociative b a c) in (MkJuxtapositionFreeMorphism (MkIdFreeMorphism b) (MkSymmetryFreeMorphism a c)))
 >
 > generateFreeSymmetricMonoidalCategory : (t : Type) -> List (List t, List t) -> StrictSymmetricMonoidalCategory
 > generateFreeSymmetricMonoidalCategory t generatingMorphisms = MkStrictSymmetricMonoidalCategory
 >   (generateFreeMonoidalCategory t generatingMorphisms)
 >   (freeSymmetry t generatingMorphisms)
->   ?unitCoherence
->   ?associativityCoherence
->   ?inverseLaw
+>   (\a => freeUnitCoherence a)
+>   (\a, b, c => freeAssociativityCoherence a b c)
+>   (\a, b => freeSymmetryIsInvolution a b)
