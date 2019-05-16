@@ -31,8 +31,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > dualFunctor :
 >      CFunctor cat1 cat2
 >   -> CFunctor (dualCategory cat1) (dualCategory cat2)
-> dualFunctor funct = MkCFunctor
->   (\a => (mapObj funct a))
->   (\a, b, f => (mapMor funct b a f))
->   (\a => preserveId funct a)
->   (\a, b, c, f, g => (preserveCompose funct c b a g f))
+> dualFunctor func = MkCFunctor
+>   (\a => (mapObj func a))
+>   (\a, b, f => (mapMor func b a f))
+>   (\a => preserveId func a)
+>   (\a, b, c, f, g => (preserveCompose func c b a g f))
