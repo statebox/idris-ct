@@ -73,13 +73,26 @@ You can build manually all the code using
 idris --checkpkg idris-ct.ipkg
 ```
 
-### Build with Elba
+## Build with Elba
 
 Alternatively you can build the library with [elba](https://github.com/elba/elba) using
 
 ```
 elba build
 ```
+
+## Use as a dependency
+
+The preferred way to use this library as a dependency for another project is using [elba](https://github.com/elba/elba).
+
+It should be enough to add the following section
+
+```
+[dependencies]
+"statebox/idris-ct" = { git = "ssh://git@github.com/statebox/idris-ct" }
+```
+
+to the `elba.toml` file of your project.
 
 ### License
 
