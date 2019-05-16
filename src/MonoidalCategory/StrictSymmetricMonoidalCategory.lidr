@@ -94,17 +94,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                                           (swapFunctor (cat smcat)
 >                                                                        (cat smcat))
 >                                                           (tensor smcat)))
->     -> ((a : obj (cat smcat)) -> StrictUnitCoherence (cat smcat)
->                                                      (unit smcat)
->                                                      symmetry
->                                                      a)
+>     -> ((a : obj (cat smcat)) -> StrictUnitCoherence (cat smcat) (unit smcat) symmetry a)
 >     -> ((a, b, c : obj (cat smcat)) -> StrictAssociativityCoherence (cat smcat)
 >                                                                     (tensor smcat)
 >                                                                     (tensorIsAssociativeObj smcat)
 >                                                                     symmetry
 >                                                                     a b c)
->     -> ((a, b : obj (cat smcat)) -> InverseLaw (cat smcat)
->                                                (tensor smcat)
->                                                symmetry
->                                                a b)
+>     -> ((a, b : obj (cat smcat)) -> InverseLaw (cat smcat) (tensor smcat) symmetry a b)
 >     -> StrictSymmetricMonoidalCategory
