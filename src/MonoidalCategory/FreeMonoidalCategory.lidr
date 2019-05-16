@@ -27,15 +27,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.NaturalIsomorphism
 > import Basic.NaturalTransformation
 > import Data.List
-> import Data.Fin
-> import Discrete.DiscreteCategory
 > import Monoid.FreeMonoid
 > import Monoid.Monoid
 > import MonoidalCategory.StrictMonoidalCategory
 > import MonoidalCategory.StrictSymmetricMonoidalCategory
 > import MonoidalCategory.SymmetricMonoidalCategoryHelpers
 > import Product.ProductCategory
-> import Syntax.PreorderReasoning
 >
 > %access public export
 > %default total
