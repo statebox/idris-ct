@@ -30,6 +30,8 @@ modules =
   Cats.CatsAsCategory,
   Discrete.DiscreteCategory,
   Discrete.FunctionAsFunctor,
+  Dual.DualCategory,
+  Dual.DualFunctor,
   Idris.FunctorAsCFunctor,
   Idris.TypesAsCategory,
   Idris.TypesAsCategoryExtensional,
