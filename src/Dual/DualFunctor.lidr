@@ -30,7 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > dualFunctor :
 >      CFunctor cat1 cat2
->   -> CFunctor (DualCategory cat1) (DualCategory cat2)
+>   -> CFunctor (dualCategory cat1) (dualCategory cat2)
 > dualFunctor funct = MkCFunctor
 >   (\a => (mapObj funct a))
 >   (\a, b, f => (mapMor funct b a f))
