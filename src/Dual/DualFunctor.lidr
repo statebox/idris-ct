@@ -36,4 +36,3 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (\a, b, f => (mapMor funct b a f))
 >   (\a => preserveId funct a)
 >   (\a, b, c, f, g => (preserveCompose funct c b a g f))
->

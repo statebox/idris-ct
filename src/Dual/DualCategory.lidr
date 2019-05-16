@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 >
-> dualMorphism:
+> dualMorphism :
 >      (cat : Category)
 >   -> (a, b  : obj cat)
 >   -> Type
@@ -35,10 +35,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > dualCompose :
 >      (cat : Category)
 >   -> (a, b, c : obj cat)
->   -> (g : mor cat b a)
->   -> (f : mor cat c b)
->   -> mor cat c a
-> dualCompose cat a b c g f = (compose cat) c b a f g
+>   -> (f : dualMorphism cat a b)
+>   -> (g : dualMorphism cat b c)
+>   -> dualMorphism cat a c
+> dualCompose cat a b c f g = (compose cat) c b a g f
 >
 > dualAssoc :
 >      (cat : Category)
@@ -50,7 +50,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >       = dualCompose cat a c d (dualCompose cat a b c f g) h
 > dualAssoc cat a b c d f g h = sym (associativity cat d c b a h g f)
 >
->
 > dualLeftIdentity :
 >      (cat : Category)
 >   -> (a, b : obj cat)
@@ -60,8 +59,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > dualRightIdentity :
 >      (cat : Category)
->   -> (a : obj cat)
->   -> (b : obj cat)
+>   -> (a, b : obj cat)
 >   -> (f : dualMorphism cat a b)
 >   -> dualCompose cat a b b f (identity cat b) = f
 > dualRightIdentity cat a b f = leftIdentity cat b a f
@@ -75,4 +73,3 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (dualLeftIdentity cat)
 >   (dualRightIdentity cat)
 >   (dualAssoc cat)
->
