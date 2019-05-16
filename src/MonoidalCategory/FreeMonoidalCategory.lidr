@@ -261,7 +261,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >      (a, b, c : List t)
 >   -> MkSymmetryFreeMorphism a (b ++ c)
 >    = MkCompositionFreeMorphism (MkJuxtapositionFreeMorphism (MkSymmetryFreeMorphism a b) (MkIdFreeMorphism c))
->                                (rewrite sym (appendAssociative b a c) in (MkJuxtapositionFreeMorphism (MkIdFreeMorphism b) (MkSymmetryFreeMorphism a c)))
+>                                (rewrite (sym (appendAssociative b a c)) in
+>                                         (rewrite__impl (\r => FreeMorphism t generatingMorphisms (b ++ a ++ c) r)
+>                                                        (sym (appendAssociative b c a))
+>                                                        (MkJuxtapositionFreeMorphism (MkIdFreeMorphism b)
+>                                                                                     (MkSymmetryFreeMorphism a c))))
 >
 > generateFreeSymmetricMonoidalCategory : (t : Type) -> List (List t, List t) -> StrictSymmetricMonoidalCategory
 > generateFreeSymmetricMonoidalCategory t generatingMorphisms = MkStrictSymmetricMonoidalCategory
