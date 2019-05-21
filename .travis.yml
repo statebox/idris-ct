@@ -19,5 +19,5 @@
 
 language: nix
 os:
-  - linux
+#   - linux
   - osx
