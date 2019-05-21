@@ -52,10 +52,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   MkJuxtapositionFreeMorphism : FreeMorphism t generatingMorphisms a b
 >                              -> FreeMorphism t generatingMorphisms c d
 >                              -> FreeMorphism t generatingMorphisms (a ++ c) (b ++ d)
->   MkGeneratingFreeMorphism    : (l : List (List t, List t))
->                              -> (e : (List t, List t))
->                              -> Elem e l
->                              -> FreeMorphism t l (Basics.fst e) (Basics.snd e)
+>   MkGeneratingFreeMorphism    : (e : (List t, List t))
+>                              -> Elem e generatingMorphisms
+>                              -> FreeMorphism t generatingMorphisms (Basics.fst e) (Basics.snd e)
 >
 > freeIdentity : (ts : List t) -> FreeMorphism t generatingMorphisms ts ts
 > freeIdentity = MkIdFreeMorphism
