@@ -299,3 +299,43 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (\a => freeUnitCoherence a)
 >   (\a, b, c => freeAssociativityCoherence a b c)
 >   (\a, b => freeSymmetryIsInvolution a b)
+>
+> -- elimination rule for FreeMorphism
+> fold :
+>      {ssmc : StrictSymmetricMonoidalCategory}
+>   -> (onObj : List t -> obj . cat . smcat $ ssmc)
+>   -> CFunctor (cat . smcat $ generateFreeSymmetricMonoidalCategory t generatingMorphisms) (cat . smcat $ ssmc) -- this should really be a symmetric monoidal functor
+
+-- > -- elimination rule for FreeMorphism
+-- > fold :
+-- >      (onObj : List t -> obj cat)
+-- >   -> (onId : (x : List t) -> mor cat (onObj x) (onObj x))
+-- >   -> (onSymmetry : (x, y : List t) -> mor cat (onObj (x ++ y)) (onObj (y ++ x)))
+-- >   -> (onComposition : mor cat a b -> mor cat b c -> mor cat a c)
+-- >   -> CFunctor (generateFreeCategory t generatingMorphisms) cat
+-- > fold {t} {cat} onObj onId onSymmetry onComposition = MkCFunctor
+-- >   onObj
+-- >   onMor
+-- >   ?id
+-- >   ?comp
+-- >     where
+-- >       onMor : (a, b : List t) -> FreeMorphism t generatingMorphisms a b -> mor cat (onObj a) (onObj b)
+-- >       onMor a        a        (MkIdFreeMorphism a)                = onId a
+-- >       onMor (x ++ y) (y ++ x) (MkSymmetryFreeMorphism x y)        = onSymmetry x y
+-- >       onMor a        c        (MkCompositionFreeMorphism {a} {b} {c} f g) = onComposition (onMor a b f) (onMor b c g)
+
+-- >
+-- > -- elimination rule for FreeMorphism
+-- > processFreeMorphism :
+-- >      (onId : List t -> a)
+-- >   -> (onSymmetry : List t -> List t -> a)
+-- >   -> (onComposition : a -> a -> a)
+-- >   -> (onJuxtaposition : a -> a -> a)
+-- >   -> (onGeneratingMorphism : (e : (List t, List t)) -> Elem e generatingMorphisms -> a)
+-- >   -> FreeMorphism t generatingMorphisms x y
+-- >   -> a
+-- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkIdFreeMorphism x) = onId x
+-- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkSymmetryFreeMorphism x y) = onSymmetry x y
+-- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkCompositionFreeMorphism f g) = onComposition (processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism f) (processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism g)
+-- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkJuxtapositionFreeMorphism f g) = onJuxtaposition (processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism f) (processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism g)
+-- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkGeneratingFreeMorphism e prf) = onGeneratingMorphism e prf
