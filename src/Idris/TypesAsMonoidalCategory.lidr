@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 > import Basic.Functor
 > import Basic.NaturalIsomorphism
-> import Idris.TypesAsCategory
+> import Idris.TypesAsCategoryExtensional
 > import MonoidalCategory.MonoidalCategory
 > import MonoidalCategory.MonoidalCategoryHelpers
 > import Product.ProductCategory
@@ -32,31 +32,52 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 >
-> typesTensor : CFunctor (productCategory TypesAsCategory.typesAsCategory TypesAsCategory.typesAsCategory)
->                        TypesAsCategory.typesAsCategory
+> typesTensorMorphism :
+>      (a, b : (Type, Type))
+>   -> ProductMorphism TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                      TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                      a b
+>   -> ExtensionalTypeMorphism (fst a, snd a) (fst b, snd b)
+> typesTensorMorphism a b f = MkExtensionalTypeMorphism $ \(t1, t2) => (func (pi1 f) $ t1, func (pi2 f) $ t2)
 >
-> typesAssociator : Associator TypesAsCategory.typesAsCategory TypesAsMonoidalCategory.typesTensor
+> typesTensorPreservesId :
+>      (a : (Type, Type))
+>   -> typesTensorMorphism a a (MkProductMorphism (MkExtensionalTypeMorphism (id {a = fst a}))
+>                                                 (MkExtensionalTypeMorphism (id {a = snd a})))
+>    = MkExtensionalTypeMorphism id
+> typesTensorPreservesId a = funExt (\(t1, t2) => Refl)
 >
-> typesLeftUnitor : NaturalIsomorphism TypesAsCategory.typesAsCategory
->                                      TypesAsCategory.typesAsCategory
->                                      (leftIdTensor TypesAsCategory.typesAsCategory
+> typesTensor : CFunctor (productCategory TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                                         TypesAsCategoryExtensional.typesAsCategoryExtensional)
+>                        TypesAsCategoryExtensional.typesAsCategoryExtensional
+> typesTensor = MkCFunctor
+>   (\ab => (fst ab, snd ab))
+>   (\a, b, f => typesTensorMorphism a b f)
+>   (\a => typesTensorPreservesId a)
+>   (\a, b, c, f, g => ?pComp)
+>
+> typesAssociator : Associator TypesAsCategoryExtensional.typesAsCategoryExtensional TypesAsMonoidalCategory.typesTensor
+>
+> typesLeftUnitor : NaturalIsomorphism TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                                      TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                                      (leftIdTensor TypesAsCategoryExtensional.typesAsCategoryExtensional
 >                                                    TypesAsMonoidalCategory.typesTensor
 >                                                    ())
->                                      (idFunctor TypesAsCategory.typesAsCategory)
+>                                      (idFunctor TypesAsCategoryExtensional.typesAsCategoryExtensional)
 >
-> typesRightUnitor : NaturalIsomorphism TypesAsCategory.typesAsCategory
->                                       TypesAsCategory.typesAsCategory
->                                       (rightIdTensor TypesAsCategory.typesAsCategory
+> typesRightUnitor : NaturalIsomorphism TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                                       TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                                       (rightIdTensor TypesAsCategoryExtensional.typesAsCategoryExtensional
 >                                                      TypesAsMonoidalCategory.typesTensor
 >                                                      ())
->                                       (idFunctor TypesAsCategory.typesAsCategory)
+>                                       (idFunctor TypesAsCategoryExtensional.typesAsCategoryExtensional)
 >
-> typesPentagon : (a, b, c, d : Type) -> MonoidalPentagon TypesAsCategory.typesAsCategory
+> typesPentagon : (a, b, c, d : Type) -> MonoidalPentagon TypesAsCategoryExtensional.typesAsCategoryExtensional
 >                                                         TypesAsMonoidalCategory.typesTensor
 >                                                         TypesAsMonoidalCategory.typesAssociator
 >                                                         a b c d
 >
-> typesTriangle : (a, b : Type) -> MonoidalTriangle TypesAsCategory.typesAsCategory
+> typesTriangle : (a, b : Type) -> MonoidalTriangle TypesAsCategoryExtensional.typesAsCategoryExtensional
 >                                                   TypesAsMonoidalCategory.typesTensor
 >                                                   ()
 >                                                   TypesAsMonoidalCategory.typesAssociator
@@ -66,7 +87,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > typesAsMonoidalCategory : MonoidalCategory
 > typesAsMonoidalCategory = MkMonoidalCategory
->   TypesAsCategory.typesAsCategory
+>   TypesAsCategoryExtensional.typesAsCategoryExtensional
 >   typesTensor
 >   ()
 >   typesAssociator
