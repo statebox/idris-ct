@@ -133,6 +133,7 @@ The code above is everything we need to define what a natural transformation is.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Syntax.PreorderReasoning
 >
 > %access public export
 > %default total
