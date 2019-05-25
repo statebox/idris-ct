@@ -8,7 +8,7 @@ import Monad.Monad
 %access public export
 %default total
 
-kleisliCategory : (cat : Category) -> UnlawfulMonad cat -> Category
+kleisliCategory : (cat : Category) -> Monad cat -> Category
 kleisliCategory cat m =
   MkCategory
     (obj cat)
