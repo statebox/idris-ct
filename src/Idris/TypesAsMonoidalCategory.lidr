@@ -23,6 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Basic.Isomorphism
+> import Basic.NaturalTransformation
 > import Basic.NaturalIsomorphism
 > import Idris.TypesAsCategoryExtensional
 > import MonoidalCategory.MonoidalCategory
@@ -72,7 +74,44 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   typesTensorPreservesId
 >   typesTensorPreserveComposition
 >
+> typesAssociatorObj :
+>      (a : (Type, Type, Type))
+>   -> ExtensionalTypeMorphism ((fst a, fst (snd a)), snd (snd a)) (fst a, fst (snd a), snd (snd a))
+> typesAssociatorObj a = MkExtensionalTypeMorphism (\x => (fst (fst x), snd (fst x), snd x))
+>
+> typesAssociatorCommutativity :
+>      (a, b : (Type, Type, Type))
+>   -> (f : mor (productCategory TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                                (productCategory TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                                                 TypesAsCategoryExtensional.typesAsCategoryExtensional))
+>               a b)
+>   -> extCompose ((fst a, fst (snd a)), snd (snd a))
+>                 (fst a, fst (snd a), snd (snd a))
+>                 (fst b, fst (snd b), snd (snd b))
+>                 (typesAssociatorObj a)
+>                 ?asdf
+
+-- >                 (MkExtensionalTypeMorphism (\x => (func (pi1 f) $ fst x,
+-- >                                                    func (pi1 (pi2 f)) $ fst (snd x),
+-- >                                                    func (pi2 (pi2 f)) $ snd (snd x))))
+
+>    = extCompose ((fst a, fst (snd a)), snd (snd a))
+>                 ((fst b, fst (snd b)), snd (snd b))
+>                 (fst b, fst (snd b), snd (snd b))
+>                 ?qwer
+
+-- >                 (MkExtensionalTypeMorphism (\x => ((func (pi1 f) $ fst (fst x), func (pi1 (pi2 f)) $ snd (fst x)),
+-- >                                                    func (pi2 (pi2 f)) $ snd x)))
+
+>                 (typesAssociatorObj b)
+> typesAssociatorCommutativity a b f = funExt $ \x => Refl
+>
 > typesAssociator : Associator TypesAsCategoryExtensional.typesAsCategoryExtensional TypesAsMonoidalCategory.typesTensor
+> typesAssociator = MkNaturalIsomorphism
+>   (MkNaturalTransformation
+>     (\a => typesAssociatorObj a)
+>     typesAssociatorCommutativity)
+>   ?isIso
 >
 > typesLeftUnitor : NaturalIsomorphism TypesAsCategoryExtensional.typesAsCategoryExtensional
 >                                      TypesAsCategoryExtensional.typesAsCategoryExtensional
