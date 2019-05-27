@@ -28,6 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import MonoidalCategory.MonoidalCategory
 > import MonoidalCategory.MonoidalCategoryHelpers
 > import Product.ProductCategory
+> import Utils
 >
 > %access public export
 > %default total
@@ -47,14 +48,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >    = MkExtensionalTypeMorphism id
 > typesTensorPreservesId a = funExt (\(t1, t2) => Refl)
 >
+> typesTensorPreserveComposition :
+>      (a, b, c : (Type, Type))
+>   -> (f : ProductMorphism TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                           TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                           a b)
+>   -> (g : ProductMorphism TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                           TypesAsCategoryExtensional.typesAsCategoryExtensional
+>                           b c)
+>   -> typesTensorMorphism a c (productCompose a b c f g)
+>    = extCompose (fst a, snd a) (fst b, snd b) (fst c, snd c) (typesTensorMorphism a b f) (typesTensorMorphism b c g)
+> typesTensorPreserveComposition a b c f g = funExt $
+>   \(t1, t2) => cong2 {f=MkPair}
+>                      (rewrite funcDistributesOverComposition (fst a) (fst b) (fst c) (pi1 f) (pi1 g) in Refl)
+>                      (rewrite funcDistributesOverComposition (snd a) (snd b) (snd c) (pi2 f) (pi2 g) in Refl)
+>
 > typesTensor : CFunctor (productCategory TypesAsCategoryExtensional.typesAsCategoryExtensional
 >                                         TypesAsCategoryExtensional.typesAsCategoryExtensional)
 >                        TypesAsCategoryExtensional.typesAsCategoryExtensional
 > typesTensor = MkCFunctor
 >   (\ab => (fst ab, snd ab))
->   (\a, b, f => typesTensorMorphism a b f)
->   (\a => typesTensorPreservesId a)
->   (\a, b, c, f, g => ?pComp)
+>   typesTensorMorphism
+>   typesTensorPreservesId
+>   typesTensorPreserveComposition
 >
 > typesAssociator : Associator TypesAsCategoryExtensional.typesAsCategoryExtensional TypesAsMonoidalCategory.typesTensor
 >
