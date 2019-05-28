@@ -25,24 +25,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Functor
 > import Basic.NaturalTransformation
 > import Syntax.PreorderReasoning
-> import Utils
 >
 > %access public export
 > %default total
 >
 > idTransformation :
->   (cat1, cat2 : Category)
+>      (cat1, cat2 : Category)
 >   -> (fun : CFunctor cat1 cat2)
 >   -> NaturalTransformation cat1 cat2 fun fun
 > idTransformation cat1 cat2 fun = MkNaturalTransformation
 >   (\a => identity cat2 (mapObj fun a))
 >   (\a, b, f =>
->   (compose cat2 _ _ _ (identity cat2 (mapObj fun a)) (mapMor fun a b f))
->   ={ leftIdentity cat2 _ _ (mapMor fun a b f) }=
->   (mapMor fun a b f)
->   ={ sym $ rightIdentity cat2 _ _ (mapMor fun a b f) }=
->   (compose cat2 _ _ _ (mapMor fun a b f) (identity cat2 (mapObj fun b)))
->   QED)
+>     (compose cat2 _ _ _ (identity cat2 (mapObj fun a)) (mapMor fun a b f))
+>     ={ leftIdentity cat2 _ _ (mapMor fun a b f) }=
+>     (mapMor fun a b f)
+>     ={ sym $ rightIdentity cat2 _ _ (mapMor fun a b f) }=
+>     (compose cat2 _ _ _ (mapMor fun a b f) (identity cat2 (mapObj fun b)))
+>     QED)
 >
 > functorCategory : (cat1, cat2 : Category) -> Category
 > functorCategory cat1 cat2 = MkCategory
