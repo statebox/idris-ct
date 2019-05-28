@@ -24,10 +24,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 > import Basic.Functor
 > import Basic.NaturalTransformation
-> import Cats.CatsAsCategory
 > import CategoryReasoning as CR
+> import Cats.CatsAsCategory
+> import Cats.FunctorsAsCategory
 > import Syntax.PreorderReasoning
-> import Functors.FunctorCategories
 >
 > %access public export
 > %default total
@@ -35,7 +35,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > qed : (a : obj (functorCategory cat cat)) -> mor _ a a
 > qed = CR.qed (functorCategory cat cat)
 >
-> step : (a : obj (functorCategory cat cat)) -> mor (functorCategory cat cat) a b -> mor (functorCategory cat cat) b c -> mor (functorCategory cat cat) a c
+> step :
+>      (a : obj (functorCategory cat cat))
+>   -> mor (functorCategory cat cat) a b
+>   -> mor (functorCategory cat cat) b c
+>   -> mor (functorCategory cat cat) a c
 > step = CR.step (functorCategory cat cat)
 >
 > liftEquality : (a, b : obj (functorCategory cat cat)) -> a = b -> mor (functorCategory cat cat) a b
@@ -55,18 +59,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     QED)
 >     =
 >     ((functorComposition cat cat cat functor (functorComposition cat cat cat functor functor))
->     ={ liftEquality (functorComposition cat cat cat functor (functorComposition cat cat cat functor functor)) (functorComposition cat cat cat (functorComposition cat cat cat functor functor) functor) (catsAssociativity _ _ _ _ functor functor functor) }=
+>     ={ liftEquality
+>          (functorComposition cat cat cat functor (functorComposition cat cat cat functor functor))
+>          (functorComposition cat cat cat (functorComposition cat cat cat functor functor) functor)
+>          (catsAssociativity _ _ _ _ functor functor functor) }=
 >     (functorComposition cat cat cat (functorComposition cat cat cat functor functor) functor)
->     ={ composeFunctorNatTrans cat cat cat (functorComposition cat cat cat functor functor) functor functor multiplication }=
+>     ={ composeFunctorNatTrans cat cat cat
+>          (functorComposition cat cat cat functor functor) functor multiplication functor }=
 >     (functorComposition cat cat cat functor functor)
 >     ={ multiplication }=
 >     functor
 >     QED)
 >   leftUnit :
 >     (functor
->     ={ liftEquality functor (functorComposition _ _ _ (idFunctor cat) functor) (sym $ catsLeftIdentity cat cat functor) }=
+>     ={ liftEquality functor (functorComposition _ _ _ (idFunctor cat) functor)
+>          (sym $ catsLeftIdentity cat cat functor) }=
 >     (functorComposition _ _ _ (idFunctor cat) functor)
->     ={ composeFunctorNatTrans cat cat cat (idFunctor cat) functor functor unit }=
+>     ={ composeFunctorNatTrans cat cat cat (idFunctor cat) functor unit functor }=
 >      (functorComposition _ _ _ functor functor)
 >     ={ multiplication }=
 >     functor
@@ -75,7 +84,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     idTransformation cat cat functor
 >   rightUnit :
 >     (functor
->     ={ liftEquality functor (functorComposition _ _ _ functor (idFunctor cat)) (sym $ catsRightIdentity cat cat functor) }=
+>     ={ liftEquality functor (functorComposition _ _ _ functor (idFunctor cat))
+>          (sym $ catsRightIdentity cat cat functor) }=
 >     (functorComposition _ _ _ functor (idFunctor cat))
 >     ={ composeNatTransFunctor cat cat cat functor (idFunctor cat) functor unit }=
 >      (functorComposition _ _ _ functor functor)
