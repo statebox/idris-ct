@@ -53,6 +53,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (tensor mcat1)
 >   func
 >
+> PreserveMonoidalAssociativity :
+>      (mcat1, mcat2 : MonoidalCategory)
+>   -> CFunctor (cat mcat1) (cat mcat2)
+>   -> Type
+>
+> PreserveMonoidalLeftId :
+>      (mcat1, mcat2 : MonoidalCategory)
+>   -> CFunctor (cat mcat1) (cat mcat2)
+>   -> Type
+> PreserveMonoidalLeftId mcat1 mcat2 =
+>      (a : obj mcat1)
+>   -> component (natTrans (leftUnitor mcat2)) (mapObj func a)
+>    = ?asdf
+>
+> PreserveMonoidalRightId :
+>      (mcat1, mcat2 : MonoidalCategory)
+>   -> CFunctor (cat mcat1) (cat mcat2)
+>   -> Type
+>
 > -- we are not using a record here because compilation does not terminate in that case
 > data MonoidalFunctor : (mcat1, mcat2 : MonoidalCategory) -> Type where
 >   MkMonoidalFunctor :
@@ -62,4 +81,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                              (mapThenTensor mcat1 mcat2 func)
 >                                              (tensorThenMap mcat1 mcat2 func))
 >     -> (coherenceMor : mor (cat mcat2) (unit mcat2) (mapObj func (unit mcat1)))
+>     -> (preserveAssociativity : PreserveMonoidalAssociativity mcat1 mcat2)
+>     -> (preserveLeftId : PreserveMonoidalLeftId mcat1 mcat2)
+>     -> (preserveRightId : PreserveMonoidalRightId mcat1 mcat2)
 >     -> MonoidalFunctor mcat1 mcat2
