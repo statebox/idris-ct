@@ -26,25 +26,40 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.NaturalTransformation
 > import MonoidalCategory.MonoidalCategory
 > import Product.ProductCategory
+> import Product.ProductFunctor
 >
 > %access public export
 > %default total
 >
 > mapThenTensor :
 >      (mcat1, mcat2 : MonoidalCategory)
+>   -> CFunctor (cat mcat1) (cat mcat2)
 >   -> CFunctor (productCategory (cat mcat1) (cat mcat1)) (cat mcat2)
-> mapThenTensor mcat1 mcat2 = ?asdf
+> mapThenTensor mcat1 mcat2 func = functorComposition
+>   (productCategory (cat mcat1) (cat mcat1))
+>   (productCategory (cat mcat2) (cat mcat2))
+>   (cat mcat2)
+>   (productFunctor func func)
+>   (tensor mcat2)
 >
 > tensorThenMap :
 >      (mcat1, mcat2 : MonoidalCategory)
+>   -> CFunctor (cat mcat1) (cat mcat2)
 >   -> CFunctor (productCategory (cat mcat1) (cat mcat1)) (cat mcat2)
-> tensorThenMap mcat1 mcat2 = ?qwer
+> tensorThenMap mcat1 mcat2 func = functorComposition
+>   (productCategory (cat mcat1) (cat mcat1))
+>   (cat mcat1)
+>   (cat mcat2)
+>   (tensor mcat1)
+>   func
 >
-> record MonoidalFunctor (mcat1 : MonoidalCategory) (mcat2 : MonoidalCategory) where
->   constructor MkMonoidalFunctor
->   func         : CFunctor (cat mcat1) (cat mcat2)
->   coherenceNat : NaturalTransformation (productCategory (cat mcat1) (cat mcat1))
->                                        (cat mcat2)
->                                        (mapThenTensor mcat1 mcat2)
->                                        (tensorThenMap mcat1 mcat2)
->   coherenceMor : mor (cat mcat2) (unit mcat2) (mapObj func (unit mcat1))
+> -- we are not using a record here because compilation does not terminate in that case
+> data MonoidalFunctor : (mcat1, mcat2 : MonoidalCategory) -> Type where
+>   MkMonoidalFunctor :
+>        (func :  CFunctor (cat mcat1) (cat mcat2))
+>     -> (coherenceNat : NaturalTransformation (productCategory (cat mcat1) (cat mcat1))
+>                                              (cat mcat2)
+>                                              (mapThenTensor mcat1 mcat2 func)
+>                                              (tensorThenMap mcat1 mcat2 func))
+>     -> (coherenceMor : mor (cat mcat2) (unit mcat2) (mapObj func (unit mcat1)))
+>     -> MonoidalFunctor mcat1 mcat2
