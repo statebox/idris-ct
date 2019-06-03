@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Basic.NaturalIsomorphism
 > import Basic.NaturalTransformation
 > import MonoidalCategory.MonoidalCategory
 > import Product.ProductCategory
@@ -60,17 +61,61 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > PreserveMonoidalLeftId :
 >      (mcat1, mcat2 : MonoidalCategory)
->   -> CFunctor (cat mcat1) (cat mcat2)
+>   -> (func : CFunctor (cat mcat1) (cat mcat2))
+>   -> NaturalTransformation (productCategory (cat mcat1) (cat mcat1))
+>                            (cat mcat2)
+>                            (mapThenTensor mcat1 mcat2 func)
+>                            (tensorThenMap mcat1 mcat2 func)
+>   -> mor (cat mcat2) (unit mcat2) (mapObj func (unit mcat1))
 >   -> Type
-> PreserveMonoidalLeftId mcat1 mcat2 =
->      (a : obj mcat1)
+> PreserveMonoidalLeftId mcat1 mcat2 func coherenceNat coherenceMor =
+>      (a : obj (cat mcat1))
 >   -> component (natTrans (leftUnitor mcat2)) (mapObj func a)
->    = ?asdf
+>    = compose (cat mcat2) (mapObj (tensor mcat2) (unit mcat2, mapObj func a))
+>                          (mapObj func (mapObj (tensor mcat1) (unit mcat1, a)))
+>                          (mapObj func a)
+>                          (compose (cat mcat2) (mapObj (tensor mcat2) (unit mcat2, mapObj func a))
+>                                               (mapObj (tensor mcat2) (mapObj func (unit mcat1), mapObj func a))
+>                                               (mapObj func (mapObj (tensor mcat1) (unit mcat1, a)))
+>                                               (mapMor (tensor mcat2)
+>                                                       (unit mcat2, mapObj func a)
+>                                                       (mapObj func (unit mcat1), mapObj func a)
+>                                                       (MkProductMorphism coherenceMor
+>                                                                          (identity (cat mcat2) (mapObj func a))))
+>                                               (component coherenceNat (unit mcat1, a)))
+>                          (mapMor func
+>                                  (mapObj (tensor mcat1) (unit mcat1, a))
+>                                  a
+>                                  (component (natTrans (leftUnitor mcat1)) a))
 >
 > PreserveMonoidalRightId :
 >      (mcat1, mcat2 : MonoidalCategory)
->   -> CFunctor (cat mcat1) (cat mcat2)
+>   -> (func : CFunctor (cat mcat1) (cat mcat2))
+>   -> NaturalTransformation (productCategory (cat mcat1) (cat mcat1))
+>                            (cat mcat2)
+>                            (mapThenTensor mcat1 mcat2 func)
+>                            (tensorThenMap mcat1 mcat2 func)
+>   -> mor (cat mcat2) (unit mcat2) (mapObj func (unit mcat1))
 >   -> Type
+> PreserveMonoidalRightId mcat1 mcat2 func coherenceNat coherenceMor =
+>      (a : obj (cat mcat1))
+>   -> component (natTrans (rightUnitor mcat2)) (mapObj func a)
+>    = compose (cat mcat2) (mapObj (tensor mcat2) (mapObj func a, unit mcat2))
+>                          (mapObj func (mapObj (tensor mcat1) (a, unit mcat1)))
+>                          (mapObj func a)
+>                          (compose (cat mcat2) (mapObj (tensor mcat2) (mapObj func a, unit mcat2))
+>                                               (mapObj (tensor mcat2) (mapObj func a, mapObj func (unit mcat1)))
+>                                               (mapObj func (mapObj (tensor mcat1) (a, unit mcat1)))
+>                                               (mapMor (tensor mcat2)
+>                                                       (mapObj func a, unit mcat2)
+>                                                       (mapObj func a, mapObj func (unit mcat1))
+>                                                       (MkProductMorphism (identity (cat mcat2) (mapObj func a))
+>                                                                          coherenceMor))
+>                                               (component coherenceNat (a, unit mcat1)))
+>                          (mapMor func
+>                                  (mapObj (tensor mcat1) (a, unit mcat1))
+>                                  a
+>                                  (component (natTrans (rightUnitor mcat1)) a))
 >
 > -- we are not using a record here because compilation does not terminate in that case
 > data MonoidalFunctor : (mcat1, mcat2 : MonoidalCategory) -> Type where
@@ -81,7 +126,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                              (mapThenTensor mcat1 mcat2 func)
 >                                              (tensorThenMap mcat1 mcat2 func))
 >     -> (coherenceMor : mor (cat mcat2) (unit mcat2) (mapObj func (unit mcat1)))
->     -> (preserveAssociativity : PreserveMonoidalAssociativity mcat1 mcat2)
->     -> (preserveLeftId : PreserveMonoidalLeftId mcat1 mcat2)
->     -> (preserveRightId : PreserveMonoidalRightId mcat1 mcat2)
+>     -> (preserveAssociativity : PreserveMonoidalAssociativity mcat1 mcat2 func)
+>     -> (preserveLeftId : PreserveMonoidalLeftId mcat1 mcat2 func coherenceNat coherenceMor)
+>     -> (preserveRightId : PreserveMonoidalRightId mcat1 mcat2 func coherenceNat coherenceMor)
 >     -> MonoidalFunctor mcat1 mcat2
