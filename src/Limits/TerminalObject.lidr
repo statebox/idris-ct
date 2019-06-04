@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module Limits.TerminalObject
 >
 > import Basic.Category
+> import Basic.Isomorphism
 >
 > %access public export
 > %default total
@@ -30,4 +31,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   constructor MkTerminalObject
 >   carrier : obj cat
 >   exists  : (a : obj cat) -> mor cat a carrier
->   unique  : (a : obj cat) -> (f : mor cat a carrier) -> f = exists a
+>   unique  : (a : obj cat) -> (f, g : mor cat a carrier) -> f = g
+>
+> composeTerminalMorphisms :
+>      (cat : Category)
+>   -> (a, b : TerminalObject cat)
+>   -> mor cat (carrier a) (carrier a)
+> composeTerminalMorphisms cat a b =
+>   compose cat (carrier a) (carrier b) (carrier a) (exists b (carrier a)) (exists a (carrier b))
+>
+> terminalObjectsAreIsomorphic :
+>      (cat : Category)
+>   -> (a, b : TerminalObject cat)
+>   -> Isomorphism cat (carrier a) (carrier b) (exists b (carrier a))
+> terminalObjectsAreIsomorphic cat a b = MkIsomorphism
+>   (exists a (carrier b))
+>   (unique a (carrier a) (composeTerminalMorphisms cat a b) (identity cat (carrier a)))
+>   (unique b (carrier b) (composeTerminalMorphisms cat b a) (identity cat (carrier b)))
