@@ -123,7 +123,7 @@ In Idris, we proceed in a way similar to what we did for identities:
 <                  -> (f : mor cat1 a b)
 <                  -> (g : mor cat1 b c)
 <                  -> mapMor a c (compose cat1 a b c f g)
-<                   = compose cat2 (mapObj a) (mapObj b) (mapObj c) (mapMor a b f) (mapMor b c g)
+ <                   = compose cat2 (mapObj a) (mapObj b) (mapObj c) (mapMor a b f) (mapMor b c g)
 
 %
 Given three objects |a, b, c : obj cat1|, which are the domains/codomains of the morphisms we are going to compose, and given two of these morphisms |f : mor cat1 a b| and |g : mor cat1 b c| respectively, we produce a proof that |mapMor| and |compose| commute with each other.
