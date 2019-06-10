@@ -55,18 +55,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > applyExtWith x f = apply (func f) x
 >
 > unique :
->      (a, b, c : Type)
->   -> (f : ExtensionalTypeMorphism a c)
+>      (f : ExtensionalTypeMorphism a c)
 >   -> (g : ExtensionalTypeMorphism b c)
 >   -> (h : ExtensionalTypeMorphism (Either a b) c)
 >   -> (commutativityLeft : extCompose a (Either a b) c (MkExtensionalTypeMorphism Left) h = f)
 >   -> (commutativityRight: extCompose b (Either a b) c (MkExtensionalTypeMorphism Right) h = g)
 >   -> h = applyLeftOrRight a b c f g
-> unique a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) (MkExtensionalTypeMorphism h) commutativityLeft commutativityRight =
+> unique (MkExtensionalTypeMorphism f)
+>        (MkExtensionalTypeMorphism g)
+>        (MkExtensionalTypeMorphism h)
+>        commutativityLeft
+>        commutativityRight =
 >   funExt(\x =>
 >     case x of
->       Left l => cong {f =applyExtWith l} commutativityLeft
->       Right r => cong {f =applyExtWith r} commutativityRight
+>       Left l  => cong {f = applyExtWith l} commutativityLeft
+>       Right r => cong {f = applyExtWith r} commutativityRight
 >   )
 >
 > eitherToCoProduct : (a, b : Type) -> CoProduct Idris.TypesAsCategoryExtensional.typesAsCategoryExtensional a b
@@ -75,4 +78,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (MkExtensionalTypeMorphism Left)
 >   (MkExtensionalTypeMorphism Right)
 >   (\c, f, g => MkCommutingMorphism (applyLeftOrRight a b c f g) (leftCompose a b c f g) (rightCompose a b c f g))
->   (\c, f, g, h => unique a b c f g (challenger h) (commutativityLeft h) (commutativityRight h))
+>   (\c, f, g, h => unique f g (challenger h) (commutativityLeft h) (commutativityRight h))
