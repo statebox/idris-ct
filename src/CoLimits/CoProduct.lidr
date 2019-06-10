@@ -38,10 +38,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   commutativityLeft  : compose cat a carrier c inl challenger = f
 >   commutativityRight : compose cat b carrier c inr challenger = g
 >
-> record CoProduct
->   (cat : Category)
->   (a : obj cat) (b : obj cat)
-> where
+> record CoProduct (cat : Category) (a : obj cat) (b : obj cat) where
 >   constructor MkCoProduct
 >   carrier: obj cat
 >   inl: mor cat a carrier
