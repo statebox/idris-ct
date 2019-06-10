@@ -35,8 +35,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > composeInitialMorphisms :
 >      (cat : Category)
->   -> (a : InitialObject cat)
->   -> (b : InitialObject cat)
+>   -> (a, b : InitialObject cat)
 >   -> mor cat (carrier a) (carrier a)
 > composeInitialMorphisms cat a b =
 >   let
