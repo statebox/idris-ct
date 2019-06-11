@@ -19,7 +19,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module FreeMonoidalCategory
+> module MonoidalCategory.FreeMonoidalCategory
 >
 > import Basic.Category
 > import Basic.Functor
@@ -213,7 +213,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > private
 > freeSymmetryCommutativity :
 >      (a, b : (List t, List t))
->   -> (f : ProductMorphism (generateFreeCategory t generatingMorphisms) (generateFreeCategory t generatingMorphisms) a b)
+>   -> (f : ProductMorphism (generateFreeCategory t generatingMorphisms)
+>                           (generateFreeCategory t generatingMorphisms)
+>                           a b)
 >   -> let freeCat = (generateFreeCategory t generatingMorphisms)
 >      in  freeComposition (mapObj (freeTensor t generatingMorphisms) a)
 >                          (mapObj (functorComposition (productCategory freeCat freeCat)
@@ -286,11 +288,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >      (a, b, c : List t)
 >   -> symmetryFreeMorphism a (b ++ c)
 >    = compositionFreeMorphism (juxtapositionFreeMorphism (symmetryFreeMorphism a b) (idFreeMorphism c))
->                              (rewrite__impl (\r => FreeMorphism t generatingMorphisms r ((b ++ c) ++ a)) (sym (appendAssociative b a c))
->                                       (rewrite__impl (\r => FreeMorphism t generatingMorphisms (b ++ a ++ c) r)
->                                                      (sym (appendAssociative b c a))
->                                                      (juxtapositionFreeMorphism (idFreeMorphism b)
->                                                                                 (symmetryFreeMorphism a c))))
+>                              (rewrite__impl (\r => FreeMorphism t generatingMorphisms r ((b ++ c) ++ a))
+>                                             (sym (appendAssociative b a c))
+>                                             (rewrite__impl (\r => FreeMorphism t generatingMorphisms (b ++ a ++ c) r)
+>                                                            (sym (appendAssociative b c a))
+>                                                            (juxtapositionFreeMorphism (idFreeMorphism b)
+>                                                                                       (symmetryFreeMorphism a c))))
 >
 > generateFreeSymmetricMonoidalCategory : (t : Type) -> List (List t, List t) -> StrictSymmetricMonoidalCategory
 > generateFreeSymmetricMonoidalCategory t generatingMorphisms = MkStrictSymmetricMonoidalCategory
@@ -300,42 +303,40 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (\a, b, c => freeAssociativityCoherence a b c)
 >   (\a, b => freeSymmetryIsInvolution a b)
 >
+> foldOnMorphisms :
+>      {ssmc : StrictSymmetricMonoidalCategory}
+>   -> (onObj : List t -> obj (cat (smcat ssmc)))
+>   -> (onGeneratingMor :
+>           (f : (List t, List t))
+>        -> (Elem f generatingMorphisms)
+>        -> mor (cat (smcat ssmc)) (onObj $ fst f) (onObj $ snd f))
+>   -> (a, b : List t)
+>   -> mor (cat (smcat (generateFreeSymmetricMonoidalCategory t generatingMorphisms))) a b
+>   -> mor (cat (smcat ssmc)) (onObj a) (onObj b)
+> foldOnMorphisms {ssmc} onObj onGeneratingMor a a (MkIdFreeMorphism a) =
+>   identity (cat (smcat ssmc)) (onObj a)
+> foldOnMorphisms {ssmc} onObj onGeneratingMor (a ++ b) (b ++ a) (MkSymmetryFreeMorphism a b) =
+>   component (natTrans (symmetry ssmc)) (onObj a, onObj b)
+> foldOnMorphisms {ssmc} onObj onGeneratingMor a b (MkCompositionFreeMorphism g1 g2) =
+>   compose (cat (smcat ssmc)) _ _ _ g1 g2
+> foldOnMorphisms {ssmc} onObj onGeneratingMor (a ++ c) (b ++ d) (MkJuxtapositionFreeMorphism g1 g2) =
+>   mapMor (tensor (smcat ssmc)) _ _ (MkProductMorphism g1 g2)
+> foldOnMorphisms {ssmc} onObj onGeneratingMor (fst genMor) (snd genMor) (MkGeneratingFreeMorphism genMor prf) =
+>   onGeneratingMor genMor prf
+>
 > -- elimination rule for FreeMorphism
 > fold :
 >      {ssmc : StrictSymmetricMonoidalCategory}
->   -> (onObj : List t -> obj . cat . smcat $ ssmc)
->   -> CFunctor (cat . smcat $ generateFreeSymmetricMonoidalCategory t generatingMorphisms) (cat . smcat $ ssmc) -- this should really be a symmetric monoidal functor
-
--- > -- elimination rule for FreeMorphism
--- > fold :
--- >      (onObj : List t -> obj cat)
--- >   -> (onId : (x : List t) -> mor cat (onObj x) (onObj x))
--- >   -> (onSymmetry : (x, y : List t) -> mor cat (onObj (x ++ y)) (onObj (y ++ x)))
--- >   -> (onComposition : mor cat a b -> mor cat b c -> mor cat a c)
--- >   -> CFunctor (generateFreeCategory t generatingMorphisms) cat
--- > fold {t} {cat} onObj onId onSymmetry onComposition = MkCFunctor
--- >   onObj
--- >   onMor
--- >   ?id
--- >   ?comp
--- >     where
--- >       onMor : (a, b : List t) -> FreeMorphism t generatingMorphisms a b -> mor cat (onObj a) (onObj b)
--- >       onMor a        a        (MkIdFreeMorphism a)                = onId a
--- >       onMor (x ++ y) (y ++ x) (MkSymmetryFreeMorphism x y)        = onSymmetry x y
--- >       onMor a        c        (MkCompositionFreeMorphism {a} {b} {c} f g) = onComposition (onMor a b f) (onMor b c g)
-
--- >
--- > -- elimination rule for FreeMorphism
--- > processFreeMorphism :
--- >      (onId : List t -> a)
--- >   -> (onSymmetry : List t -> List t -> a)
--- >   -> (onComposition : a -> a -> a)
--- >   -> (onJuxtaposition : a -> a -> a)
--- >   -> (onGeneratingMorphism : (e : (List t, List t)) -> Elem e generatingMorphisms -> a)
--- >   -> FreeMorphism t generatingMorphisms x y
--- >   -> a
--- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkIdFreeMorphism x) = onId x
--- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkSymmetryFreeMorphism x y) = onSymmetry x y
--- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkCompositionFreeMorphism f g) = onComposition (processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism f) (processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism g)
--- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkJuxtapositionFreeMorphism f g) = onJuxtaposition (processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism f) (processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism g)
--- > processFreeMorphism onId onSymmetry onComposition onJuxtaposition onGeneratingMorphism (MkGeneratingFreeMorphism e prf) = onGeneratingMorphism e prf
+>   -> (onObj : List t -> obj (cat (smcat ssmc)))
+>   -> (onGeneratingMor :
+>           (f : (List t, List t))
+>        -> (Elem f generatingMorphisms)
+>        -> mor (cat (smcat ssmc)) (onObj $ fst f) (onObj $ snd f))
+>   -- TODO: this should really be a symmetric monoidal functor
+>   -> CFunctor (cat (smcat (generateFreeSymmetricMonoidalCategory t generatingMorphisms)))
+>               (cat (smcat ssmc))
+> fold {ssmc} onObj onGeneratingMor = MkCFunctor
+>   onObj
+>   (foldOnMorphisms {ssmc} onObj onGeneratingMor)
+>   (\a => ?preserveId)
+>   ?preserveComposition
