@@ -19,7 +19,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module StrictSymmetricMonoidalCategory
+> module MonoidalCategory.StrictSymmetricMonoidalCategory
 >
 > import Basic.Category
 > import Basic.Functor
@@ -51,7 +51,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > StrictAssociativityCoherence :
 >      (cat : Category)
 >   -> (tensor : CFunctor (productCategory cat cat) cat)
->   -> (tensorIsAssociativeObj : (a, b, c : obj cat) -> mapObj tensor (a, mapObj tensor (b, c)) = mapObj tensor (mapObj tensor (a, b), c))
+>   -> (tensorIsAssociativeObj :
+>           (a, b, c : obj cat)
+>        -> mapObj tensor (a, mapObj tensor (b, c)) = mapObj tensor (mapObj tensor (a, b), c))
 >   -> (symmetry : NaturalIsomorphism (productCategory cat cat)
 >                                     cat
 >                                     tensor
@@ -86,13 +88,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     -> (symmetry : NaturalIsomorphism (productCategory (cat smcat) (cat smcat))
 >                                       (cat smcat)
 >                                       (tensor smcat)
->                                       (functorComposition (productCategory (cat smcat)
->                                                                            (cat smcat))
->                                                           (productCategory (cat smcat)
->                                                                            (cat smcat))
+>                                       (functorComposition (productCategory (cat smcat) (cat smcat))
+>                                                           (productCategory (cat smcat) (cat smcat))
 >                                                           (cat smcat)
->                                                           (swapFunctor (cat smcat)
->                                                                        (cat smcat))
+>                                                           (swapFunctor (cat smcat) (cat smcat))
 >                                                           (tensor smcat)))
 >     -> ((a : obj (cat smcat)) -> StrictUnitCoherence (cat smcat) (unit smcat) symmetry a)
 >     -> ((a, b, c : obj (cat smcat)) -> StrictAssociativityCoherence (cat smcat)
@@ -102,3 +101,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                                                     a b c)
 >     -> ((a, b : obj (cat smcat)) -> InverseLaw (cat smcat) (tensor smcat) symmetry a b)
 >     -> StrictSymmetricMonoidalCategory
+>
+> smcat : StrictSymmetricMonoidalCategory -> StrictMonoidalCategory
+> smcat (MkStrictSymmetricMonoidalCategory smcat _ _ _ _) = smcat
+>
+> symmetry :
+>      (ssmc : StrictSymmetricMonoidalCategory)
+>   -> NaturalIsomorphism (productCategory (cat (smcat ssmc)) (cat (smcat ssmc)))
+>                         (cat (smcat ssmc))
+>                         (tensor (smcat ssmc))
+>                         (functorComposition (productCategory (cat (smcat ssmc)) (cat (smcat ssmc)))
+>                                             (productCategory (cat (smcat ssmc)) (cat (smcat ssmc)))
+>                                             (cat (smcat ssmc))
+>                                             (swapFunctor (cat (smcat ssmc)) (cat (smcat ssmc)))
+>                                             (tensor (smcat ssmc)))
+> symmetry (MkStrictSymmetricMonoidalCategory _ symmetry _ _ _) = symmetry
