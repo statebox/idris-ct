@@ -41,6 +41,12 @@ If you want a more detailed and slow introduction to the library, please have a 
 - https://blog.statebox.org/concrete-categories-af444d5f055e
 - https://blog.statebox.org/fun-with-functors-95e4e8d60d87
 
+## Lauching a Nix Shell
+
+```
+nix-shell -A idris-ct
+```
+
 ## Nix build
 
 If you have [Nix](https://nixos.org/nix/) installed, you can build the project just by doing
