@@ -108,73 +108,48 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                (compose cat (carrier (productObj a b)) b b (pi2 (productObj a b)) (identity cat b))
 >                                (identityCommutingMorphism a b)
 >
-
- rhoUnitor 
-
 > catHasTerminalObj : Category -> Type
 > catHasTerminalObj = TerminalObject
 >
-> bifunctorLeft : (cat : Category) -> (fun : CFunctor (productCategory cat cat) cat) -> (b : obj cat) -> CFunctor cat cat
-> bifunctorLeft cat fun@(MkCFunctor mapObj mapMor pId pComp) b = MkCFunctor mapObj' mapMor' pId' pComp'
->   where 
+> bifunctorLeft :
+>      (cat : Category)
+>   -> (fun : CFunctor (productCategory cat cat) cat)
+>   -> (b : obj cat)
+>   -> CFunctor cat cat
+> bifunctorLeft cat (MkCFunctor mapObj mapMor pId pComp) b = MkCFunctor mapObj' mapMor' pId' pComp'
+>   where
 >     mapObj' : obj cat -> obj cat
 >     mapObj' x = mapObj (x, b)
+>
 >     mapMor' : (x, y : obj cat) -> mor cat x y -> mor cat (mapObj' x) (mapObj' y)
 >     mapMor' x y mor = mapMor (x, b) (y, b) (MkProductMorphism mor (identity cat b))
->     pId' : (x : obj cat) -> mapMor (x, b) (x, b) (MkProductMorphism (identity cat x) (identity cat b)) = identity cat (mapObj (x, b))
+>
+>     pId' :
+>          (x : obj cat)
+>       -> mapMor (x, b) (x, b) (MkProductMorphism (identity cat x) (identity cat b))
+>        = identity cat (mapObj (x, b))
 >     pId' x = pId (x, b)
->     pComp' : (x, y, z : obj cat) -> (f : mor cat x y) -> (g : mor cat y z) 
->           -> mapMor (x, b) (z, b) (MkProductMorphism (compose cat x y z f g) (identity cat b))
->            = compose cat (mapObj (x, b)) (mapObj (y, b)) (mapObj (z, b)) (mapMor (x, b) (y, b) (MkProductMorphism f (identity cat b))) (mapMor (y, b) (z, b) (MkProductMorphism g (identity cat b)))
->     pComp' x y z f g = 
->       replace {P=\q=>mapMor (x, b) (z, b) (MkProductMorphism (compose cat x y z f g) q) = compose cat (mapObj (x, b)) (mapObj (y, b)) (mapObj (z, b)) (mapMor (x, b) (y, b) (MkProductMorphism f (identity cat b))) (mapMor (y, b) (z, b) (MkProductMorphism g (identity cat b)))} 
->               (leftIdentity cat b b (identity cat b)) 
+>
+>     pComp' :
+>          (x, y, z : obj cat)
+>       -> (f : mor cat x y)
+>       -> (g : mor cat y z)
+>       -> mapMor (x, b) (z, b) (MkProductMorphism (compose cat x y z f g) (identity cat b))
+>        = compose cat (mapObj (x, b))
+>                      (mapObj (y, b))
+>                      (mapObj (z, b))
+>                      (mapMor (x, b) (y, b) (MkProductMorphism f (identity cat b)))
+>                      (mapMor (y, b) (z, b) (MkProductMorphism g (identity cat b)))
+>     pComp' x y z f g =
+>       replace {P=\q => mapMor (x, b) (z, b) (MkProductMorphism (compose cat x y z f g) q)
+>                      = compose cat (mapObj (x, b))
+>                                    (mapObj (y, b))
+>                                    (mapObj (z, b))
+>                                    (mapMor (x, b) (y, b) (MkProductMorphism f (identity cat b)))
+>                                    (mapMor (y, b) (z, b) (MkProductMorphism g (identity cat b)))}
+>               (leftIdentity cat b b (identity cat b))
 >               (pComp (x,b) (y,b) (z,b) (MkProductMorphism f (identity cat b)) (MkProductMorphism g (identity cat b)))
-
-Andre: seems like I got disconnected from the call and now nothing loads...
-We can read you tho, try reconnecting on zoom!
-use the link nin the issue?
-use the force!
-I'm so confused: zoom doesn't work in chrome and safari, and rocketchat is also not connecting, but I can view twitch just fine...
-Oldest trick in the world: Reboot
-I
-
-wth @andreK ???
-
-
-
-
-id_b ; id_b --> idb
-
-
-(-,b) --> (-,b)
-
-(id_a,id_b) --> id_{a x b}
-
-
-cat x cat -F-> cat 
-
-
-
-fun (a,b)
-     MkCFunctor ?mo ?mm ?pid ?pco
-
+>
 > parameters (cat : Category, products : catHasProducts cat, terminal : catHasTerminalObj cat)
 >   rightUnitorComponent : (a : obj cat) -> mor cat (carrier $ products a (carrier terminal)) a
 >   rightUnitorComponent a = Product.pi1 $ products a (carrier terminal)
-
-
-rightUnitor: ( - ) x 1 --> id cat
-
-rightUnitor_A : A x 1 -- pi1 -> A
-
-A x 1 --- pi1 ---> A
-    |                        |
-    |                        |
-  <pi1;f , pi2>      f
-    |                        |
-    |                       \ /
-B x 1 --- pi1 ---> B
-
-
-<pi1,pi2> = id_{AxB}
