@@ -23,76 +23,86 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 >
-> import Data.Graph
-> import Data.Diagram
-> import Data.Fin
->
 > import CoLimits.InitialObject
 > import CoLimits.CoConeCat
 > import CoLimits.CoCone
 > import CoLimits.CoLimit
+> import CommutativeDiagram.Diagram
+> import Basic.Functor
 >
 > %access public export
 > %default total
+> %auto_implicits off
 >
-> nil : Fin Z -> _
-> nil x impossible
+> nil : Void -> Void
+> nil = void
 >
-> emptyGraph : Graph Z Z
-> emptyGraph = MkGraph nil nil
+> emptyObject : Type
+> emptyObject = Void
 >
-> emptyDiagram : (cat: Category) -> Diagram cat Z Z
-> emptyDiagram cat = MkDiagram emptyGraph nil (\e => absurd e)
+> emptyMorphism : Void -> Void -> Type
+> emptyMorphism x y = Void
 >
-> emptyCoConeExists :
+> empty : Category
+> empty = MkCategory
+>  (emptyObject)
+>  (emptyMorphism)
+>  (\a => absurd a)
+>  (\a => absurd a)
+>  (\a => absurd a)
+>  (\a => absurd a)
+>  (\a => absurd a)
+>
+> emptyMapObj : (cat : Category) -> obj empty -> obj cat
+> emptyMapObj cat = void
+>
+> emptyMapMor :
 >      (cat : Category)
->   -> (io : InitialObject cat)
->   -> (v : Fin Z)
->   -> mor cat (mapNodes (emptyDiagram cat) v) (carrier io)
-> emptyCoConeExists cat io v impossible
+>   -> (a, b : obj empty)
+>   -> (f : mor empty a b)
+>   -> mor cat (emptyMapObj cat a) (emptyMapObj cat b)
+> emptyMapMor cat a b = void
 >
-> emptyCoConeCommutes :
->      (cat : Category)
->   -> (io : InitialObject cat)
->   -> (e : Fin Z)
->   -> compose cat _ _ (carrier io)
->        (mapEdges (emptyDiagram cat) e) (emptyCoConeExists cat io (target (support (emptyDiagram cat)) e))
->      = emptyCoConeExists cat io (source (support (emptyDiagram cat)) e)
-> emptyCoConeCommutes cat io e impossible
+> emptyDiagram : (cat: Category) -> Diagram empty cat
+> emptyDiagram cat = MkCFunctor
+>   (emptyMapObj cat)
+>   (emptyMapMor cat)
+>   (\a => absurd a)
+>   (\a => absurd a)
 >
 > emptyCoCone :
 >     (cat : Category)
 >  -> (io : InitialObject cat)
->  -> CoCone cat Z Z (emptyDiagram cat)
+>  -> CoCone empty cat (emptyDiagram cat)
 > emptyCoCone cat io = MkCoCone
 >   (carrier io)
->   (emptyCoConeExists cat io)
->   (emptyCoConeCommutes cat io)
+>   (\i => absurd i)
+>   (\i => absurd i)
 >
 > emptyDiagramCoLimitExists :
 >     (cat : Category)
 >  -> (io : InitialObject cat)
->  -> (b : CoCone cat Z Z (emptyDiagram cat))
->  -> CoConeMorphism cat Z Z (emptyDiagram cat) (emptyCoCone cat io) b
+>  -> (b : CoCone empty cat (emptyDiagram cat))
+>  -> CoConeMorphism empty cat (emptyDiagram cat) (emptyCoCone cat io) b
 > emptyDiagramCoLimitExists cat io b = MkCoConeMorphism
 >   (exists io (apex b))
->   (\v => absurd v)
+>   (\i => absurd i)
 >
 > emptyDiagramCoLimitIsUnique :
 >     (cat : Category)
 >  -> (io : InitialObject cat)
->  -> (b : CoCone cat Z Z (emptyDiagram cat))
->  -> (f : CoConeMorphism cat Z Z (emptyDiagram cat) (emptyCoCone cat io) b)
+>  -> (b : CoCone empty cat (emptyDiagram cat))
+>  -> (f : CoConeMorphism empty cat (emptyDiagram cat) (emptyCoCone cat io) b)
 >  -> f = emptyDiagramCoLimitExists cat io b
 > emptyDiagramCoLimitIsUnique cat io b f = let
 >   exists = emptyDiagramCoLimitExists cat io b
 >   pf = unique io (apex b) (carrier f) (carrier exists)
-> in coConeMorphismEquality cat Z Z (emptyDiagram cat) (emptyCoCone cat io) b f exists pf
+> in coConeMorphismEquality empty cat (emptyDiagram cat) (emptyCoCone cat io) b f exists pf
 >
 > initialObjectToCoLimit :
 >      (cat  : Category)
 >   -> (io : InitialObject cat)
->   -> CoLimit cat Z Z (emptyDiagram cat)
+>   -> CoLimit empty cat (emptyDiagram cat)
 > initialObjectToCoLimit cat io = MkCoLimit
 >   (emptyCoCone cat io)
 >   (emptyDiagramCoLimitExists cat io)
