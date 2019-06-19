@@ -19,20 +19,32 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Data.Diagram
+> module CoLimits.CoConeAsNaturalTransformation
 >
 > import Basic.Category
-> import Data.Graph
-> import Data.Fin
+>
+> import CommutativeDiagram.Diagram
+> import Basic.NaturalTransformation
+> import Basic.Functor
+> import CoLimits.CoCone
 >
 > %access public export
 > %default total
 >
-> record Diagram (cat : Category) (n : Nat) (m : Nat) where
->   constructor MkDiagram
->   support: Graph n m
->   mapNodes: (v: Fin n) -> obj cat
->   mapEdges:
->        (e: Fin m)
->     -> mor cat (mapNodes (source support e)) (mapNodes (target support e))
+> Delta : (cat1, cat2 : Category) -> (n : obj cat2) -> CFunctor cat1 cat2
+> Delta cat1 cat2 n = MkCFunctor
+>   (\a => n)
+>   (\a, b, f => identity cat2 n)
+>   (\a => Refl)
+>   (\a, b, c, f, g => sym (leftIdentity cat2 n n (identity cat2 n)))
 >
+> coConeToNaturalTransformation :
+>      (index, cat : Category)
+>   -> (dia : Diagram index cat)
+>   -> (cocone : CoCone index cat dia)
+>   -> NaturalTransformation index cat dia (Delta index cat (apex cocone))
+> coConeToNaturalTransformation index cat dia cocone = MkNaturalTransformation
+>   (\j => exists cocone j)
+>   (\i, j, f => trans
+>      (rightIdentity cat (mapObj dia i) (apex cocone) (exists cocone i))
+>      (sym (commutes cocone i j f)))

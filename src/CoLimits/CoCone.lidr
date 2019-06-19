@@ -23,44 +23,42 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 >
-> import Data.Graph
-> import Data.Diagram
-> import Data.Fin
+> import CommutativeDiagram.Diagram
+> import Basic.Functor
 >
 > %access public export
 > %default total
-> %auto_implicits off
 >
-> record CoCone (cat : Category) (n : Nat) (m : Nat) (dia: Diagram cat n m) where
+> record CoCone (index : Category) (cat : Category) (dia : Diagram index cat) where
 >   constructor MkCoCone
 >   apex: obj cat
->   exists: (v : Fin n) -> mor cat (mapNodes dia v) apex
+>   exists: (j : obj index) -> mor cat (mapObj dia j) apex
 >   commutes:
->        (e : Fin m)
->     -> compose cat _ _ apex (mapEdges dia e) (exists (target (support dia) e))
->        = exists (source (support dia) e)
+>        (i, j : obj index)
+>     -> (f : mor index i j)
+>     -> compose cat (mapObj dia i) (mapObj dia j) apex (mapMor dia i j f) (exists j)
+>        = exists i
 >
 > record CoConeMorphism
->   (cat : Category)
->   (n : Nat) (m : Nat)
->   (dia : Diagram cat n m)
->   (source : CoCone cat n m dia)
->   (target : CoCone cat n m dia)
+>   (index : Category) (cat : Category)
+>   (dia : Diagram index cat)
+>   (source : CoCone index cat dia)
+>   (target : CoCone index cat dia)
 > where
 >   constructor MkCoConeMorphism
 >   carrier: mor cat (apex source) (apex target)
 >   commutes:
->        (v : Fin n)
->     -> compose cat _ (apex source) (apex target) (exists source v) carrier
->        = (exists target v)
+>        (i : obj index)
+>     -> compose cat _ (apex source) (apex target) (exists source i) carrier
+>        = (exists target i)
 >
 > postulate coConeMorphismEquality :
->      (cat : Category)
->   -> (n, m : Nat)
->   -> (dia : Diagram cat n m)
->   -> (a, b : CoCone cat n m dia)
->   -> (f : CoConeMorphism cat n m dia a b)
->   -> (g : CoConeMorphism cat n m dia a b)
+>      (index : Category)
+>   -> (cat : Category)
+>   -> (dia : Diagram index cat)
+>   -> (a, b : CoCone index cat dia)
+>   -> (f : CoConeMorphism index cat dia a b)
+>   -> (g : CoConeMorphism index cat dia a b)
 >   -> (pf : carrier f = carrier g )
 >   -> f = g
 >

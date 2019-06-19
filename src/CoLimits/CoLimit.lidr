@@ -23,33 +23,30 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 >
-> import Data.Graph
-> import Data.Diagram
-> import Data.Fin
 > import CoLimits.InitialObject
 > import CoLimits.CoConeCat
 > import CoLimits.CoCone
+> import CommutativeDiagram.Diagram
 >
 > %access public export
 > %default total
 >
 > record CoLimit
+>   (index : Category)
 >   (cat : Category)
->   (n : Nat) (m : Nat)
->   (dia : Diagram cat n m)
+>   (dia : Diagram index cat)
 > where
 >   constructor MkCoLimit
->   carrier: CoCone cat n m dia
->   exists: (b : CoCone cat n m dia) -> CoConeMorphism cat n m dia carrier b
->   unique: (b : CoCone cat n m dia) -> (f : CoConeMorphism cat n m dia carrier b) -> f = exists b
+>   carrier: CoCone index cat dia
+>   exists: (b : CoCone index cat dia) -> CoConeMorphism index cat dia carrier b
+>   unique: (b : CoCone index cat dia) -> (f : CoConeMorphism index cat dia carrier b) -> f = exists b
 >
 > coLimitIsInitial :
->      (cat : Category)
->   -> (n, m : Nat)
->   -> (dia: Diagram cat n m)
->   -> (cl: CoLimit cat n m dia)
->   -> InitialObject (CoConeCategory cat n m dia)
-> coLimitIsInitial cat n m dia cl = MkInitialObject
+>      (index, cat : Category)
+>   -> (dia: Diagram index cat)
+>   -> (cl: CoLimit index cat dia)
+>   -> InitialObject (CoConeCategory index cat dia)
+> coLimitIsInitial index cat dia cl = MkInitialObject
 >   (carrier cl)
 >   (exists cl)
 >   (\b, f, g => trans (unique cl b f) (sym (unique cl b g)))

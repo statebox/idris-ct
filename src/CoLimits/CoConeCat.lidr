@@ -23,94 +23,86 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 >
-> import Data.Graph
-> import Data.Diagram
-> import Data.Fin
 > import CoLimits.CoCone
+> import CommutativeDiagram.Diagram
+> import Basic.Functor
 >
 > %access public export
 > %default total
 >
 > identityCoCone :
->      (cat : Category)
->   -> (n, m : Nat)
->   -> (dia : Diagram cat n m)
->   -> (cocone : CoCone cat n m dia)
->   -> CoConeMorphism cat n m dia cocone cocone
-> identityCoCone cat n m dia cocone = MkCoConeMorphism
+>      (index, cat : Category)
+>   -> (dia : Diagram index cat)
+>   -> (cocone : CoCone index cat dia)
+>   -> CoConeMorphism index cat dia cocone cocone
+> identityCoCone index cat dia cocone = MkCoConeMorphism
 >   (identity cat (apex cocone))
->   (\v => rightIdentity cat (mapNodes dia v) (apex cocone) (exists cocone v))
+>   (\i => rightIdentity cat (mapObj dia i) (apex cocone) (exists cocone i))
 >
 > composeCoCone :
->      (cat : Category)
->   -> (n, m : Nat)
->   -> (dia : Diagram cat n m)
->   -> (a, b, c : CoCone cat n m dia)
->   -> (f : CoConeMorphism cat n m dia a b)
->   -> (g : CoConeMorphism cat n m dia b c)
->   -> CoConeMorphism cat n m dia a c
-> composeCoCone cat n m dia a b c f g = MkCoConeMorphism
+>      (index, cat : Category)
+>   -> (dia : Diagram index cat)
+>   -> (a, b, c : CoCone index cat dia)
+>   -> (f : CoConeMorphism index cat dia a b)
+>   -> (g : CoConeMorphism index cat dia b c)
+>   -> CoConeMorphism index cat dia a c
+> composeCoCone index cat dia a b c f g = MkCoConeMorphism
 >   (compose cat (apex a) (apex b) (apex c) (carrier f) (carrier g))
->   (\v => let
->      leftCommutes = (commutes f) v
->      rightCommutes = (commutes g) v
->      makesRightCommutes = \x => compose cat (mapNodes dia v) (apex b) (apex c) x (carrier g) = exists c v
+>   (\i => let
+>      leftCommutes = (commutes f) i
+>      rightCommutes = (commutes g) i
+>      makesRightCommutes = \x => compose cat (mapObj dia i) (apex b) (apex c) x (carrier g) = exists c i
 >      leftMakesRightCommutes = replace {P = makesRightCommutes} (sym leftCommutes) rightCommutes
->      assoc = associativity cat (mapNodes dia v) (apex a) (apex b) (apex c) (exists a v) (carrier f) (carrier g)
+>      assoc = associativity cat (mapObj dia i) (apex a) (apex b) (apex c) (exists a i) (carrier f) (carrier g)
 >    in trans assoc leftMakesRightCommutes)
 >
 > leftIdentityCoCone :
->      (cat : Category)
->   -> (n, m : Nat)
->   -> (dia : Diagram cat n m)
->   -> (a, b : CoCone cat n m dia)
->   -> (f : CoConeMorphism cat n m dia a b)
->   -> composeCoCone cat n m dia a a b (identityCoCone cat n m dia a) f = f
-> leftIdentityCoCone cat n m dia a b f = let
+>      (index, cat : Category)
+>   -> (dia : Diagram index cat)
+>   -> (a, b : CoCone index cat dia)
+>   -> (f : CoConeMorphism index cat dia a b)
+>   -> composeCoCone index cat dia a a b (identityCoCone index cat dia a) f = f
+> leftIdentityCoCone index cat dia a b f = let
 >    catLeftIdentity = leftIdentity cat (apex a) (apex b) (carrier f)
->    leftIdCompose = composeCoCone cat n m dia a a b (identityCoCone cat n m dia a) f
-> in coConeMorphismEquality cat n m dia a b leftIdCompose f catLeftIdentity
+>    leftIdCompose = composeCoCone index cat dia a a b (identityCoCone index cat dia a) f
+> in coConeMorphismEquality index cat dia a b leftIdCompose f catLeftIdentity
 >
 > rightIdentityCoCone :
->      (cat : Category)
->   -> (n, m : Nat)
->   -> (dia : Diagram cat n m)
->   -> (a, b : CoCone cat n m dia)
->   -> (f : CoConeMorphism cat n m dia a b)
->   -> composeCoCone cat n m dia a b b f (identityCoCone cat n m dia b) = f
-> rightIdentityCoCone cat n m dia a b f = let
+>      (index, cat : Category)
+>   -> (dia : Diagram index cat)
+>   -> (a, b : CoCone index cat dia)
+>   -> (f : CoConeMorphism index cat dia a b)
+>   -> composeCoCone index cat dia a b b f (identityCoCone index cat dia b) = f
+> rightIdentityCoCone index cat dia a b f = let
 >    catRightIdentity = rightIdentity cat (apex a) (apex b) (carrier f)
->    rightIdCompose = composeCoCone cat n m dia a b b f (identityCoCone cat n m dia b)
-> in coConeMorphismEquality cat n m dia a b rightIdCompose f catRightIdentity
+>    rightIdCompose = composeCoCone index cat dia a b b f (identityCoCone index cat dia b)
+> in coConeMorphismEquality index cat dia a b rightIdCompose f catRightIdentity
 >
 > associativityCoCone :
->      (cat : Category)
->   -> (n, m : Nat)
->   -> (dia : Diagram cat n m)
->   -> (a, b, c, d : CoCone cat n m dia)
->   -> (f : CoConeMorphism cat n m dia a b)
->   -> (g : CoConeMorphism cat n m dia b c)
->   -> (h: CoConeMorphism cat n m dia c d)
->   -> composeCoCone cat n m dia a b d f (composeCoCone cat n m dia b c d g h)
->      = composeCoCone cat n m dia a c d (composeCoCone cat n m dia a b c f g) h
-> associativityCoCone cat n m dia a b c d f g h = let
+>      (index, cat : Category)
+>   -> (dia : Diagram index cat)
+>   -> (a, b, c, d : CoCone index cat dia)
+>   -> (f : CoConeMorphism index cat dia a b)
+>   -> (g : CoConeMorphism index cat dia b c)
+>   -> (h: CoConeMorphism index cat dia c d)
+>   -> composeCoCone index cat dia a b d f (composeCoCone index cat dia b c d g h)
+>      = composeCoCone index cat dia a c d (composeCoCone index cat dia a b c f g) h
+> associativityCoCone index cat dia a b c d f g h = let
 >    catAssociativity = associativity cat (apex a) (apex b) (apex c) (apex d) (carrier f) (carrier g) (carrier h)
->    leftCompose = composeCoCone cat n m dia a b d f (composeCoCone cat n m dia b c d g h)
->    rightCompose = composeCoCone cat n m dia a c d (composeCoCone cat n m dia a b c f g) h
-> in coConeMorphismEquality cat n m dia a d leftCompose rightCompose catAssociativity
+>    leftCompose = composeCoCone index cat dia a b d f (composeCoCone index cat dia b c d g h)
+>    rightCompose = composeCoCone index cat dia a c d (composeCoCone index cat dia a b c f g) h
+> in coConeMorphismEquality index cat dia a d leftCompose rightCompose catAssociativity
 >
 > CoConeCategory :
->      (cat : Category)
->   -> (n : Nat)
->   -> (m : Nat)
->   -> (dia: Diagram cat n m)
+>      (index, cat : Category)
+>   -> (dia: Diagram index cat)
 >   -> Category
-> CoConeCategory cat n m dia = MkCategory
->   (CoCone cat n m dia)
->   (CoConeMorphism cat n m dia)
->   (identityCoCone cat n m dia)
->   (composeCoCone cat n m dia)
->   (leftIdentityCoCone cat n m dia)
->   (rightIdentityCoCone cat n m dia)
->   (associativityCoCone cat n m dia)
+> CoConeCategory index cat dia = MkCategory
+>   (CoCone index cat dia)
+>   (CoConeMorphism index cat dia)
+>   (identityCoCone index cat dia)
+>   (composeCoCone index cat dia)
+>   (leftIdentityCoCone index cat dia)
+>   (rightIdentityCoCone index cat dia)
+>   (associativityCoCone index cat dia)
 >
