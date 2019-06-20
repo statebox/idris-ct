@@ -25,40 +25,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import CommutativeDiagram.Diagram
 > import Basic.Functor
+> import Basic.NaturalTransformation
 >
 > %access public export
 > %default total
 >
-> record CoCone (index : Category) (cat : Category) (dia : Diagram index cat) where
->   constructor MkCoCone
->   apex: obj cat
->   exists: (j : obj index) -> mor cat (mapObj dia j) apex
->   commutes:
->        (i, j : obj index)
->     -> (f : mor index i j)
->     -> compose cat (mapObj dia i) (mapObj dia j) apex (mapMor dia i j f) (exists j)
->        = exists i
+> Delta : (cat1, cat2 : Category) -> (n : obj cat2) -> CFunctor cat1 cat2
+> Delta cat1 cat2 n = MkCFunctor
+>   (\a => n)
+>   (\a, b, f => identity cat2 n)
+>   (\a => Refl)
+>   (\a, b, c, f, g => sym (leftIdentity cat2 n n (identity cat2 n)))
+>
+> CoCone :
+>      (diagram : Diagram index cat)
+>   -> (n : obj cat)
+>   -> Type
+> CoCone {index} {cat} diagram n = NaturalTransformation index cat diagram (Delta index cat n)
 >
 > record CoConeMorphism
 >   (index : Category) (cat : Category)
->   (dia : Diagram index cat)
->   (source : CoCone index cat dia)
->   (target : CoCone index cat dia)
-> where
+>   (diagram : Diagram index cat)
+>   (a: obj cat) (b : obj cat)
+>   (source : CoCone diagram a) (target : CoCone diagram b) where
 >   constructor MkCoConeMorphism
->   carrier: mor cat (apex source) (apex target)
->   commutes:
->        (i : obj index)
->     -> compose cat _ (apex source) (apex target) (exists source i) carrier
->        = (exists target i)
+>   apexMophism   : mor cat a b
+>   commutativity : (i : obj index)
+>                -> compose cat _ a b (component source i) apexMophism
+>                 = (component target i)
 >
 > postulate coConeMorphismEquality :
->      (index : Category)
->   -> (cat : Category)
->   -> (dia : Diagram index cat)
->   -> (a, b : CoCone index cat dia)
->   -> (f : CoConeMorphism index cat dia a b)
->   -> (g : CoConeMorphism index cat dia a b)
->   -> (pf : carrier f = carrier g )
+>      (f, g : CoConeMorphism index cat diagram a b source target)
+>   -> apexMophism g = apexMophism g
 >   -> f = g
->
