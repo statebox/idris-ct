@@ -84,6 +84,15 @@ We need a slight generalization of this though, because while $\textbf{End}(\mat
 > liftEquality : (a, b : obj (functorCategory cat cat)) -> a = b -> mor (functorCategory cat cat) a b
 > liftEquality = CR.liftEquality (functorCategory cat cat)
 >
+> leftIdCompose : (functor : CFunctor cat cat) -> NaturalTransformation cat cat functor (functorComposition cat cat cat (idFunctor cat) functor)
+
+-- > leftIdFunctor functor = MkCFunctor
+-- >   (mapObj functor)
+-- >   (mapMor functor)
+-- >   (\a => trans Refl (preserveId functor a))
+-- >   (\a, b, c, f, g => trans Refl (preserveCompose functor a b c f g))
+
+>
 > record Monad (cat : Category) where
 >   constructor MkMonad
 >   functor : CFunctor cat cat
@@ -97,7 +106,7 @@ We need a slight generalization of this though, because while $\textbf{End}(\mat
 >     functor
 >     QED)
 >     =
->     ((functorComposition cat cat cat functor (functorComposition cat cat cat functor functor))
+>     ((functorComposition _ _ _ functor (functorComposition _ _ _ functor functor))
 >     ={ liftEquality
 >          (functorComposition cat cat cat functor (functorComposition cat cat cat functor functor))
 >          (functorComposition cat cat cat (functorComposition cat cat cat functor functor) functor)
@@ -110,15 +119,38 @@ We need a slight generalization of this though, because while $\textbf{End}(\mat
 >     functor
 >     QED)
 >   leftUnit :
->     (functor
->     ={ liftEquality functor (functorComposition _ _ _ (idFunctor cat) functor)
->          (sym $ catsLeftIdentity cat cat functor) }=
->     (functorComposition _ _ _ (idFunctor cat) functor)
->     ={ composeFunctorNatTrans cat cat cat (idFunctor cat) functor unit functor }=
->      (functorComposition _ _ _ functor functor)
->     ={ multiplication }=
->     functor
->     QED)
+>      naturalTransformationComposition cat
+>                                       cat
+>                                       functor
+>                                       (functorComposition cat cat cat functor functor)
+>                                       functor
+>                                       (naturalTransformationComposition cat
+>                                                                         cat
+>                                                                         functor
+>                                                                         (functorComposition cat cat cat
+>                                                                                             (idFunctor cat)
+>                                                                                             functor)
+>                                                                         (functorComposition cat cat cat
+>                                                                                             functor
+>                                                                                             functor)
+>                                                                         (leftIdCompose functor)
+>                                                                         (composeFunctorNatTrans cat cat cat
+>                                                                                                 (idFunctor cat)
+>                                                                                                 functor
+>                                                                                                 unit
+>                                                                                                 functor))
+>                                       multiplication
+
+-- >     (functor
+-- >     ={ liftEquality functor (functorComposition _ _ _ (idFunctor cat) functor)
+-- >          (sym $ catsLeftIdentity cat cat functor) }=
+-- >     (functorComposition _ _ _ (idFunctor cat) functor)
+-- >     ={ composeFunctorNatTrans cat cat cat (idFunctor cat) functor unit functor }=
+-- >      (functorComposition _ _ _ functor functor)
+-- >     ={ multiplication }=
+-- >     functor
+-- >     QED)
+
 >     =
 >     idTransformation cat cat functor
 >   rightUnit :

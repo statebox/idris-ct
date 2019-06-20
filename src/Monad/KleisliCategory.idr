@@ -18,6 +18,16 @@ kleisliCategory cat m =
       compose cat _ _ _
         (compose cat _ _ _ f (mapMor (functor m) _ _ g))
         (component (multiplication m) c))
-    ?leftId
-    ?rightId
+    (\a, b, f => ?asdf)
+    (\a, b, f => trans (sym $ associativity cat a
+                                                (mapObj (functor m) b)
+                                                (mapObj (functor m) (mapObj (functor m) b))
+                                                (mapObj (functor m) b)
+                                                f
+                                                (mapMor (functor m) b (mapObj (functor m) b) (component (unit m) b))
+                                                (component (multiplication m) b))
+                       -- ?qwer)
+                       (trans (cong {f = compose cat a (mapObj (functor m) b) (mapObj (functor m) b) f}
+                                    (cong {f = \nt => component nt b} (leftUnit m)))
+                              (rightIdentity cat a (mapObj (functor m) b) f)))
     ?assoc
