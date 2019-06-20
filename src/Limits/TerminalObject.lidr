@@ -29,22 +29,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > record TerminalObject (cat : Category) where
 >   constructor MkTerminalObject
->   carrier : obj cat
->   exists  : (a : obj cat) -> mor cat a carrier
->   unique  : (a : obj cat) -> (f, g : mor cat a carrier) -> f = g
+>   Carrier : obj cat
+>   exists  : (a : obj cat) -> mor cat a Carrier
+>   unique  : (a : obj cat) -> (f, g : mor cat a Carrier) -> f = g
 >
 > composeTerminalMorphisms :
 >      (cat : Category)
 >   -> (a, b : TerminalObject cat)
->   -> mor cat (carrier a) (carrier a)
+>   -> mor cat (Carrier a) (Carrier a)
 > composeTerminalMorphisms cat a b =
->   compose cat (carrier a) (carrier b) (carrier a) (exists b (carrier a)) (exists a (carrier b))
+>   compose cat (Carrier a) (Carrier b) (Carrier a) (exists b (Carrier a)) (exists a (Carrier b))
 >
 > terminalObjectsAreIsomorphic :
 >      (cat : Category)
 >   -> (a, b : TerminalObject cat)
->   -> Isomorphism cat (carrier a) (carrier b) (exists b (carrier a))
+>   -> Isomorphism cat (Carrier a) (Carrier b) (exists b (Carrier a))
 > terminalObjectsAreIsomorphic cat a b = MkIsomorphism
->   (exists a (carrier b))
->   (unique a (carrier a) (composeTerminalMorphisms cat a b) (identity cat (carrier a)))
->   (unique b (carrier b) (composeTerminalMorphisms cat b a) (identity cat (carrier b)))
+>   (exists a (Carrier b))
+>   (unique a (Carrier a) (composeTerminalMorphisms cat a b) (identity cat (Carrier a)))
+>   (unique b (Carrier b) (composeTerminalMorphisms cat b a) (identity cat (Carrier b)))
