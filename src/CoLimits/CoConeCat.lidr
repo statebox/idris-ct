@@ -26,83 +26,92 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import CoLimits.CoCone
 > import CommutativeDiagram.Diagram
 > import Basic.Functor
+> import Basic.NaturalTransformation
 >
 > %access public export
 > %default total
 >
 > identityCoCone :
->      (index, cat : Category)
->   -> (dia : Diagram index cat)
->   -> (cocone : CoCone index cat dia)
->   -> CoConeMorphism index cat dia cocone cocone
-> identityCoCone index cat dia cocone = MkCoConeMorphism
->   (identity cat (apex cocone))
->   (\i => rightIdentity cat (mapObj dia i) (apex cocone) (exists cocone i))
+>      (cocone : CoCone dia apex)
+>   -> CoConeMorphism index cat dia apex apex cocone cocone
+> identityCoCone {cat} {dia} {apex} cocone = MkCoConeMorphism
+>   (identity cat apex)
+>   (\i => rightIdentity cat (mapObj dia i) apex (component cocone i))
 >
 > composeCoCone :
->      (index, cat : Category)
->   -> (dia : Diagram index cat)
->   -> (a, b, c : CoCone index cat dia)
->   -> (f : CoConeMorphism index cat dia a b)
->   -> (g : CoConeMorphism index cat dia b c)
->   -> CoConeMorphism index cat dia a c
-> composeCoCone index cat dia a b c f g = MkCoConeMorphism
->   (compose cat (apex a) (apex b) (apex c) (carrier f) (carrier g))
+>      (a : CoCone dia apexA)
+>   -> (b : CoCone dia apexB)
+>   -> (c : CoCone dia apexC)
+>   -> (f : CoConeMorphism index cat dia apexA apexB a b)
+>   -> (g : CoConeMorphism index cat dia apexB apexC b c)
+>   -> CoConeMorphism index cat dia apexA apexC a c
+> composeCoCone {cat} {dia} a b c f g = MkCoConeMorphism
+>   (compose cat apexA apexB apexC (apexMorphism f) (apexMorphism g))
 >   (\i => let
->      leftCommutes = (commutes f) i
->      rightCommutes = (commutes g) i
->      makesRightCommutes = \x => compose cat (mapObj dia i) (apex b) (apex c) x (carrier g) = exists c i
->      leftMakesRightCommutes = replace {P = makesRightCommutes} (sym leftCommutes) rightCommutes
->      assoc = associativity cat (mapObj dia i) (apex a) (apex b) (apex c) (exists a i) (carrier f) (carrier g)
->    in trans assoc leftMakesRightCommutes)
+>      leftCommutes = (commutativity f) i
+>      rightCommutes = (commutativity g) i
+>      makesRightCommute = \x => compose cat (mapObj dia i) apexB apexC x (apexMorphism g) = component c i
+>      leftMakesRightCommute = replace {P = makesRightCommute} (sym leftCommutes) rightCommutes
+>      assoc = associativity cat (mapObj dia i) apexA apexB apexC (component a i) (apexMorphism f) (apexMorphism g)
+>    in trans assoc leftMakesRightCommute)
 >
 > leftIdentityCoCone :
->      (index, cat : Category)
->   -> (dia : Diagram index cat)
->   -> (a, b : CoCone index cat dia)
->   -> (f : CoConeMorphism index cat dia a b)
->   -> composeCoCone index cat dia a a b (identityCoCone index cat dia a) f = f
-> leftIdentityCoCone index cat dia a b f = let
->    catLeftIdentity = leftIdentity cat (apex a) (apex b) (carrier f)
->    leftIdCompose = composeCoCone index cat dia a a b (identityCoCone index cat dia a) f
-> in coConeMorphismEquality index cat dia a b leftIdCompose f catLeftIdentity
+>      (a : CoCone dia apexA)
+>   -> (b : CoCone dia apexB)
+>   -> (f : CoConeMorphism index cat dia apexA apexB a b)
+>   -> composeCoCone a a b (identityCoCone a) f = f
+> leftIdentityCoCone {cat} {dia} {apexA} {apexB} a b f = let
+>    catLeftIdentity = leftIdentity cat apexA apexB (apexMorphism f)
+>    leftIdCompose = composeCoCone a a b (identityCoCone a) f
+> in coConeMorphismEquality leftIdCompose f catLeftIdentity
 >
 > rightIdentityCoCone :
->      (index, cat : Category)
->   -> (dia : Diagram index cat)
->   -> (a, b : CoCone index cat dia)
->   -> (f : CoConeMorphism index cat dia a b)
->   -> composeCoCone index cat dia a b b f (identityCoCone index cat dia b) = f
-> rightIdentityCoCone index cat dia a b f = let
->    catRightIdentity = rightIdentity cat (apex a) (apex b) (carrier f)
->    rightIdCompose = composeCoCone index cat dia a b b f (identityCoCone index cat dia b)
-> in coConeMorphismEquality index cat dia a b rightIdCompose f catRightIdentity
+>      (a : CoCone dia apexA)
+>   -> (b : CoCone dia apexB)
+>   -> (f : CoConeMorphism index cat dia apexA apexB a b)
+>   -> composeCoCone a b b f (identityCoCone b) = f
+> rightIdentityCoCone {cat} {dia} {apexA} {apexB} a b f = let
+>    catRightIdentity = rightIdentity cat apexA apexB (apexMorphism f)
+>    rightIdCompose = composeCoCone a b b f (identityCoCone b)
+> in coConeMorphismEquality rightIdCompose f catRightIdentity
 >
 > associativityCoCone :
->      (index, cat : Category)
->   -> (dia : Diagram index cat)
->   -> (a, b, c, d : CoCone index cat dia)
->   -> (f : CoConeMorphism index cat dia a b)
->   -> (g : CoConeMorphism index cat dia b c)
->   -> (h: CoConeMorphism index cat dia c d)
->   -> composeCoCone index cat dia a b d f (composeCoCone index cat dia b c d g h)
->      = composeCoCone index cat dia a c d (composeCoCone index cat dia a b c f g) h
-> associativityCoCone index cat dia a b c d f g h = let
->    catAssociativity = associativity cat (apex a) (apex b) (apex c) (apex d) (carrier f) (carrier g) (carrier h)
->    leftCompose = composeCoCone index cat dia a b d f (composeCoCone index cat dia b c d g h)
->    rightCompose = composeCoCone index cat dia a c d (composeCoCone index cat dia a b c f g) h
-> in coConeMorphismEquality index cat dia a d leftCompose rightCompose catAssociativity
+>      (a : CoCone dia apexA)
+>   -> (b : CoCone dia apexB)
+>   -> (c : CoCone dia apexC)
+>   -> (d : CoCone dia apexD)
+>   -> (f : CoConeMorphism index cat dia apexA apexB a b)
+>   -> (g : CoConeMorphism index cat dia apexB apexC b c)
+>   -> (h: CoConeMorphism index cat dia apexC apexD c d)
+>   -> composeCoCone a b d f (composeCoCone b c d g h)
+>      = composeCoCone a c d (composeCoCone a b c f g) h
+> associativityCoCone {cat} {dia} {apexA} {apexB} {apexC} {apexD} a b c d f g h = let
+>    catAssociativity = associativity cat apexA apexB apexC apexD (apexMorphism f) (apexMorphism g) (apexMorphism h)
+>    leftCompose = composeCoCone a b d f (composeCoCone b c d g h)
+>    rightCompose = composeCoCone a c d (composeCoCone a b c f g) h
+> in coConeMorphismEquality leftCompose rightCompose catAssociativity
 >
+> record CoConeObject
+>   (index : Category)
+>   (cat : Category)
+>   (dia : Diagram index cat)
+> where
+>  constructor MkCoConeObject
+>  Apex : obj cat
+>  cocone : CoCone dia Apex
+>
+> -- We can define a CoCone category as a comma category
+> -- @see https://en.wikipedia.org/wiki/Cone_(category_theory)#equivalent-formulations
 > CoConeCategory :
 >      (index, cat : Category)
 >   -> (dia: Diagram index cat)
 >   -> Category
 > CoConeCategory index cat dia = MkCategory
->   (CoCone index cat dia)
->   (CoConeMorphism index cat dia)
->   (identityCoCone index cat dia)
->   (composeCoCone index cat dia)
->   (leftIdentityCoCone index cat dia)
->   (rightIdentityCoCone index cat dia)
->   (associativityCoCone index cat dia)
+>   (CoConeObject index cat dia)
+>   (\a, b => CoConeMorphism index cat dia (Apex a) (Apex b) (cocone a) (cocone b))
+>   (\a => identityCoCone (cocone a))
+>   (\a, b, c, f, g => composeCoCone (cocone a) (cocone b) (cocone c) f g)
+>   (\a, b, f => leftIdentityCoCone (cocone a) (cocone b) f)
+>   (\a, b, f => rightIdentityCoCone (cocone a) (cocone b) f)
+>   (\a, b, c, d, f, g, h => associativityCoCone (cocone a) (cocone b) (cocone c) (cocone d) f g h)
 >

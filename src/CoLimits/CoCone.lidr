@@ -49,12 +49,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (a: obj cat) (b : obj cat)
 >   (source : CoCone diagram a) (target : CoCone diagram b) where
 >   constructor MkCoConeMorphism
->   apexMophism   : mor cat a b
+>   apexMorphism   : mor cat a b
 >   commutativity : (i : obj index)
->                -> compose cat _ a b (component source i) apexMophism
+>                -> compose cat _ a b (component source i) apexMorphism
 >                 = (component target i)
 >
 > postulate coConeMorphismEquality :
 >      (f, g : CoConeMorphism index cat diagram a b source target)
->   -> apexMophism g = apexMophism g
+>   -> apexMorphism f = apexMorphism g
 >   -> f = g
