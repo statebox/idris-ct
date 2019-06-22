@@ -23,8 +23,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 >
-> import CoLimits.InitialObject
-> import CoLimits.CoConeCat
 > import CoLimits.CoCone
 > import CommutativeDiagram.Diagram
 >
@@ -37,16 +35,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (dia : Diagram index cat)
 > where
 >   constructor MkCoLimit
->   carrier: CoCone index cat dia
->   exists: (b : CoCone index cat dia) -> CoConeMorphism index cat dia carrier b
->   unique: (b : CoCone index cat dia) -> (f : CoConeMorphism index cat dia carrier b) -> f = exists b
+>   carrier: obj cat
+>   cocone: CoCone dia carrier
+>   exists: (apexB : obj cat) -> (b : CoCone dia apexB) -> CoConeMorphism index cat dia carrier apexB cocone b
+>   unique: (apexB : obj cat) -> (b : CoCone dia apexB) -> (f : CoConeMorphism index cat dia carrier apexB cocone b) -> f = exists apexB b
 >
-> coLimitIsInitial :
->      (index, cat : Category)
->   -> (dia: Diagram index cat)
->   -> (cl: CoLimit index cat dia)
->   -> InitialObject (CoConeCategory index cat dia)
-> coLimitIsInitial index cat dia cl = MkInitialObject
->   (carrier cl)
->   (exists cl)
->   (\b, f, g => trans (unique cl b f) (sym (unique cl b g)))

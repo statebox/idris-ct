@@ -19,32 +19,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module CoLimits.CoConeAsNaturalTransformation
+> module CoLimits.CoLimitAsInitialObject
 >
 > import Basic.Category
->
-> import CommutativeDiagram.Diagram
-> import Basic.NaturalTransformation
 > import Basic.Functor
+> import Basic.NaturalTransformation
+>
+> import CoLimits.InitialObject
+> import CoLimits.CoConeCat
 > import CoLimits.CoCone
+> import CommutativeDiagram.Diagram
+> import CoLimits.CoLimit
 >
 > %access public export
 > %default total
 >
-> Delta : (cat1, cat2 : Category) -> (n : obj cat2) -> CFunctor cat1 cat2
-> Delta cat1 cat2 n = MkCFunctor
->   (\a => n)
->   (\a, b, f => identity cat2 n)
->   (\a => Refl)
->   (\a, b, c, f, g => sym (leftIdentity cat2 n n (identity cat2 n)))
->
-> coConeToNaturalTransformation :
->      (index, cat : Category)
->   -> (dia : Diagram index cat)
->   -> (cocone : CoCone index cat dia)
->   -> NaturalTransformation index cat dia (Delta index cat (apex cocone))
-> coConeToNaturalTransformation index cat dia cocone = MkNaturalTransformation
->   (\j => exists cocone j)
->   (\i, j, f => trans
->      (rightIdentity cat (mapObj dia i) (apex cocone) (exists cocone i))
->      (sym (commutes cocone i j f)))
+> coLimitToInitial :
+>      (colimit: CoLimit index cat dia)
+>   -> InitialObject (CoConeCategory index cat dia)
+> coLimitToInitial colimit = MkInitialObject
+>   (MkCoConeObject (carrier colimit) (cocone colimit))
+>   (\b => exists colimit (Apex b) (cocone b))
+>   (\b, f, g =>
+>      trans
+>        (unique colimit (Apex b) (cocone b) f)
+>        (sym (unique colimit (Apex b) (cocone b) g))
+>   )
