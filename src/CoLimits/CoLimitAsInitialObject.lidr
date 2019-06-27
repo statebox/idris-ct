@@ -39,9 +39,5 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> InitialObject (CoConeCategory index cat dia)
 > coLimitToInitial colimit = MkInitialObject
 >   (MkCoConeObject (carrier colimit) (cocone colimit))
->   (\b => exists colimit (Apex b) (cocone b))
->   (\b, f, g =>
->      trans
->        (unique colimit (Apex b) (cocone b) f)
->        (sym (unique colimit (Apex b) (cocone b) g))
->   )
+>   (\b => exists colimit (apex b) (cocone b))
+>   (\b, f, g => unique colimit (apex b) (cocone b) f g)

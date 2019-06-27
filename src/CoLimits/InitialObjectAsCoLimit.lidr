@@ -24,87 +24,56 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 > import Basic.Functor
 > import Basic.NaturalTransformation
->
-> import CoLimits.InitialObject
-> import CoLimits.CoConeCat
 > import CoLimits.CoCone
+> import CoLimits.CoConeCat
 > import CoLimits.CoLimit
+> import CoLimits.InitialObject
 > import CommutativeDiagram.Diagram
-> import Basic.Functor
+> import Empty.EmptyCategory
+> import Empty.EmptyFunctor
 >
 > %access public export
 > %default total
 > %auto_implicits off
 >
-> emptyObject : Type
-> emptyObject = Void
->
-> emptyMorphism : Void -> Void -> Type
-> emptyMorphism x y = Void
->
-> empty : Category
-> empty = MkCategory
->  (emptyObject)
->  (emptyMorphism)
->  (\a => absurd a)
->  (\a => absurd a)
->  (\a => absurd a)
->  (\a => absurd a)
->  (\a => absurd a)
->
-> emptyMapObj : (cat : Category) -> obj empty -> obj cat
-> emptyMapObj cat = void
->
-> emptyMapMor :
->      (cat : Category)
->   -> (a, b : obj empty)
->   -> (f : mor empty a b)
->   -> mor cat (emptyMapObj cat a) (emptyMapObj cat b)
-> emptyMapMor cat a b = void
->
-> emptyDiagram : (cat: Category) -> Diagram empty cat
-> emptyDiagram cat = MkCFunctor
->   (emptyMapObj cat)
->   (emptyMapMor cat)
->   (\a => absurd a)
->   (\a => absurd a)
+> emptyDiagram : (cat : Category) -> Diagram emptyCategory cat
+> emptyDiagram = emptyFunctor
 >
 > emptyCoCone :
 >     (cat : Category)
->  -> (io : InitialObject cat)
->  -> CoCone (emptyDiagram cat) (carrier io)
-> emptyCoCone cat io = MkNaturalTransformation
+>  -> (initial : InitialObject cat)
+>  -> CoCone (emptyDiagram cat) (carrier initial)
+> emptyCoCone cat initial = MkNaturalTransformation
 >   (\i => absurd i)
 >   (\i => absurd i)
 >
 > emptyDiagramCoLimitExists :
 >     (cat : Category)
->  -> (io : InitialObject cat)
+>  -> (initial : InitialObject cat)
 >  -> (apexB : obj cat)
 >  -> (b : CoCone (emptyDiagram cat) apexB)
->  -> CoConeMorphism empty cat (emptyDiagram cat) (carrier io) apexB (emptyCoCone cat io) b
-> emptyDiagramCoLimitExists cat io apexB b = MkCoConeMorphism
->   (exists io apexB)
+>  -> CoConeMorphism emptyCategory cat (emptyDiagram cat) (carrier initial) apexB (emptyCoCone cat initial) b
+> emptyDiagramCoLimitExists cat initial apexB b = MkCoConeMorphism
+>   (exists initial apexB)
 >   (\i => absurd i)
 >
 > emptyDiagramCoLimitIsUnique :
 >     (cat : Category)
->  -> (io : InitialObject cat)
+>  -> (initial : InitialObject cat)
 >  -> (apexB : obj cat)
 >  -> (b : CoCone (emptyDiagram cat) apexB)
->  -> (f : CoConeMorphism empty cat (emptyDiagram cat) (carrier io) apexB (emptyCoCone cat io) b)
->  -> f = emptyDiagramCoLimitExists cat io apexB b
-> emptyDiagramCoLimitIsUnique cat io apexB b f = let
->   coLimitMorphism = emptyDiagramCoLimitExists cat io apexB b
->   apexMorphismUniqueness = unique io apexB (apexMorphism f) (apexMorphism coLimitMorphism)
-> in coConeMorphismEquality f coLimitMorphism apexMorphismUniqueness
+>  -> (f, g : CoConeMorphism emptyCategory cat (emptyDiagram cat) (carrier initial) apexB (emptyCoCone cat initial) b)
+>  -> f = g
+> emptyDiagramCoLimitIsUnique cat initial apexB b f g = let
+>   apexMorphismUniqueness = unique initial apexB (apexMorphism f) (apexMorphism g)
+> in coConeMorphismEquality f g apexMorphismUniqueness
 >
 > initialObjectToCoLimit :
 >      (cat  : Category)
->   -> (io : InitialObject cat)
->   -> CoLimit empty cat (emptyDiagram cat)
-> initialObjectToCoLimit cat io = MkCoLimit
->   (carrier io)
->   (emptyCoCone cat io)
->   (emptyDiagramCoLimitExists cat io)
->   (emptyDiagramCoLimitIsUnique cat io)
+>   -> (initial : InitialObject cat)
+>   -> CoLimit emptyCategory cat (emptyDiagram cat)
+> initialObjectToCoLimit cat initial = MkCoLimit
+>   (carrier initial)
+>   (emptyCoCone cat initial)
+>   (emptyDiagramCoLimitExists cat initial)
+>   (emptyDiagramCoLimitIsUnique cat initial)
