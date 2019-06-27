@@ -22,7 +22,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module CoLimits.CoLimit
 >
 > import Basic.Category
->
 > import CoLimits.CoCone
 > import CommutativeDiagram.Diagram
 >
@@ -30,13 +29,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %default total
 >
 > record CoLimit
->   (index : Category)
->   (cat : Category)
->   (dia : Diagram index cat)
+>   (index   : Category)
+>   (cat     : Category)
+>   (diagram : Diagram index cat)
 > where
 >   constructor MkCoLimit
 >   carrier: obj cat
->   cocone: CoCone dia carrier
->   exists: (apexB : obj cat) -> (b : CoCone dia apexB) -> CoConeMorphism index cat dia carrier apexB cocone b
->   unique: (apexB : obj cat) -> (b : CoCone dia apexB) -> (f : CoConeMorphism index cat dia carrier apexB cocone b) -> f = exists apexB b
->
+>   cocone: CoCone diagram carrier
+>   exists:
+>        (apexB : obj cat)
+>     -> (b : CoCone diagram apexB)
+>     -> CoConeMorphism index cat diagram carrier apexB cocone b
+>   unique:
+>        (apexB : obj cat)
+>     -> (b : CoCone diagram apexB)
+>     -> (f, g : CoConeMorphism index cat diagram carrier apexB cocone b)
+>     -> f = g

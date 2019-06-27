@@ -97,8 +97,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (dia : Diagram index cat)
 > where
 >  constructor MkCoConeObject
->  Apex : obj cat
->  cocone : CoCone dia Apex
+>  apex : obj cat
+>  cocone : CoCone dia apex
 >
 > -- We can define a CoCone category as a comma category
 > -- @see https://en.wikipedia.org/wiki/Cone_(category_theory)#equivalent-formulations
@@ -108,7 +108,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> Category
 > CoConeCategory index cat dia = MkCategory
 >   (CoConeObject index cat dia)
->   (\a, b => CoConeMorphism index cat dia (Apex a) (Apex b) (cocone a) (cocone b))
+>   (\a, b => CoConeMorphism index cat dia (apex a) (apex b) (cocone a) (cocone b))
 >   (\a => identityCoCone (cocone a))
 >   (\a, b, c, f, g => composeCoCone (cocone a) (cocone b) (cocone c) f g)
 >   (\a, b, f => leftIdentityCoCone (cocone a) (cocone b) f)
