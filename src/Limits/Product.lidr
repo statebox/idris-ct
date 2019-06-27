@@ -61,7 +61,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     -> (h : CommutingMorphism cat x a b carrier pi1 pi2 f g)
 >     -> challenger h = challenger (exists x f g)
 >
-> productMorphism : 
+> productMorphism :
 >      (cat : Category)
 >   -> (a1, a2, b1, b2 : obj cat)
 >   -> (f : mor cat a1 a2)
@@ -154,70 +154,92 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >               (pComp (x,b) (y,b) (z,b) (MkProductMorphism f (identity cat b)) (MkProductMorphism g (identity cat b)))
 >
 > parameters (cat : Category, products : catHasProducts cat, terminal : catHasTerminalObj cat)
->   rightUnitorComponent : (a : obj cat) -> mor cat (carrier $ products a (Carrier terminal)) a
->   rightUnitorComponent a = Product.pi1 $ products a (Carrier terminal)
+>   rightUnitorComponent : (a : obj cat) -> mor cat (carrier $ products a (carrier terminal)) a
+>   rightUnitorComponent a = Product.pi1 $ products a (carrier terminal)
 >
 >   rightUnitorComm :
 >        (a, b : obj cat)
->     -> (f : mor cat a b) -> compose cat _ _ _ (rightUnitorComponent a) f
->      = compose cat _ _ _ (mapMor (bifunctorLeft cat (productFunctor cat products) (Carrier terminal)) a b f)
+>     -> (f : mor cat a b)
+>     -> compose cat _ _ _ (rightUnitorComponent a) f
+>      = compose cat _ _ _ (mapMor (bifunctorLeft cat (productFunctor cat products) (carrier terminal)) a b f)
 >                          (rightUnitorComponent b)
->   rightUnitorComm a b f = 
->     rewrite rightIdentity cat (carrier (products a (Carrier terminal))) (Carrier terminal) (pi2 (products a (Carrier terminal))) in
->     sym $ commutativityLeft (exists (products b (Carrier terminal))
->                             (carrier (products a (Carrier terminal)))
->                             (compose cat (carrier (products a (Carrier terminal))) a b (pi1 (products a (Carrier terminal))) f)
->                             (pi2 (products a (Carrier terminal))))
+>   rightUnitorComm a b f =
+>     rewrite
+>       rightIdentity cat (carrier (products a (carrier terminal)))
+>                         (carrier terminal)
+>                         (pi2 (products a (carrier terminal)))
+>     in
+>       sym $ commutativityLeft (exists (products b (carrier terminal))
+>                               (carrier (products a (carrier terminal)))
+>                               (compose cat (carrier (products a (carrier terminal)))
+>                                            a b
+>                                            (pi1 (products a (carrier terminal)))
+>                                            f)
+>                               (pi2 (products a (carrier terminal))))
 >
->   rightUnitorNatTrans : NaturalTransformation cat cat (bifunctorLeft cat (productFunctor cat products) (Carrier terminal))
->                                                       (idFunctor cat)
+>   rightUnitorNatTrans : NaturalTransformation cat cat
+>                                               (bifunctorLeft cat (productFunctor cat products) (carrier terminal))
+>                                               (idFunctor cat)
 >   rightUnitorNatTrans = MkNaturalTransformation rightUnitorComponent rightUnitorComm
 >
->   rightUnitorInverse : (a : obj cat) -> mor cat a (carrier $ products a (Carrier terminal))
->   rightUnitorInverse a = challenger $ Product.exists (products a (Carrier terminal)) a (identity cat a) (exists terminal a)
+>   rightUnitorInverse : (a : obj cat) -> mor cat a (carrier $ products a (carrier terminal))
+>   rightUnitorInverse a = challenger $ Product.exists (products a (carrier terminal))
+>                                                      a
+>                                                      (identity cat a)
+>                                                      (exists terminal a)
 >
->   commutativeIdentity : (a, b : obj cat) -> let pab = products a b in 
->                         CommutingMorphism cat (carrier pab) a b (carrier pab) (pi1 pab) (pi2 pab) (pi1 pab) (pi2 pab)
->   commutativeIdentity a b = 
->     MkCommutingMorphism (identity cat $ carrier $ products a b) 
->                         (leftIdentity cat (carrier $ products a b) a (pi1 $ products a b)) 
->                         (leftIdentity cat (carrier $ products a b) b (pi2 $ products a b)) 
+>   commutativeIdentity :
+>        (a, b : obj cat)
+>     -> let pab = products a b in
+>        CommutingMorphism cat (carrier pab) a b (carrier pab) (pi1 pab) (pi2 pab) (pi1 pab) (pi2 pab)
+>   commutativeIdentity a b =
+>     MkCommutingMorphism (identity cat $ carrier $ products a b)
+>                         (leftIdentity cat (carrier $ products a b) a (pi1 $ products a b))
+>                         (leftIdentity cat (carrier $ products a b) b (pi2 $ products a b))
 >
->   productPi12Identity : (a, b : obj cat) -> let pab = products a b in 
->                                            challenger $ Product.exists pab (carrier pab) (pi1 pab) (pi2 pab) = identity cat (carrier pab)
->   productPi12Identity a b = sym $ unique (products a b) (carrier $ products a b) (pi1 $ products a b) (pi2 $ products a b) (commutativeIdentity a b) 
+>   productPi12Identity :
+>        (a, b : obj cat)
+>     -> let pab = products a b in
+>        challenger $ Product.exists pab (carrier pab) (pi1 pab) (pi2 pab) = identity cat (carrier pab)
+>   productPi12Identity a b = sym $ unique (products a b)
+>                                          (carrier $ products a b)
+>                                          (pi1 $ products a b)
+>                                          (pi2 $ products a b)
+>                                          (commutativeIdentity a b)
 >
-
-potentialIdentity ; pi2 = pi1; pi2 = pi1 ; unique = unique
-potentialIdentity ; pi1 = pi1; p = pi1 ; unique = unique
-
-   commutingMorphismUniqueness : challenger (CommutingMorphism cat x a b (carrier pab) (pi1 pab) (pi2 pab) f g) = challenger (CommutingMorphism cat x a b (carrier pab) (pi1 pab) (pi2 pab) f g)
-
-
->   potentialIdentity : (a : obj cat) -> mor cat (carrier $ products a (Carrier terminal)) (carrier $ products a (Carrier terminal))
+>   potentialIdentity :
+>        (a : obj cat)
+>     -> mor cat (carrier $ products a (carrier terminal)) (carrier $ products a (carrier terminal))
 >   potentialIdentity a = compose cat
->               (carrier (products a (Carrier terminal)))
+>               (carrier (products a (carrier terminal)))
 >               a
->               (carrier (products a (Carrier terminal)))
->               (pi1 (products a (Carrier terminal)))
->               (challenger (exists (products a (Carrier terminal)) a (identity cat a) (exists terminal a)))
+>               (carrier (products a (carrier terminal)))
+>               (pi1 (products a (carrier terminal)))
+>               (challenger (exists (products a (carrier terminal)) a (identity cat a) (exists terminal a)))
 >
->   potentialIdentityCommutingMorphism : (a : obj cat) -> let pa1 = products a (Carrier terminal) in  
->                                                            CommutingMorphism cat (carrier pa1) a (Carrier terminal) (carrier pa1) (pi1 pa1) (pi2 pa1) (compose cat _ _ _ (potentialIdentity a) (pi1 pa1)) (compose cat _ _ _ (potentialIdentity a) (pi2 pa1))
+>   potentialIdentityCommutingMorphism :
+>        (a : obj cat)
+>     -> let pa1 = products a (carrier terminal) in
+>        CommutingMorphism cat (carrier pa1)
+>                              a
+>                              (carrier terminal)
+>                              (carrier pa1)
+>                              (pi1 pa1) (pi2 pa1)
+>                              (compose cat _ _ _ (potentialIdentity a) (pi1 pa1))
+>                              (compose cat _ _ _ (potentialIdentity a) (pi2 pa1))
 >   potentialIdentityCommutingMorphism a = ?wat1
-
 >
 >   rightUnitorIsomorphism : (a : obj cat) -> Isomorphism cat _ _ (rightUnitorComponent a)
->   rightUnitorIsomorphism a = MkIsomorphism (rightUnitorInverse a) 
+>   rightUnitorIsomorphism a = MkIsomorphism (rightUnitorInverse a)
 >     ?wat0
->     (commutativityLeft $ Product.exists (products a (Carrier terminal)) a (identity cat a) (exists terminal a))
+>     (commutativityLeft $ Product.exists (products a (carrier terminal)) a (identity cat a) (exists terminal a))
 >
->   rightUnitorNatIso : NaturalIsomorphism cat cat (bifunctorLeft cat (productFunctor cat products) (Carrier terminal))
+>   rightUnitorNatIso : NaturalIsomorphism cat cat (bifunctorLeft cat (productFunctor cat products) (carrier terminal))
 >                                                  (idFunctor cat)
 >   rightUnitorNatIso = MkNaturalIsomorphism rightUnitorNatTrans rightUnitorIsomorphism
 
-rightUnitorInverse a ; 
-pi1 ; <id_A, unique> = id_(A x (Carrier terminal))
+rightUnitorInverse a ;
+pi1 ; <id_A, unique> = id_(A x (carrier terminal))
 
 A x 1 - pi1 -> A
 A x 1 - pi2 -> 1
@@ -245,14 +267,14 @@ A x 1 -- pi2 --> 1
 
 
 exists a -> (id_a:a->a) -> (unique: a -> 1)
-rightUnitorComponent: A x 1 -- pi1 -> A 
-inverse: A --> A x (Carrier terminal)
-A -- inverse := <id_A, unique> --> A x Carrier terminal -- pi1 --> A
+rightUnitorComponent: A x 1 -- pi1 -> A
+inverse: A --> A x (carrier terminal)
+A -- inverse := <id_A, unique> --> A x carrier terminal -- pi1 --> A
 
 
 
-A -- unique --> Carrier terminal
-A -- id --> A  
+A -- unique --> carrier terminal
+A -- id --> A
 
 
 A x 1 -- pi1 --> A
@@ -260,13 +282,13 @@ A x 1 -- pi1 --> A
     |                     |
   fxid1                f
     |                     |
-   \ /                   \ / 
+   \ /                   \ /
 B x 1 -- pi1 --> B
 
 
 
 
-pi2, ! 
+pi2, !
 
 
 f: A --> B
