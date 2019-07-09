@@ -51,6 +51,14 @@ nix-build
 
 For additional targets, have a look at the instructions in [default.nix](default.nix).
 
+If you get an error message like `error: cloning builder process: Operation not permitted`, run
+
+```
+sysctl kernel.unprivileged_userns_clone=1
+```
+
+as suggested in https://github.com/NixOS/nix/issues/2633
+
 ## Manual build
 
 ### Prerequisites
