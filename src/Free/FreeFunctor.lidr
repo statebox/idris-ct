@@ -19,7 +19,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Free.Functor
+> module Free.FreeFunctor
 >
 > import Basic.Category
 > import Basic.Functor
@@ -71,3 +71,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                     in associativity cat _ _ _ _ (mapEdge gm x _ fab)
 >                                                                  (foldPath (MkGraph v e) gm f)
 >                                                                  (foldPath (MkGraph v e) gm g)
+>
+> freeEmbeddingMorphism : (g : Graph) -> GraphMorphism g (forgetCat $ pathCategory g)
+> freeEmbeddingMorphism (MkGraph _ _) = MkGraphMorphism id (\_, _, e => [e])
+>
+> liftPathToMorphism :
+>      (g : Graph)
+>   -> Path (Edge g) a b
+>   -> mor (pathCategory g) (mapVert (freeEmbeddingMorphism g) a) (mapVert (freeEmbeddingMorphism g) b) -- should actually be mor (pathCategory g) a b
+> liftPathToMorphism g p = foldPath g (freeEmbeddingMorphism g) p
