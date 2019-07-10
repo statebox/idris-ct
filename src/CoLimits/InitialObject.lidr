@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > %access public export
 > %default total
+> %auto_implicits off
 >
 > record InitialObject (cat : Category) where
 >   constructor MkInitialObject
