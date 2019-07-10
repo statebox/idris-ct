@@ -23,35 +23,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Free.Graph
 > import Free.PathCategory
 >
 > %access public export
 > %default total
 >
-> forgetCat : Category -> Graph
-> forgetCat c = MkGraph (obj c) (mor c)
+> forgetCat : (c : Category) -> Graph (obj c)
+> forgetCat c = MkGraph (mor c)
 >
-> record GraphMorphism (g1 : Graph) (g2 : Graph) where
+> record GraphMorphism (v1 : Type) (v2 : Type) (g1 : Graph v1) (g2 : Graph v2) where
 >   constructor MkGraphMorphism
->   mapVert : Vert g1 -> Vert g2
->   mapEdge : (v1, v2 : Vert g1) -> Edge g1 v1 v2 -> Edge g2 (mapVert v1) (mapVert v2)
+>   mapVert : v1 -> v2
+>   mapEdge : (w1, w2 : v1) -> Edge g1 w1 w2 -> Edge g2 (mapVert w1) (mapVert w2)
 >
 > foldPath :
->      (g : Graph)
->   -> (gm : GraphMorphism g (forgetCat cat))
+>      (g : Graph v)
+>   -> (gm : GraphMorphism v (obj cat) g (forgetCat cat))
 >   -> Path (Edge g) a b
 >   -> mor cat (mapVert gm a) (mapVert gm b)
 > foldPath {cat} {a} g gm Nil        = identity cat (mapVert gm a)
 > foldPath {cat}     g gm (eij :: p) = compose cat _ _ _ (mapEdge gm _ _ eij) (foldPath g gm p)
 >
 > freeFunctor :
->      (g : Graph)
+>      (g : Graph v)
 >   -> (cat : Category)
->   -> GraphMorphism g (forgetCat cat)
+>   -> GraphMorphism v (obj cat) g (forgetCat cat)
 >   -> CFunctor (pathCategory g) cat
-> freeFunctor (MkGraph v e) cat gm = MkCFunctor
+> freeFunctor (MkGraph e) cat gm = MkCFunctor
 >   (mapVert gm)
->   (\a, b, p => foldPath {cat} (MkGraph v e) gm p)
+>   (\a, b, p => foldPath {cat} (MkGraph e) gm p)
 >   (\_ => Refl)
 >   preserveComp
 >   where
@@ -59,24 +60,24 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >          (x, y, z : v)
 >       -> (f : Path e x y)
 >       -> (g : Path e y z)
->       -> foldPath (MkGraph v e) gm (joinPath f g)
+>       -> foldPath (MkGraph e) gm (joinPath f g)
 >        = compose cat
 >                  (mapVert gm x)
 >                  (mapVert gm y)
 >                  (mapVert gm z)
->                  (foldPath (MkGraph v e) gm f)
->                  (foldPath (MkGraph v e) gm g)
->     preserveComp y y z Nil      g = sym $ leftIdentity cat (mapVert gm y) (mapVert gm z) (foldPath (MkGraph v e) gm g)
+>                  (foldPath (MkGraph e) gm f)
+>                  (foldPath (MkGraph e) gm g)
+>     preserveComp y y z Nil      g = sym $ leftIdentity cat (mapVert gm y) (mapVert gm z) (foldPath (MkGraph e) gm g)
 >     preserveComp x y z (fab::f) g = rewrite preserveComp _ _ _ f g
 >                                     in associativity cat _ _ _ _ (mapEdge gm x _ fab)
->                                                                  (foldPath (MkGraph v e) gm f)
->                                                                  (foldPath (MkGraph v e) gm g)
+>                                                                  (foldPath (MkGraph e) gm f)
+>                                                                  (foldPath (MkGraph e) gm g)
 >
-> freeEmbeddingMorphism : (g : Graph) -> GraphMorphism g (forgetCat $ pathCategory g)
-> freeEmbeddingMorphism (MkGraph _ _) = MkGraphMorphism id (\_, _, e => [e])
+> freeEmbeddingMorphism : (g : Graph v) -> GraphMorphism v (obj (pathCategory g)) g (forgetCat $ pathCategory g)
+> freeEmbeddingMorphism (MkGraph _) = MkGraphMorphism id (\_, _, e => [e])
 >
 > liftPathToMorphism :
->      (g : Graph)
+>      (g : Graph v)
 >   -> Path (Edge g) a b
 >   -> mor (pathCategory g) (mapVert (freeEmbeddingMorphism g) a) (mapVert (freeEmbeddingMorphism g) b) -- should actually be mor (pathCategory g) a b
 > liftPathToMorphism g p = foldPath g (freeEmbeddingMorphism g) p
