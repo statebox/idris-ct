@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
-> import Free.Category
+> import Free.PathCategory
 >
 > %access public export
 > %default total
