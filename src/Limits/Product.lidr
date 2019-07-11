@@ -217,85 +217,59 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >               (pi1 (products a (carrier terminal)))
 >               (challenger (exists (products a (carrier terminal)) a (identity cat a) (exists terminal a)))
 >
->   potentialIdentityCommutingMorphism :
->        (a : obj cat)
->     -> let pa1 = products a (carrier terminal) in
->        CommutingMorphism cat (carrier pa1)
->                              a
->                              (carrier terminal)
->                              (carrier pa1)
->                              (pi1 pa1) (pi2 pa1)
->                              (compose cat _ _ _ (potentialIdentity a) (pi1 pa1))
->                              (compose cat _ _ _ (potentialIdentity a) (pi2 pa1))
->   potentialIdentityCommutingMorphism a = ?wat1
->
 >   rightUnitorIsomorphism : (a : obj cat) -> Isomorphism cat _ _ (rightUnitorComponent a)
 >   rightUnitorIsomorphism a = MkIsomorphism (rightUnitorInverse a)
->     ?wat0
+>     (rewrite sym $ productPi12Identity a (carrier terminal) in 
+>      Product.unique 
+>             (products a (carrier terminal))
+>             (carrier $ products a (carrier terminal)) 
+>             (pi1 (products a (carrier terminal))) 
+>             (pi2 (products a (carrier terminal)))
+>             (MkCommutingMorphism 
+>                (compose cat
+>                        (carrier (products a (carrier terminal)))
+>                         a
+>                        (carrier (products a (carrier terminal)))
+>                        (pi1 (products a (carrier terminal)))
+>                        (challenger (exists (products a (carrier terminal)) a (identity cat a) (exists terminal a)))
+>                ) 
+>                (rewrite sym $ associativity cat (carrier (products a (carrier terminal)))
+>                                                  a
+>                                                 (carrier (products a (carrier terminal))) 
+>                                                  a 
+>                                                 (pi1 (products a (carrier terminal)))
+>                                                 (challenger (exists (products a (carrier terminal)) a (identity cat a) (exists terminal a)))
+>                                                 (pi1 (products a (carrier terminal))) in
+>                 rewrite commutativityLeft $ Product.exists (products a (carrier terminal)) a (identity cat a) (exists terminal a) in
+>                 rightIdentity cat (carrier (products a (carrier terminal))) a (pi1 (products a (carrier terminal)))
+>                ) 
+>                (TerminalObject.unique terminal (carrier (products a (carrier terminal))) 
+>                   (compose cat
+>                           (carrier (products a (carrier terminal)))
+>                           (carrier (products a (carrier terminal)))
+>                           (carrier terminal)
+>                           (compose cat
+>                                    (carrier (products a (carrier terminal)))
+>                                    a
+>                                    (carrier (products a (carrier terminal)))
+>                                    (pi1 (products a (carrier terminal)))
+>                                    (challenger (exists (products a (carrier terminal)) a (identity cat a) (exists terminal a))))
+>                           (pi2 (products a (carrier terminal))))
+>                  (pi2 (products a (carrier terminal)))
+>             )
+>           )
+>     )
 >     (commutativityLeft $ Product.exists (products a (carrier terminal)) a (identity cat a) (exists terminal a))
 >
 >   rightUnitorNatIso : NaturalIsomorphism cat cat (bifunctorLeft cat (productFunctor cat products) (carrier terminal))
 >                                                  (idFunctor cat)
 >   rightUnitorNatIso = MkNaturalIsomorphism rightUnitorNatTrans rightUnitorIsomorphism
+>
 
-rightUnitorInverse a ;
-pi1 ; <id_A, unique> = id_(A x (carrier terminal))
-
-A x 1 - pi1 -> A
-A x 1 - pi2 -> 1
-
-<pi1, pi2> = id_(A x 1)
-
-A x 1 - unique -> 1
-==> unique = pi2
-
-
-
-A x 1 -- pi1 --> A -- <id_A, unique> --> A x 1
-pi1;<id_A, unique>;pi2 = pi1 ; id_A = pi1
-pi1;<id_A, unique>;pi2 = pi1;unique = unique = pi2
-
-
-A x 1 -- pi2 --> 1
-  |              ^
-  |              |
- pi1            pi2
-  |              |
- \ /             |
-  A <-- pi1 -- A x 1
-
-
-
-exists a -> (id_a:a->a) -> (unique: a -> 1)
-rightUnitorComponent: A x 1 -- pi1 -> A
-inverse: A --> A x (carrier terminal)
-A -- inverse := <id_A, unique> --> A x carrier terminal -- pi1 --> A
-
-
-
-A -- unique --> carrier terminal
-A -- id --> A
-
-
-A x 1 -- pi1 --> A
-    |                     |
-    |                     |
-  fxid1                f
-    |                     |
-   \ /                   \ /
-B x 1 -- pi1 --> B
-
-
-
-
-pi2, !
-
-
-f: A --> B
-
-A x 1 -- f x id1 -> B x 1
-
-
-<pi1;f, pi2;id1> = <pi1;f,pi2;>
-
-<pi1;f,pi2;> ; pi1 = pi1;f
+* dualize for left unitor
+* Prove composition law for product (?compLaw hole)
+* Define associator components: (A x B) x C --> A x (B x C)
+* Prove they are isomorphisms (Horrible)
+* Prove they define a natural transformation
+* Prove Triangle identity
+* Prove Pentagon identity (Horrible too) 
