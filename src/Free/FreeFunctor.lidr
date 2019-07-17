@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Data.List
 > import Free.Graph
 > import Free.Path
 > import Free.PathCategory
@@ -38,69 +39,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > foldPath :
 >      (g : Graph)
 >   -> (ge : GraphEmbedding g cat)
->   -> Path i j
+>   -> Path g i j
 >   -> mor cat (mapVertices ge i) (mapVertices ge j)
-> foldPath (MkGraph v e) {cat} (MkGraphEmbedding mapV mapE) {i} Nil       = identity cat (mapV i)
-> foldPath g@(MkGraph v e) {cat}       ge@(MkGraphEmbedding mapV mapE) {i = fst x} {j}    (x :: xs) = compose cat _ _ _ (mapE ?asdf) (foldPath g ge xs)
+> foldPath _ {cat} ge {i} []        = identity cat (mapVertices ge i)
+> foldPath g {cat} ge     (x :: xs) = compose cat _ _ _ (mapEdges ge x) (foldPath g ge xs)
 >
-
--- > freeFunctor : (g : Graph) -> GraphEmbedding g cat -> CFunctor (pathCategory g) cat
--- > freeFunctor (MkGraph v e) (MkGraphEmbedding mapV mapE) = MkCFunctor
--- >   mapV
--- >   ?mapMor
--- >   ?preserveId
--- >   ?preserveComp
-
--- > forgetCat : (c : Category) -> Graph
--- > forgetCat c = MkGraph (obj c) (morphismsList c)
-
--- >
--- > record GraphMorphism (g1 : Graph) (g2 : Graph) where
--- >   constructor MkGraphMorphism
--- >   mapVert : vertices g1 -> vertices g2
--- >   mapEdge : (w1, w2 : vertices g1) -> Edge g1 w1 w2 -> Edge g2 (mapVert w1) (mapVert w2)
--- >
--- > foldPath :
--- >      (g : Graph)
--- >   -> (gm : GraphMorphism g (forgetCat cat))
--- >   -> Path (Edge g) a b
--- >   -> mor cat (mapVert gm a) (mapVert gm b)
--- > foldPath {cat} {a} g gm Nil        = identity cat (mapVert gm a)
--- > foldPath {cat}     g gm (eij :: p) = compose cat _ _ _ (mapEdge gm _ _ eij) (foldPath g gm p)
--- >
--- > freeFunctor :
--- >      (g : Graph v)
--- >   -> (cat : Category)
--- >   -> GraphMorphism v (obj cat) g (forgetCat cat)
--- >   -> CFunctor (pathCategory g) cat
--- > freeFunctor (MkGraph e) cat gm = MkCFunctor
--- >   (mapVert gm)
--- >   (\a, b, p => foldPath {cat} (MkGraph e) gm p)
--- >   (\_ => Refl)
--- >   preserveComp
--- >   where
--- >     preserveComp :
--- >          (x, y, z : v)
--- >       -> (f : Path e x y)
--- >       -> (g : Path e y z)
--- >       -> foldPath (MkGraph e) gm (joinPath f g)
--- >        = compose cat
--- >                  (mapVert gm x)
--- >                  (mapVert gm y)
--- >                  (mapVert gm z)
--- >                  (foldPath (MkGraph e) gm f)
--- >                  (foldPath (MkGraph e) gm g)
--- >     preserveComp y y z Nil      g = sym $ leftIdentity cat (mapVert gm y) (mapVert gm z) (foldPath (MkGraph e) gm g)
--- >     preserveComp x y z (fab::f) g = rewrite preserveComp _ _ _ f g
--- >                                     in associativity cat _ _ _ _ (mapEdge gm x _ fab)
--- >                                                                  (foldPath (MkGraph e) gm f)
--- >                                                                  (foldPath (MkGraph e) gm g)
--- >
--- > freeEmbeddingMorphism : (g : Graph v) -> GraphMorphism v (obj (pathCategory g)) g (forgetCat $ pathCategory g)
--- > freeEmbeddingMorphism (MkGraph _) = MkGraphMorphism id (\_, _, e => [e])
--- >
--- > liftPathToMorphism :
--- >      (g : Graph v)
--- >   -> Path (Edge g) a b
--- >   -> mor (pathCategory g) (mapVert (freeEmbeddingMorphism g) a) (mapVert (freeEmbeddingMorphism g) b) -- should actually be mor (pathCategory g) a b
--- > liftPathToMorphism g p = foldPath g (freeEmbeddingMorphism g) p
+> freeFunctorCompose :
+>      (g : Graph)
+>   -> (ge : GraphEmbedding g cat)
+>   -> (i, j, k : vertices g)
+>   -> (f : Path g i j)
+>   -> (h : Path g j k)
+>   -> foldPath g ge {i} {j = k} (joinPath f h)
+>    = compose cat
+>              (mapVertices ge i)
+>              (mapVertices ge j)
+>              (mapVertices ge k)
+>              (foldPath g ge {i} {j} f)
+>              (foldPath g ge {i = j} {j = k} h)
+> freeFunctorCompose g {cat} ge j j k [] h = sym $ leftIdentity cat
+>                                                               (mapVertices ge j)
+>                                                               (mapVertices ge k)
+>                                                               (foldPath g ge h)
+> freeFunctorCompose g {cat} ge i j k (x :: xs) h =
+>   trans (cong {f = compose cat _ _ _ (mapEdges ge x)} $ freeFunctorCompose g ge _ _ _ xs h)
+>         (associativity cat _ _ _ _ (mapEdges ge x) (foldPath g ge xs) (foldPath g ge h))
+>
+> freeFunctor : (g : Graph) -> GraphEmbedding g cat -> CFunctor (pathCategory g) cat
+> freeFunctor g@(MkGraph v e) ge@(MkGraphEmbedding mapV mapE) = MkCFunctor
+>   mapV
+>   (\i, j, p => foldPath g ge {i} {j} p)
+>   (\_ => Refl)
+>   (freeFunctorCompose g ge)

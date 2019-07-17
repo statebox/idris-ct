@@ -31,16 +31,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   Nil  : Path g i i
 >   (::) : (a : Edge g i j) -> Path g j k -> Path g i k
 
-> nullPath : Path Graph.triangle One One
-> nullPath = Nil
->
-> oneToThree : Path Graph.triangle One Three
-> oneToThree = [Here, There Here]
->
-> oneToThree' : Path Graph.triangle One Three
-> oneToThree' = Here :: There Here :: Nil
+nullPath : Path Graph.triangle One One
+nullPath = Nil
 
->
+oneToThree : Path Graph.triangle One Three
+oneToThree = [Here, There Here]
+
+oneToThree' : Path Graph.triangle One Three
+oneToThree' = Here :: There Here :: Nil
+
 > edgeToPath : {g : Graph} -> (a : Edge g i j) -> Path g (edgeOrigin a) (edgeTarget a)
 > edgeToPath a = [a]
 >
@@ -59,40 +58,3 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> joinPath p (joinPath q r) = joinPath (joinPath p q) r
 > joinPathAssoc Nil q r = Refl
 > joinPathAssoc (x :: xs) q r = cong $ joinPathAssoc xs q r
-
--- > ||| IDRIS MAGIC a :: b :: c :: Nil = [a,b,c]
--- > data Path : (e : t -> t -> Type) -> t -> t -> Type where
--- >   Nil  : Path e i i
--- >   (::) : e i j -> Path e j k -> Path e i k
--- >
--- > edgeToPath : {g : Graph v} -> Edge g i j -> Path (Edge g) i j
--- > edgeToPath e = [e]
--- >
--- > joinPath : {e : t -> t -> Type} -> Path e i j -> Path e j k -> Path e i k
--- > joinPath []        y = y
--- > joinPath (x :: xs) y = x :: joinPath xs y
--- >
--- > joinPathNil : (p : Path e i j) -> joinPath p [] = p
--- > joinPathNil Nil        = Refl
--- > joinPathNil (eij :: p) = cong $ joinPathNil p
--- >
--- > joinPathAssoc :
--- >      (p : Path e i j)
--- >   -> (q : Path e j k)
--- >   -> (r : Path e k l)
--- >   -> joinPath p (joinPath q r) = joinPath (joinPath p q) r
--- > joinPathAssoc Nil q r        = Refl
--- > joinPathAssoc (eij :: p) q r = cong $ joinPathAssoc p q r
--- >
--- > data BuildPathError
--- >   = NoEdges
--- >   | NoIndices
--- >   | IndexOutOfBounds Nat
--- >
--- > buildPath : Eq v => (edges : EdgeList v) -> List Nat -> Either BuildPathError (Path (Edge (buildGraph edges)) a b)
--- > buildPath []    _                       = Left NoEdges
--- > buildPath _     []                      = Left NoIndices
--- > buildPath edges (index :: otherIndices) =
--- >   case index' index edges of
--- >     Nothing   => Left $ IndexOutOfBounds index
--- >     Just edge => ?asdf
