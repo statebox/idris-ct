@@ -21,39 +21,58 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 > module Free.Graph
 >
-> import Data.Fin
+> import Data.List
 >
 > %access public export
 > %default total
 >
-> record Graph (vert : Type) where
+> record Graph where
 >   constructor MkGraph
->   Edge : vert -> vert -> Type
+>   vertices : Type
+>   edges    : List (vertices, vertices)
 >
-> emptyGraph : Graph vertices
-> emptyGraph = MkGraph (const $ const Void)
+> Edge : (g : Graph) -> (i, j : vertices g) -> Type
+> Edge (MkGraph _ e) v1 v2 = Elem (v1, v2) e
 >
-> EdgePair : Type -> Type
-> EdgePair a = Pair a a
+> edgeOrigin : {g : Graph} -> Edge g i j -> vertices g
+> edgeOrigin {i} _ = i
 >
-> EdgeList : Type -> Type
-> EdgeList a = List (EdgePair a)
->
-> addUnit : Eq v => (v1, v2 : v) -> (v -> v -> Type) -> (w1, w2 : v) -> Type
-> addUnit v1 v2 e w1 w2 =
->   if v1 == w1 && v1 == w2
->   then Either Unit (e w1 w2)
->   else e w1 w2
->
-> addEdge : Eq v => (g : Graph v) -> (EdgePair v) -> Graph v
-> addEdge (MkGraph e) (v1, v2) = MkGraph eAdded
->   where
->     eAdded : v -> v -> Type
->     eAdded w1 w2 = addUnit v1 v2 e w1 w2
->
-> buildGraph : Eq vertices => EdgeList vertices -> Graph vertices
-> buildGraph []        = emptyGraph
-> buildGraph (e :: es) = addEdge (buildGraph es) e
+> edgeTarget : {g : Graph} -> Edge g i j -> vertices g
+> edgeTarget {j} _ = j
+
+> data TriangleVertices = One | Two | Three
+
+> triangle : Graph
+> triangle = MkGraph TriangleVertices [(One, Two), (Two, Three), (Three, One)]
+
+-- > record Graph (vert : Type) where
+-- >   constructor MkGraph
+-- >   Edge : vert -> vert -> Type
+-- >
+-- > emptyGraph : Graph vertices
+-- > emptyGraph = MkGraph (const $ const Void)
+-- >
+-- > EdgePair : Type -> Type
+-- > EdgePair a = Pair a a
+-- >
+-- > EdgeList : Type -> Type
+-- > EdgeList a = List (EdgePair a)
+-- >
+-- > addUnit : Eq v => (v1, v2 : v) -> (v -> v -> Type) -> (w1, w2 : v) -> Type
+-- > addUnit v1 v2 e w1 w2 =
+-- >   if v1 == w1 && v1 == w2
+-- >   then Either Unit (e w1 w2)
+-- >   else e w1 w2
+-- >
+-- > addEdge : Eq v => (g : Graph v) -> (EdgePair v) -> Graph v
+-- > addEdge (MkGraph e) (v1, v2) = MkGraph eAdded
+-- >   where
+-- >     eAdded : v -> v -> Type
+-- >     eAdded w1 w2 = addUnit v1 v2 e w1 w2
+-- >
+-- > buildGraph : Eq vertices => EdgeList vertices -> Graph vertices
+-- > buildGraph []        = emptyGraph
+-- > buildGraph (e :: es) = addEdge (buildGraph es) e
 
 For example we could use this as follows:
 
