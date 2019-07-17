@@ -35,6 +35,7 @@ modules =
   Dual.DualCategory,
   Dual.DualFunctor,
   Free.Graph,
+  Free.Path,
   Free.PathCategory,
   Free.FreeFunctor,
   Idris.EitherAsCoProduct,
