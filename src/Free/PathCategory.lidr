@@ -29,9 +29,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %default total
 >
 > pathCategory : Graph -> Category
-> pathCategory (MkGraph v e) = MkCategory
+> pathCategory g@(MkGraph v e) = MkCategory
 >   v
->   (Path)
+>   (Path g)
 >   (\a => Nil)
 >   (\a, b, c, f, g => joinPath f g)
 >   (\a, b, f => Refl)

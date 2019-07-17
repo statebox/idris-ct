@@ -27,35 +27,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 >
-> data Path : v -> v -> Type where
->   Nil  : Path i i
->   (::) : (e : (v, v)) -> Path (snd e) i -> Path (fst e) i
+> data Path : (g : Graph) -> vertices g -> vertices g -> Type where
+>   Nil  : Path g i i
+>   (::) : (a : Edge g i j) -> Path g j k -> Path g i k
 
-> nullPath : Path One One
+> nullPath : Path Graph.triangle One One
 > nullPath = Nil
 >
-> oneToThree : Path One Three
-> oneToThree = [(One, Two), (Two, Three)]
+> oneToThree : Path Graph.triangle One Three
+> oneToThree = [Here, There Here]
 >
-> oneToThree' : Path One Three
-> oneToThree' = (One, Two) :: (Two, Three) :: Nil
+> oneToThree' : Path Graph.triangle One Three
+> oneToThree' = Here :: There Here :: Nil
 
 >
-> edgeToPath : {g : Graph} -> (a : Edge g i j) -> Path (edgeOrigin a) (edgeTarget a)
-> edgeToPath {i} {j} _ = [(i, j)]
+> edgeToPath : {g : Graph} -> (a : Edge g i j) -> Path g (edgeOrigin a) (edgeTarget a)
+> edgeToPath a = [a]
 >
-> joinPath : Path i j -> Path j k -> Path i k
+> joinPath : Path g i j -> Path g j k -> Path g i k
 > joinPath [] y = y
 > joinPath (x :: xs) y = x :: joinPath xs y
 >
-> joinPathNil : (p : Path i j) -> joinPath p [] = p
+> joinPathNil : (p : Path g i j) -> joinPath p [] = p
 > joinPathNil Nil       = Refl
 > joinPathNil (x :: xs) = cong $ joinPathNil xs
 >
 > joinPathAssoc :
->      (p : Path i j)
->   -> (q : Path j k)
->   -> (r : Path k l)
+>      (p : Path g i j)
+>   -> (q : Path g j k)
+>   -> (r : Path g k l)
 >   -> joinPath p (joinPath q r) = joinPath (joinPath p q) r
 > joinPathAssoc Nil q r = Refl
 > joinPathAssoc (x :: xs) q r = cong $ joinPathAssoc xs q r
