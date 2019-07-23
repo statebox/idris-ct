@@ -40,14 +40,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                        (component (multiplication m) c))
 >   (\a, b, f => trans (cong {f = \x => compose cat _ _ _ x (component (multiplication m) b)}
 >                            (commutativity (unit m) a (mapObj (functor m) b) f))
->                            (trans (sym $ associativity cat a _ _ _
+>                            (trans (sym $ associativity cat _ _ _ _
 >                                                        f
 >                                                        (component (unit m) (mapObj (functor m) b))
 >                                                        (component (multiplication m) b))
 >                                   (trans (cong {f = \x => compose cat _ _ _ f (component x b)}
 >                                                       (leftUnit m))
 >                                          (rightIdentity cat a (mapObj (functor m) b) f))))
->   ?rId
+>   (\a, b, f => trans (sym $ associativity cat _ _ _ _
+>                                               f
+>                                               (mapMor (functor m) _ _ (component (unit m) b))
+>                                               (component (multiplication m) b))
+>                      (trans (cong {f = \x => compose cat _ _ _ f (component x b)}
+>                                   (rightUnit m))
+>                             (rightIdentity cat _ _ f)))
 >   ?assoc
 
 -- >   MkCategory

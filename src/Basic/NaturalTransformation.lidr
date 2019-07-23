@@ -200,17 +200,17 @@ The code above is everything we need to define what a natural transformation is.
 >   -> NaturalTransformation cat1 cat3
 >      (functorComposition cat1 cat2 cat3 fun1 fun3)
 >      (functorComposition cat1 cat2 cat3 fun2 fun3)
-> composeFunctorNatTrans _ _ cat3 fun1 fun2 (MkNaturalTransformation component commutativity) fun3 =
+> composeFunctorNatTrans _ _ cat3 fun1 fun2 natTrans fun3 =
 >   MkNaturalTransformation
->     (\a => mapMor fun3 (mapObj fun1 a) (mapObj fun2 a) (component a))
+>     (\a => mapMor fun3 (mapObj fun1 a) (mapObj fun2 a) (component natTrans a))
 >     (\a, b, f =>
->       (compose cat3 _ _ _ (mapMor fun3 _ _ (component a)) (mapMor fun3 _ _ $ mapMor fun2 a b f))
->         ={ sym $ preserveCompose fun3 _ _ _ (component a) (mapMor fun2 a b f) }=
->       (mapMor fun3 _ _ $ compose cat2 _ _ _ (component a) (mapMor fun2 a b f))
->         ={ cong {f = mapMor fun3 (mapObj fun1 a) (mapObj fun2 b)} $ commutativity a b f }=
->       (mapMor fun3 _ _ $ compose cat2 _ _ _ (mapMor fun1 a b f) (component b))
->         ={ preserveCompose fun3 _ _ _ (mapMor fun1 a b f) (component b) }=
->       (compose cat3 _ _ _ (mapMor fun3 _ _ (mapMor fun1 a b f)) (mapMor fun3 _ _ (component b)))
+>       (compose cat3 _ _ _ (mapMor fun3 _ _ (component natTrans a)) (mapMor fun3 _ _ $ mapMor fun2 a b f))
+>         ={ sym $ preserveCompose fun3 _ _ _ (component natTrans a) (mapMor fun2 a b f) }=
+>       (mapMor fun3 _ _ $ compose cat2 _ _ _ (component natTrans a) (mapMor fun2 a b f))
+>         ={ cong {f = mapMor fun3 (mapObj fun1 a) (mapObj fun2 b)} $ commutativity natTrans a b f }=
+>       (mapMor fun3 _ _ $ compose cat2 _ _ _ (mapMor fun1 a b f) (component natTrans b))
+>         ={ preserveCompose fun3 _ _ _ (mapMor fun1 a b f) (component natTrans b) }=
+>       (compose cat3 _ _ _ (mapMor fun3 _ _ (mapMor fun1 a b f)) (mapMor fun3 _ _ (component natTrans b)))
 >     QED)
 >
 > composeNatTransFunctor :
@@ -221,8 +221,6 @@ The code above is everything we need to define what a natural transformation is.
 >   -> NaturalTransformation cat1 cat3
 >     (functorComposition cat1 cat2 cat3 fun1 fun2)
 >     (functorComposition cat1 cat2 cat3 fun1 fun3)
-> composeNatTransFunctor _ _ _ fun1 _ _
->   natTrans =
->     MkNaturalTransformation
->       (\a => component natTrans (mapObj fun1 a))
->       (\a, b, f => commutativity natTrans _ _ (mapMor fun1 a b f))
+> composeNatTransFunctor _ _ _ fun1 _ _ natTrans = MkNaturalTransformation
+>   (\a => component natTrans (mapObj fun1 a))
+>   (\a, b, f => commutativity natTrans _ _ (mapMor fun1 a b f))
