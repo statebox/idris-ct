@@ -175,23 +175,21 @@ The code above is everything we need to define what a natural transformation is.
 >   -> NaturalTransformation cat1 cat2 fun1 fun2
 >   -> NaturalTransformation cat1 cat2 fun2 fun3
 >   -> NaturalTransformation cat1 cat2 fun1 fun3
-> naturalTransformationComposition cat1 cat2 fun1 fun2 fun3
->   (MkNaturalTransformation comp1 comm1)
->   (MkNaturalTransformation comp2 comm2) =
+> naturalTransformationComposition cat1 cat2 fun1 fun2 fun3 natTrans1 natTrans2 =
 >     MkNaturalTransformation
->       (\a => compose cat2 (mapObj fun1 a) (mapObj fun2 a) (mapObj fun3 a) (comp1 a) (comp2 a))
+>       (\a => compose cat2 (mapObj fun1 a) (mapObj fun2 a) (mapObj fun3 a) (component natTrans1 a) (component natTrans2 a))
 >       (\a, b, f =>
->         (compose cat2 _ _ _ (compose cat2 _ _ _ (comp1 a) (comp2 a)) (mapMor fun3 _ _ f))
->           ={ sym $ (associativity cat2 _ _ _ _ (comp1 a) (comp2 a) (mapMor fun3 a b f)) }=
->         (compose cat2 _ _ _ (comp1 a) (compose cat2 _ _ _ (comp2 a) (mapMor fun3 _ _ f)))
->           ={ cong $ comm2 a b f }=
->         (compose cat2 _ _ _ (comp1 a) (compose cat2 _ _ _ (mapMor fun2 _ _ f) (comp2 b)))
->           ={ associativity cat2 _ _ _ _ (comp1 a) (mapMor fun2 a b f) (comp2 b) }=
->         (compose cat2 _ _ _ (compose cat2 _ _ _ (comp1 a) (mapMor fun2 _ _ f)) (comp2 b))
->           ={ cong {f = \h => compose cat2 _ _ _ h (comp2 b)} $ comm1 a b f }=
->         (compose cat2 _ _ _ (compose cat2 _ _ _ (mapMor fun1 a b f) (comp1 b)) (comp2 b))
->           ={ sym $ associativity cat2 _ _ _ _ (mapMor fun1 _ _ f) (comp1 b) (comp2 b) }=
->         (compose cat2 _ _ _ (mapMor fun1 _ _ f) (compose cat2 _ _ _ (comp1 b) (comp2 b)))
+>         (compose cat2 _ _ _ (compose cat2 _ _ _ (component natTrans1 a) (component natTrans2 a)) (mapMor fun3 _ _ f))
+>           ={ sym $ (associativity cat2 _ _ _ _ (component natTrans1 a) (component natTrans2 a) (mapMor fun3 a b f)) }=
+>         (compose cat2 _ _ _ (component natTrans1 a) (compose cat2 _ _ _ (component natTrans2 a) (mapMor fun3 _ _ f)))
+>           ={ cong $ commutativity natTrans2 a b f }=
+>         (compose cat2 _ _ _ (component natTrans1 a) (compose cat2 _ _ _ (mapMor fun2 _ _ f) (component natTrans2 b)))
+>           ={ associativity cat2 _ _ _ _ (component natTrans1 a) (mapMor fun2 a b f) (component natTrans2 b) }=
+>         (compose cat2 _ _ _ (compose cat2 _ _ _ (component natTrans1 a) (mapMor fun2 _ _ f)) (component natTrans2 b))
+>           ={ cong {f = \h => compose cat2 _ _ _ h (component natTrans2 b)} $ commutativity natTrans1 a b f }=
+>         (compose cat2 _ _ _ (compose cat2 _ _ _ (mapMor fun1 a b f) (component natTrans1 b)) (component natTrans2 b))
+>           ={ sym $ associativity cat2 _ _ _ _ (mapMor fun1 _ _ f) (component natTrans1 b) (component natTrans2 b) }=
+>         (compose cat2 _ _ _ (mapMor fun1 _ _ f) (compose cat2 _ _ _ (component natTrans1 b) (component natTrans2 b)))
 >       QED)
 >
 > composeFunctorNatTrans :
