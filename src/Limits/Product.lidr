@@ -119,45 +119,31 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                    (compose cat (carrier (productObj a1 a2)) a2 c2 (pi2 (productObj a1 a2)) (compose cat a2 b2 c2 f2 g2))
 >     compComMor a1 a2 b1 b2 c1 c2 f1 f2 g1 g2 = 
 >       let 
->         cmab = exists (productObj b1 b2)
->                       (carrier (productObj a1 a2))
->                       (compose cat (carrier (productObj a1 a2)) a1 b1 (pi1 (productObj a1 a2)) f1)
->                       (compose cat (carrier (productObj a1 a2)) a2 b2 (pi2 (productObj a1 a2)) f2)
->         cmbc = exists (productObj c1 c2)
->                       (carrier (productObj b1 b2))
->                       (compose cat (carrier (productObj b1 b2)) b1 c1 (pi1 (productObj b1 b2)) g1)
->                       (compose cat (carrier (productObj b1 b2)) b2 c2 (pi2 (productObj b1 b2)) g2)
+>         pa = productObj a1 a2
+>         pb = productObj b1 b2
+>         pc = productObj c1 c2
+>         cmab = exists pb (carrier pa) (compose cat (carrier pa) a1 b1 (pi1 pa) f1)
+>                                       (compose cat (carrier pa) a2 b2 (pi2 pa) f2)
+>         cmbc = exists pc (carrier pb) (compose cat (carrier pb) b1 c1 (pi1 pb) g1)
+>                                       (compose cat (carrier pb) b2 c2 (pi2 pb) g2)
 >        in
->       MkCommutingMorphism (compose cat
->                                    (carrier (productObj a1 a2))
->                                    (carrier (productObj b1 b2))
->                                    (carrier (productObj c1 c2))
->                                    (challenger cmab)
->                                    (challenger cmbc)) 
->                           (rewrite sym $ associativity cat (carrier (productObj a1 a2)) (carrier (productObj b1 b2)) (carrier (productObj c1 c2)) c1
->                                                            (challenger cmab)
->                                                            (challenger cmbc)
->                                                            (pi1 (productObj c1 c2)) in
+>       MkCommutingMorphism (compose cat (carrier pa) (carrier pb) (carrier pc) (challenger cmab) (challenger cmbc)) 
+>                           (rewrite sym $ associativity cat (carrier pa) (carrier pb) (carrier pc) c1
+>                                                            (challenger cmab) (challenger cmbc) (pi1 pc) in
 >                            rewrite commutativityLeft cmbc in 
->                            rewrite associativity cat (carrier (productObj a1 a2)) (carrier (productObj b1 b2)) b1 c1
->                                                      (challenger cmab)
->                                                      (pi1 (productObj b1 b2)) 
->                                                      g1 in
+>                            rewrite associativity cat (carrier pa) (carrier pb) b1 c1
+>                                                      (challenger cmab) (pi1 pb) g1 in
 >                            rewrite commutativityLeft cmab in 
->                            sym $ associativity cat (carrier (productObj a1 a2)) a1 b1 c1 
->                                                    (pi1 (productObj a1 a2)) f1 g1) 
->                           (rewrite sym $ associativity cat (carrier (productObj a1 a2)) (carrier (productObj b1 b2)) (carrier (productObj c1 c2)) c2
->                                                            (challenger cmab)
->                                                            (challenger cmbc)
->                                                            (pi2 (productObj c1 c2)) in
+>                            sym $ associativity cat (carrier pa) a1 b1 c1 
+>                                                    (pi1 pa) f1 g1) 
+>                           (rewrite sym $ associativity cat (carrier pa) (carrier pb) (carrier pc) c2
+>                                                            (challenger cmab) (challenger cmbc) (pi2 pc) in
 >                            rewrite commutativityRight cmbc in 
->                            rewrite associativity cat (carrier (productObj a1 a2)) (carrier (productObj b1 b2)) b2 c2
->                                                      (challenger cmab)
->                                                      (pi2 (productObj b1 b2)) 
->                                                      g2 in
+>                            rewrite associativity cat (carrier pa) (carrier pb) b2 c2
+>                                                      (challenger cmab) (pi2 pb) g2 in
 >                            rewrite commutativityRight cmab in 
->                            sym $ associativity cat (carrier (productObj a1 a2)) a2 b2 c2 
->                                                    (pi2 (productObj a1 a2)) f2 g2) 
+>                            sym $ associativity cat (carrier pa) a2 b2 c2 
+>                                                    (pi2 pa) f2 g2) 
 >     compLaw : 
 >          (a,b,c : (obj cat, obj cat)) ->
 >          (f : ProductMorphism cat cat a b) ->
