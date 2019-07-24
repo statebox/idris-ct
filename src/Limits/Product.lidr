@@ -79,7 +79,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >      (cat : Category)
 >   -> (productObj : catHasProducts cat)
 >   -> CFunctor (productCategory cat cat) cat
-> productFunctor cat productObj = MkCFunctor mapObj mapMor idLaw ?compLaw
+> productFunctor cat productObj = MkCFunctor mapObj mapMor idLaw compLaw
 >   where
 >     mapObj : (obj cat, obj cat) -> obj cat
 >     mapObj (a,b) = carrier $ productObj a b
@@ -110,6 +110,66 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                (compose cat (carrier (productObj a b)) a a (pi1 (productObj a b)) (identity cat a))
 >                                (compose cat (carrier (productObj a b)) b b (pi2 (productObj a b)) (identity cat b))
 >                                (identityCommutingMorphism a b)
+>     compComMor : (a1,a2,b1,b2,c1,c2 : obj cat) 
+>               -> (f1 : mor cat a1 b1) -> (f2 : mor cat a2 b2) 
+>               -> (g1 : mor cat b1 c1) -> (g2 : mor cat b2 c2)
+>               -> CommutingMorphism cat (carrier (productObj a1 a2)) c1 c2 
+>                                    (carrier (productObj c1 c2)) (pi1 (productObj c1 c2)) (pi2 (productObj c1 c2)) 
+>                                    (compose cat (carrier (productObj a1 a2)) a1 c1 (pi1 (productObj a1 a2)) (compose cat a1 b1 c1 f1 g1))
+>                                    (compose cat (carrier (productObj a1 a2)) a2 c2 (pi2 (productObj a1 a2)) (compose cat a2 b2 c2 f2 g2))
+>     compComMor a1 a2 b1 b2 c1 c2 f1 f2 g1 g2 = 
+>       let 
+>         cmab = exists (productObj b1 b2)
+>                       (carrier (productObj a1 a2))
+>                       (compose cat (carrier (productObj a1 a2)) a1 b1 (pi1 (productObj a1 a2)) f1)
+>                       (compose cat (carrier (productObj a1 a2)) a2 b2 (pi2 (productObj a1 a2)) f2)
+>         cmbc = exists (productObj c1 c2)
+>                       (carrier (productObj b1 b2))
+>                       (compose cat (carrier (productObj b1 b2)) b1 c1 (pi1 (productObj b1 b2)) g1)
+>                       (compose cat (carrier (productObj b1 b2)) b2 c2 (pi2 (productObj b1 b2)) g2)
+>        in
+>       MkCommutingMorphism (compose cat
+>                                    (carrier (productObj a1 a2))
+>                                    (carrier (productObj b1 b2))
+>                                    (carrier (productObj c1 c2))
+>                                    (challenger cmab)
+>                                    (challenger cmbc)) 
+>                           (rewrite sym $ associativity cat (carrier (productObj a1 a2)) (carrier (productObj b1 b2)) (carrier (productObj c1 c2)) c1
+>                                                            (challenger cmab)
+>                                                            (challenger cmbc)
+>                                                            (pi1 (productObj c1 c2)) in
+>                            rewrite commutativityLeft cmbc in 
+>                            rewrite associativity cat (carrier (productObj a1 a2)) (carrier (productObj b1 b2)) b1 c1
+>                                                      (challenger cmab)
+>                                                      (pi1 (productObj b1 b2)) 
+>                                                      g1 in
+>                            rewrite commutativityLeft cmab in 
+>                            sym $ associativity cat (carrier (productObj a1 a2)) a1 b1 c1 
+>                                                    (pi1 (productObj a1 a2)) f1 g1) 
+>                           (rewrite sym $ associativity cat (carrier (productObj a1 a2)) (carrier (productObj b1 b2)) (carrier (productObj c1 c2)) c2
+>                                                            (challenger cmab)
+>                                                            (challenger cmbc)
+>                                                            (pi2 (productObj c1 c2)) in
+>                            rewrite commutativityRight cmbc in 
+>                            rewrite associativity cat (carrier (productObj a1 a2)) (carrier (productObj b1 b2)) b2 c2
+>                                                      (challenger cmab)
+>                                                      (pi2 (productObj b1 b2)) 
+>                                                      g2 in
+>                            rewrite commutativityRight cmab in 
+>                            sym $ associativity cat (carrier (productObj a1 a2)) a2 b2 c2 
+>                                                    (pi2 (productObj a1 a2)) f2 g2) 
+>     compLaw : 
+>          (a,b,c : (obj cat, obj cat)) ->
+>          (f : ProductMorphism cat cat a b) ->
+>          (g : ProductMorphism cat cat b c) ->
+>          mapMor a c (productCompose a b c f g) =
+>          compose cat (mapObj a) (mapObj b) (mapObj c) (mapMor a b f) (mapMor b c g)
+>     compLaw (a1,a2) (b1,b2) (c1,c2) (MkProductMorphism f1 f2) (MkProductMorphism g1 g2) = 
+>       sym $ unique (productObj c1 c2) 
+>                    (carrier (productObj a1 a2)) 
+>                    (compose cat (carrier (productObj a1 a2)) a1 c1 (pi1 (productObj a1 a2)) (compose cat a1 b1 c1 f1 g1))
+>                    (compose cat (carrier (productObj a1 a2)) a2 c2 (pi2 (productObj a1 a2)) (compose cat a2 b2 c2 f2 g2))
+>                    (compComMor a1 a2 b1 b2 c1 c2 f1 f2 g1 g2)
 >
 > catHasTerminalObj : Category -> Type
 > catHasTerminalObj = TerminalObject
@@ -246,18 +306,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                                      (identity cat a)
 >                                                      (exists terminal a)
 >
-   
-   doesn't seem necessary
   
-   potentialIdentity :
-        (a : obj cat)
-     -> mor cat (carrier $ products a (carrier terminal)) (carrier $ products a (carrier terminal))
-   potentialIdentity a = compose cat
-               (carrier $ products a (carrier terminal))
-               a
-               (carrier $ products a (carrier terminal))
-               (pi1 $ products a (carrier terminal))
-               (challenger (exists (products a (carrier terminal)) a (identity cat a) (exists terminal a)))
+  doesn't seem necessary
+ 
+  potentialIdentity :
+       (a : obj cat)
+    -> mor cat (carrier $ products a (carrier terminal)) (carrier $ products a (carrier terminal))
+  potentialIdentity a = compose cat
+              (carrier $ products a (carrier terminal))
+              a
+              (carrier $ products a (carrier terminal))
+              (pi1 $ products a (carrier terminal))
+              (challenger (exists (products a (carrier terminal)) a (identity cat a) (exists terminal a)))
 
 >
 >   rightUnitorIsomorphism : (a : obj cat) -> Isomorphism cat _ _ (rightUnitorComponent a)
@@ -390,7 +450,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                                 (idFunctor cat)
 >   leftUnitorNatIso = MkNaturalIsomorphism leftUnitorNatTrans leftUnitorIsomorphism
 
-* Prove composition law for product (?compLaw hole)
 * Define associator components: (A x B) x C --> A x (B x C)
 * Prove they are isomorphisms (Horrible)
 * Prove they define a natural transformation
