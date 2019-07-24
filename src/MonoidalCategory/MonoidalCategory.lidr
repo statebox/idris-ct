@@ -40,7 +40,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     -> (leftUnitor  : NaturalIsomorphism cat cat (leftIdTensor  cat tensor unit) (idFunctor cat))
 >     -> (rightUnitor : NaturalIsomorphism cat cat (rightIdTensor cat tensor unit) (idFunctor cat))
 >     -> ((a, b, c, d : obj cat) -> MonoidalPentagon cat tensor associator a b c d)
->     -> ((a, b : obj cat) -> MonoidalTriangle cat tensor unit associator leftunitor rightUnitor a b)
+>     -> ((a, b : obj cat) -> MonoidalTriangle cat tensor unit associator leftUnitor rightUnitor a b)
 >     -> MonoidalCategory
 >
 > cat : MonoidalCategory -> Category
