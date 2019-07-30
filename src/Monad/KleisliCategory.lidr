@@ -31,38 +31,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 >
-> associativityComponent :
->      {cat : Category}
->   -> (m : Monad cat)
->   -> (a : obj cat)
->   -> (component (naturalTransformationComposition cat cat
->                                                   (functorComposition cat cat cat
->                                                                       (functorComposition cat cat cat (functor m) (functor m))
->                                                                       (functor m))
->                                                   (functorComposition cat cat cat (functor m) (functor m))
->                                                   (functor m)
->                                                   (composeFunctorNatTrans cat cat cat
->                                                                           (functorComposition cat cat cat (functor m) (functor m))
->                                                                           (functor m)
->                                                                           (multiplication m)
->                                                                           (functor m))
->                                                   (multiplication m))
->                 a
->     = component (naturalTransformationComposition cat cat
->                                                   (functorComposition cat cat cat
->                                                                       (functor m)
->                                                                       (functorComposition cat cat cat (functor m) (functor m)))
->                                                   (functorComposition cat cat cat (functor m) (functor m))
->                                                   (functor m)
->                                                   (composeNatTransFunctor cat cat cat
->                                                                           (functor m)
->                                                                           (functorComposition cat cat cat (functor m) (functor m))
->                                                                           (functor m)
->                                                                           (multiplication m))
->                                                   (multiplication m))
->                 a)
-> associativityComponent {cat} m a = ?qewr-- cong {f = \x => component x a} (associativity m)
->
 > kleisliCategory : {cat : Category} -> Monad cat -> Category
 > kleisliCategory {cat} m = MkCategory
 >   (obj cat)
@@ -164,6 +132,126 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                                                                 (mapMor (functor m) c
 >                                                                                                     (mapObj (functor m) d)
 >                                                                                                     h))))}
->                  (associativityComponent m d))
->     ?asdf)))
->   )
+>                  (cong {f = \x => component x d} (associativity m)))
+>     (trans (cong $ leftIdentity cat (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                     (mapObj (functor m) d)
+>                                     (compose cat (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                                  (mapObj (functor m) (mapObj (functor m) d))
+>                                                  (mapObj (functor m) d)
+>                                                  (component (multiplication m) (mapObj (functor m) d))
+>                                                  (component (multiplication m) d)))
+>     (trans (cong {f = \x => compose cat a
+>                                         (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                         (mapObj (functor m) d)
+>                                         (compose cat a
+>                                                      (mapObj (functor m) b)
+>                                                      (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                                      f
+>                                                      x)
+>                                         (compose cat (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                                      (mapObj (functor m) (mapObj (functor m) d))
+>                                                      (mapObj (functor m) d)
+>                                                      (component (multiplication m) (mapObj (functor m) d))
+>                                                      (component (multiplication m) d))}
+>                  (preserveCompose (functor m) b
+>                                               (mapObj (functor m) c)
+>                                               (mapObj (functor m) (mapObj (functor m) d))
+>                                               g
+>                                               (mapMor (functor m) c (mapObj (functor m) d) h)))
+>     (trans (cong {f = \x => compose cat a
+>                                         (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                         (mapObj (functor m) d)
+>                                         x
+>                                         (compose cat (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                                      (mapObj (functor m) (mapObj (functor m) d))
+>                                                      (mapObj (functor m) d)
+>                                                      (component (multiplication m) (mapObj (functor m) d))
+>                                                      (component (multiplication m) d))}
+>                  (associativity cat a
+>                                     (mapObj (functor m) b)
+>                                     (mapObj (functor m) (mapObj (functor m) c))
+>                                     (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                     f
+>                                     (mapMor (functor m) b (mapObj (functor m) c) g)
+>                                     (mapMor (functor m) (mapObj (functor m) c)
+>                                                         (mapObj (functor m) (mapObj (functor m) d))
+>                                                         (mapMor (functor m) c (mapObj (functor m) d) h))))
+>     (trans (sym $ associativity cat a
+>                                     (mapObj (functor m) (mapObj (functor m) c))
+>                                     (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                     (mapObj (functor m) d)
+>                                     (compose cat a
+>                                                  (mapObj (functor m) b)
+>                                                  (mapObj (functor m) (mapObj (functor m) c))
+>                                                  f
+>                                                  (mapMor (functor m) b (mapObj (functor m) c) g))
+>                                     (mapMor (functor m) (mapObj (functor m) c)
+>                                                         (mapObj (functor m) (mapObj (functor m) d))
+>                                                         (mapMor (functor m) c (mapObj (functor m) d) h))
+>                                     (compose cat (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                                  (mapObj (functor m) (mapObj (functor m) d))
+>                                                  (mapObj (functor m) d)
+>                                                  (component (multiplication m) (mapObj (functor m) d))
+>                                                  (component (multiplication m) d)))
+>     (trans (cong {f = compose cat a
+>                                   (mapObj (functor m) (mapObj (functor m) c))
+>                                   (mapObj (functor m) d)
+>                                   (compose cat a
+>                                                (mapObj (functor m) b)
+>                                                (mapObj (functor m) (mapObj (functor m) c))
+>                                                f
+>                                                (mapMor (functor m) b (mapObj (functor m) c) g))}
+>                  (associativity cat (mapObj (functor m) (mapObj (functor m) c))
+>                                     (mapObj (functor m) (mapObj (functor m) (mapObj (functor m) d)))
+>                                     (mapObj (functor m) (mapObj (functor m) d))
+>                                     (mapObj (functor m) d)
+>                                     (mapMor (functor m) (mapObj (functor m) c)
+>                                                         (mapObj (functor m) (mapObj (functor m) d))
+>                                                         (mapMor (functor m) c (mapObj (functor m) d) h))
+>                                     (component (multiplication m) (mapObj (functor m) d))
+>                                     (component (multiplication m) d)))
+>     (trans (cong {f = \x => compose cat a
+>                                         (mapObj (functor m) (mapObj (functor m) c))
+>                                         (mapObj (functor m) d)
+>                                         (compose cat a
+>                                                      (mapObj (functor m) b)
+>                                                      (mapObj (functor m) (mapObj (functor m) c))
+>                                                      f
+>                                                      (mapMor (functor m) b (mapObj (functor m) c) g))
+>                                         (compose cat (mapObj (functor m) (mapObj (functor m) c))
+>                                                      (mapObj (functor m) (mapObj (functor m) d))
+>                                                      (mapObj (functor m) d)
+>                                                      x
+>                                                      (component (multiplication m) d))}
+>                  (sym $ commutativity (multiplication m) c (mapObj (functor m) d) h))
+>     (trans (associativity cat a
+>                               (mapObj (functor m) (mapObj (functor m) c))
+>                               (mapObj (functor m) (mapObj (functor m) d))
+>                               (mapObj (functor m) d)
+>                               (compose cat a
+>                                            (mapObj (functor m) b)
+>                                            (mapObj (functor m) (mapObj (functor m) c))
+>                                            f
+>                                            (mapMor (functor m) b (mapObj (functor m) c) g))
+>                               (compose cat (mapObj (functor m) (mapObj (functor m) c))
+>                                            (mapObj (functor m) c)
+>                                            (mapObj (functor m) (mapObj (functor m) d))
+>                                            (component (multiplication m) c)
+>                                            (mapMor (functor m) c (mapObj (functor m) d) h))
+>                               (component (multiplication m) d))
+>     (cong {f = \x => compose cat a
+>                                  (mapObj (functor m) (mapObj (functor m) d))
+>                                  (mapObj (functor m) d)
+>                                  x
+>                                  (component (multiplication m) d)}
+>           (associativity cat a
+>                              (mapObj (functor m) (mapObj (functor m) c))
+>                              (mapObj (functor m) c)
+>                              (mapObj (functor m) (mapObj (functor m) d))
+>                              (compose cat a
+>                                           (mapObj (functor m) b)
+>                                           (mapObj (functor m) (mapObj (functor m) c))
+>                                           f
+>                                           (mapMor (functor m) b (mapObj (functor m) c) g))
+>                              (component (multiplication m) c)
+>                              (mapMor (functor m) c (mapObj (functor m) d) h))))))))))))))

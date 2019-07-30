@@ -29,33 +29,69 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > %access public export
 > %default total
+> %auto_implicits off
+>
+> eqNatTrans :
+>      {cat1, cat2 : Category}
+>   -> (func1, func2 : CFunctor cat1 cat2)
+>   -> (func1 = func2)
+>   -> NaturalTransformation cat1 cat2 func1 func2
+> eqNatTrans func1 func1 Refl = idTransformation cat1 cat2 func1
+>
+> MonadAssociativity :
+>      {cat : Category}
+>   -> (functor : CFunctor cat cat)
+>   -> (multiplication : NaturalTransformation cat cat (functorComposition _ _ _ functor functor) functor)
+>   -> Type
+> MonadAssociativity {cat} functor multiplication =
+>   naturalTransformationComposition cat cat
+>                                    (functorComposition cat cat cat
+>                                                        (functorComposition cat cat cat functor functor)
+>                                                        functor)
+>                                    (functorComposition cat cat cat functor functor)
+>                                    functor
+>                                    (composeFunctorNatTrans cat cat cat
+>                                                            (functorComposition cat cat cat functor functor)
+>                                                            functor
+>                                                            multiplication
+>                                                            functor)
+>                                    multiplication
+>   = naturalTransformationComposition cat cat
+>                                      (functorComposition cat cat cat
+>                                                          (functorComposition cat cat cat functor functor)
+>                                                          functor)
+>                                      (functorComposition cat cat cat
+>                                                          functor
+>                                                          (functorComposition cat cat cat functor functor))
+>                                      functor
+>                                      (eqNatTrans (functorComposition cat cat cat
+>                                                                      (functorComposition cat cat cat functor functor)
+>                                                                      functor)
+>                                                  (functorComposition cat cat cat
+>                                                                      functor
+>                                                                      (functorComposition cat cat cat functor functor))
+>                                                  (sym $ catsAssociativity cat cat cat cat functor functor functor))
+>                                      (naturalTransformationComposition cat cat
+>                                                                           (functorComposition cat cat cat
+>                                                                                               functor
+>                                                                                               (functorComposition cat cat cat functor functor))
+>                                                                           (functorComposition cat cat cat functor functor)
+>                                                                           functor
+>                                                                           (composeNatTransFunctor cat cat cat
+>                                                                                                   functor
+>                                                                                                   (functorComposition cat cat cat functor functor)
+>                                                                                                   functor
+>                                                                                                   multiplication)
+>                                                                           multiplication)
 >
 > -- we are not using a record here because compilation does not terminate in that case
-> data Monad : Category -> Type where
+> data Monad : (cat : Category) -> Type where
 >   MkMonad :
->        (functor : CFunctor cat cat)
+>        {cat : Category}
+>     -> (functor : CFunctor cat cat)
 >     -> (unit : NaturalTransformation _ _ (idFunctor cat) functor)
 >     -> (multiplication : NaturalTransformation cat cat (functorComposition _ _ _ functor functor) functor)
->     -> (associativity : naturalTransformationComposition cat cat
->                                                          (functorComposition cat cat cat (functorComposition cat cat cat functor functor) functor)
->                                                          (functorComposition cat cat cat functor functor)
->                                                          functor
->                                                          (composeFunctorNatTrans cat cat cat
->                                                                                  (functorComposition cat cat cat functor functor)
->                                                                                  functor
->                                                                                  multiplication
->                                                                                  functor)
->                                                          multiplication
->                       = naturalTransformationComposition cat cat
->                                                          (functorComposition cat cat cat functor (functorComposition cat cat cat functor functor))
->                                                          (functorComposition cat cat cat functor functor)
->                                                          functor
->                                                          (composeNatTransFunctor cat cat cat
->                                                                                  functor
->                                                                                  (functorComposition cat cat cat functor functor)
->                                                                                  functor
->                                                                                  multiplication)
->                                                          multiplication)
+>     -> (associativity : MonadAssociativity {cat} functor multiplication)
 >     -> (leftUnit : naturalTransformationComposition cat cat
 >                                                     functor
 >                                                     (functorComposition cat cat cat functor functor)
@@ -84,43 +120,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                   = idTransformation cat cat functor)
 >     -> Monad cat
 >
-> functor : Monad cat -> CFunctor cat cat
-> functor (MkMonad func _ _ _ _ _) = func
+> functor : {cat : Category} -> Monad cat -> CFunctor cat cat
+> functor {cat} (MkMonad func _ _ _ _ _) = func
 >
-> unit : (m : Monad cat) -> NaturalTransformation cat cat (idFunctor cat) (functor m)
+> unit : {cat : Category} -> (m : Monad cat) -> NaturalTransformation cat cat (idFunctor cat) (functor m)
 > unit (MkMonad _ u _ _ _ _) = u
 >
 > multiplication :
->      (m : Monad cat)
+>      {cat : Category}
+>   -> (m : Monad cat)
 >   -> NaturalTransformation cat cat (functorComposition cat cat cat (functor m) (functor m)) (functor m)
 > multiplication (MkMonad _ _ mult _ _ _) = mult
 >
 > associativity :
->      (m : Monad cat)
->   -> naturalTransformationComposition cat cat
->                                       (functorComposition cat cat cat (functorComposition cat cat cat (functor m) (functor m)) (functor m))
->                                       (functorComposition cat cat cat (functor m) (functor m))
->                                       (functor m)
->                                       (composeFunctorNatTrans cat cat cat
->                                                               (functorComposition cat cat cat (functor m) (functor m))
->                                                               (functor m)
->                                                               (multiplication m)
->                                                               (functor m))
->                                       (multiplication m)
->    = naturalTransformationComposition cat cat
->                                       (functorComposition cat cat cat (functor m) (functorComposition cat cat cat (functor m) (functor m)))
->                                       (functorComposition cat cat cat (functor m) (functor m))
->                                       (functor m)
->                                       (composeNatTransFunctor cat cat cat
->                                                               (functor m)
->                                                               (functorComposition cat cat cat (functor m) (functor m))
->                                                               (functor m)
->                                                               (multiplication m))
->                                       (multiplication m)
+>      {cat : Category}
+>   -> (m : Monad cat)
+>   -> MonadAssociativity (functor m) (multiplication m)
 > associativity (MkMonad _ _ _ assoc _ _) = assoc
 >
 > leftUnit :
->      (m : Monad cat)
+>      {cat : Category}
+>   -> (m : Monad cat)
 >   -> naturalTransformationComposition cat cat
 >                                       (functor m)
 >                                       (functorComposition cat cat cat (functor m) (functor m))
@@ -137,7 +157,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > leftUnit (MkMonad _ _ _ _ lUnit _) = lUnit
 >
 > rightUnit :
->      (m : Monad cat)
+>      {cat : Category}
+>   -> (m : Monad cat)
 >   -> naturalTransformationComposition cat cat
 >                                       (functor m)
 >                                       (functorComposition cat cat cat (functor m) (functor m))
