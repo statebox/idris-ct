@@ -1,3 +1,5 @@
+module Tactics.MorphismTest
+
 import Basic.Category
 import Basic.Functor
 import Basic.NaturalTransformation
@@ -26,10 +28,12 @@ naturalTransformationCompositionTest cat1 cat2 fun1 fun2 fun3
         -- the same issue. Similar behaviour can be seen elsewhere, where it
         -- runs fine interactively, but when used in a file it requires extra
         -- annotations or sometimes doesn't work at all.
-          ={ ?h }=
+          ={ %runElab morphism }=
         -- The following line works, but that's of course not really what we want
-          --={ the ((compose _ _ _ _ (compose _ _ _ _ (comp1 a) (comp2 a)) (mapMor fun3 a b f)) = (compose _ _ _ _ (comp1 a) (compose _ (mapObj fun2 a) (mapObj fun3 a) (mapObj fun3 b) (comp2 a) (mapMor fun3 a b f)))) (%runElab morphism) }=
-        (compose _ _ _ _ (comp1 a) (compose _ _ _ _ (comp2 a) (mapMor fun3 a b f)))
+          -- ={ the ((compose _ _ _ _ (compose _ _ _ _ (comp1 a) (comp2 a)) (mapMor fun3 a b f)) = 
+          --         (compose _ _ _ _ (comp1 a) (compose _ _ _ _ (comp2 a) (mapMor fun3 a b f)))) 
+          --        (%runElab morphism) }=
+        (compose _ _ _ _ (comp1 a) (compose _ (mapObj fun2 a) (mapObj fun3 a) (mapObj fun3 b) (comp2 a) (mapMor fun3 a b f)))
           ={ cong $ comm2 a b f }=
         (compose cat2 _ _ _ (comp1 a) (compose cat2 _ _ _ (mapMor fun2 _ _ f) (comp2 b)))
           ={ associativity cat2 _ _ _ _ (comp1 a) (mapMor fun2 a b f) (comp2 b) }=

@@ -1,3 +1,5 @@
+module Tactics.Morphism
+
 -- The `morphism` tactic is defined here
 -- Note that in general, idris's inference algorithm needs help with it, so use it either as
 -- %runElab morphism
@@ -33,6 +35,11 @@ unquotePath : MorphismPath cat a b -> mor cat a b
 unquotePath [] = identity _ _
 unquotePath (f :: fs) = compose _ _ _ _ f (unquotePath fs)
 
+-- does the "heavy lifting" by converting to a canonical form, e.g.:
+-- assume f, g and h are morphisms
+-- exprToPath (CompExpr (OtherExpr f) (CompExpr (OtherExpr g) (OtherExpr h))) = [f, g, h]
+-- exprToPath (CompExpr (CompExpr (OtherExpr f) (OtherExpr g)) (OtherExpr h)) = [f, g, h]
+
 exprToPath : MorphismExpr cat a b -> MorphismPath cat a b
 exprToPath (IdExpr a) = []
 exprToPath (CompExpr f g) = exprToPath f ++ exprToPath g
@@ -56,7 +63,6 @@ proveEq : (f : MorphismExpr cat a b) -> (g : MorphismExpr cat a b)
 proveEq f g hyp =
   rewrite sym $ unquoteTriangle f in
   rewrite sym $ unquoteTriangle g in hyp
-
 
 reifyExpr : Raw -> Elab ()
 reifyExpr `(identity ~cat ~a) = exact `(IdExpr {cat=~cat} ~a)
