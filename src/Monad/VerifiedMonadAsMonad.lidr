@@ -176,11 +176,13 @@ interface (Monad m, VerifiedApplicative m) => VerifiedMonad (m : Type -> Type) w
 >   -> MonadAssociativity (verifiedMonadToCFunctor @{monad}) (verifiedMonadMultiplication monad)
 > verifiedMonadAssociativity monad = naturalTransformationExt _ _ _ _ _ _
 >   (\a => funExt $ \x => verifiedMonadAssociativityComp monad {a} x)
+>
+> verifiedMonadLeftUnit :
+>      (monad : VerifiedMonad m)
+>   -> MonadLeftUnit (verifiedMonadToCFunctor @{monad}) (verifiedMonadUnit monad) (verifiedMonadMultiplication monad)
+> verifiedMonadLeftUnit monad = naturalTransformationExt _ _ _ _ _ _
+>   (\a => funExt $ \x => monadLeftIdentity x Basics.id)
 
--- >
--- > verifiedMonadLeftUnit :
--- >      (monad : VerifiedMonad m)
--- >   -> MonadLeftUnit (verifiedMonadToCFunctor @{monad}) (verifiedMonadUnit monad) (verifiedMonadMultiplication monad)
 -- >
 -- > verifiedMonadRightUnit :
 -- >      (monad : VerifiedMonad m)
