@@ -36,34 +36,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > %access public export
 > %default total
-
-interface Functor f => VerifiedFunctor (f : Type -> Type) where
-  functorIdentity : {a : Type} -> (g : a -> a) -> ((v : a) -> g v = v) -> (x : f a) -> map g x = x
-  functorComposition : {a : Type} -> {b : Type} -> (x : f a) ->
-                       (g1 : a -> b) -> (g2 : b -> c) ->
-                       map (g2 . g1) x = (map g2 . map g1) x
-
-interface (Applicative f, VerifiedFunctor f) => VerifiedApplicative (f : Type -> Type) where
-  applicativeMap : (x : f a) -> (g : a -> b) ->
-                   map g x = pure g <*> x
-  applicativeIdentity : (x : f a) -> pure Basics.id <*> x = x
-  applicativeComposition : (x : f a) -> (g1 : f (a -> b)) -> (g2 : f (b -> c)) ->
-                           ((pure (.) <*> g2) <*> g1) <*> x = g2 <*> (g1 <*> x)
-  applicativeHomomorphism : (x : a) -> (g : a -> b) ->
-                            (<*>) {f} (pure g) (pure x) = pure {f} (g x)
-  applicativeInterchange : (x : a) -> (g : f (a -> b)) ->
-                           g <*> pure x = pure (\g' : (a -> b) => g' x) <*> g
-
-interface (Monad m, VerifiedApplicative m) => VerifiedMonad (m : Type -> Type) where
-  monadApplicative : (mf : m (a -> b)) -> (mx : m a) ->
-                     mf <*> mx = mf >>= \f =>
-                                 mx >>= \x =>
-                                        pure (f x)
-  monadLeftIdentity : (x : a) -> (f : a -> m b) -> pure x >>= f = f x
-  monadRightIdentity : (mx : m a) -> mx >>= Applicative.pure = mx
-  monadAssociativity : (mx : m a) -> (f : a -> m b) -> (g : b -> m c) ->
-                       (mx >>= f) >>= g = mx >>= (\x => f x >>= g)
-
 >
 > verifiedMonadToFunctor : VerifiedMonad m => Functor m
 > verifiedMonadToFunctor @{monad} = %implementation
@@ -182,19 +154,34 @@ interface (Monad m, VerifiedApplicative m) => VerifiedMonad (m : Type -> Type) w
 >   -> MonadLeftUnit (verifiedMonadToCFunctor @{monad}) (verifiedMonadUnit monad) (verifiedMonadMultiplication monad)
 > verifiedMonadLeftUnit monad = naturalTransformationExt _ _ _ _ _ _
 >   (\a => funExt $ \x => monadLeftIdentity x Basics.id)
-
--- >
--- > verifiedMonadRightUnit :
--- >      (monad : VerifiedMonad m)
--- >   -> MonadRightUnit (verifiedMonadToCFunctor @{monad}) (verifiedMonadUnit monad) (verifiedMonadMultiplication monad)
--- >
--- > verifiedMonadToExtMonad :
--- >      VerifiedMonad m
--- >   -> M.Monad TypesAsCategoryExtensional.typesAsCategoryExtensional
--- > verifiedMonadToExtMonad {m} monad = MkMonad
--- >   (functorToCFunctor $ verifiedMonadToVerifiedFunctor @{monad})
--- >   (verifiedMonadUnit @{monad})
--- >   (verifiedMonadMultiplication @{monad})
--- >   (verifiedMonadAssociativity @{monad})
--- >   (verifiedMonadLeftUnit @{monad})
--- >   (verifiedMonadRightUnit @{monad})
+>
+> postulate
+> verifiedMonadPurePureExt :
+>      (monad : VerifiedMonad m)
+>   -> (\y => pure (pure {f = m} y) >>= Basics.id) = pure
+>
+> verifiedMonadRightUnitComp :
+>      (monad : VerifiedMonad m)
+>   -> (x : m a)
+>   -> map Applicative.pure x >>= Basics.id = x
+> verifiedMonadRightUnitComp monad x =
+>   trans (cong {f = \y => y >>= Basics.id} (verifiedMonadMapAsBind monad x Applicative.pure))
+>   (trans (monadAssociativity x (\y => pure (pure y)) Basics.id)
+>   (trans (cong {f = (>>=) x} (verifiedMonadPurePureExt monad)) (monadRightIdentity x)))
+>
+> verifiedMonadRightUnit :
+>      (monad : VerifiedMonad m)
+>   -> MonadRightUnit (verifiedMonadToCFunctor @{monad}) (verifiedMonadUnit monad) (verifiedMonadMultiplication monad)
+> verifiedMonadRightUnit monad = naturalTransformationExt _ _ _ _ _ _
+>   (\a => funExt $ verifiedMonadRightUnitComp monad)
+>
+> verifiedMonadToExtMonad :
+>      VerifiedMonad m
+>   -> M.Monad TypesAsCategoryExtensional.typesAsCategoryExtensional
+> verifiedMonadToExtMonad {m} monad = MkMonad
+>   (functorToCFunctor $ verifiedMonadToVerifiedFunctor @{monad})
+>   (verifiedMonadUnit @{monad})
+>   (verifiedMonadMultiplication @{monad})
+>   (verifiedMonadAssociativity @{monad})
+>   (verifiedMonadLeftUnit @{monad})
+>   (verifiedMonadRightUnit @{monad})
