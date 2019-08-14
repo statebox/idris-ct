@@ -156,9 +156,26 @@ interface (Monad m, VerifiedApplicative m) => VerifiedMonad (m : Type -> Type) w
 >   (\a, b, f => case f of
 >                  MkExtensionalTypeMorphism g => funExt $ verifiedMonadMapJoin monad g)
 >
+> postulate
+> verifiedMonadLeftIdentityExt' :
+>      (monad : VerifiedMonad m)
+>   -> (\y => pure ((>>=) {m} y Basics.id) >>= Basics.id) = (\y => y >>= Basics.id)
+>
+> verifiedMonadAssociativityComp :
+>      (monad : VerifiedMonad m)
+>   -> (x : m (m (m a)))
+>   -> map (\y => y >>= Basics.id) x >>= Basics.id = x >>= Basics.id >>= Basics.id
+> verifiedMonadAssociativityComp monad x =
+>   rewrite verifiedMonadMapAsBind monad x (\y => y >>= Basics.id) in
+>   rewrite monadAssociativity x (\y => pure (y >>= Basics.id)) Basics.id in
+>   rewrite monadAssociativity x Basics.id Basics.id in
+>   cong {f = (>>=) x} (verifiedMonadLeftIdentityExt' monad)
+>
 > verifiedMonadAssociativity :
 >      (monad : VerifiedMonad m)
 >   -> MonadAssociativity (verifiedMonadToCFunctor @{monad}) (verifiedMonadMultiplication monad)
+> verifiedMonadAssociativity monad = naturalTransformationExt _ _ _ _ _ _
+>   (\a => funExt $ \x => verifiedMonadAssociativityComp monad {a} x)
 
 -- >
 -- > verifiedMonadLeftUnit :
