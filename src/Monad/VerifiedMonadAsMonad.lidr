@@ -38,54 +38,49 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %default total
 >
 > verifiedMonadToFunctor : VerifiedMonad m => Functor m
-> verifiedMonadToFunctor @{monad} = %implementation
+> verifiedMonadToFunctor = %implementation
 >
 > verifiedMonadToVerifiedFunctor : VerifiedMonad m => VerifiedFunctor m
-> verifiedMonadToVerifiedFunctor @{monad} = %implementation
+> verifiedMonadToVerifiedFunctor = %implementation
 >
 > verifiedMonadToApplicative : VerifiedMonad m => Applicative m
-> verifiedMonadToApplicative @{monad} = %implementation
+> verifiedMonadToApplicative = %implementation
 >
 > verifiedMonadToVerifiedApplicative : VerifiedMonad m => VerifiedApplicative m
-> verifiedMonadToVerifiedApplicative @{monad} = %implementation
+> verifiedMonadToVerifiedApplicative = %implementation
 >
 > verifiedMonadToMonad : VerifiedMonad m => Monad m
-> verifiedMonadToMonad @{monad} = %implementation
+> verifiedMonadToMonad = %implementation
 >
 > verifiedMonadToCFunctor : VerifiedMonad m => CFunctor TypesAsCategoryExtensional.typesAsCategoryExtensional
 >                                                       TypesAsCategoryExtensional.typesAsCategoryExtensional
-> verifiedMonadToCFunctor @{monad} = functorToCFunctor $ verifiedMonadToVerifiedFunctor @{monad}
->
-> verifiedMonadMapPure :
->      (monad : VerifiedMonad m)
->   -> (g : a -> b)
+> verifiedMonadToCFunctor {m} = functorToCFunctor $ verifiedMonadToVerifiedFunctor {m}
+> 
+> verifiedMonadMapPure : VerifiedMonad m =>
+>      (g : a -> b)
 >   -> (x : a)
 >   -> map {f = m} g (pure x) = pure (g x)
-> verifiedMonadMapPure monad g x = trans (applicativeMap @{verifiedMonadToVerifiedApplicative @{monad}} (pure x) g)
->                                        (applicativeHomomorphism @{verifiedMonadToVerifiedApplicative @{monad}} x g)
->
-> verifiedMonadUnit :
->      (monad : VerifiedMonad m)
->   -> NaturalTransformation _ _ (idFunctor _) (verifiedMonadToCFunctor @{monad})
-> verifiedMonadUnit {m} monad = MkNaturalTransformation
+> verifiedMonadMapPure {m} g x = trans (applicativeMap @{verifiedMonadToVerifiedApplicative {m}} (pure x) g)
+>                                        (applicativeHomomorphism @{verifiedMonadToVerifiedApplicative {m}} x g)
+> 
+> verifiedMonadUnit : VerifiedMonad m =>
+>   NaturalTransformation _ _ (idFunctor _) (verifiedMonadToCFunctor {m})
+> verifiedMonadUnit {m} = MkNaturalTransformation
 >   (\_ => MkExtensionalTypeMorphism $ pure)
 >   (\a, b, f => case f of
->                  MkExtensionalTypeMorphism g => funExt $ verifiedMonadMapPure monad g)
->
-> verifiedMonadMultiplicationComp :
->      (monad : VerifiedMonad m)
->   -> (a : Type)
->   -> mor TypesAsCategoryExtensional.typesAsCategoryExtensional
->          (mapObj (verifiedMonadToCFunctor @{monad}) (mapObj (verifiedMonadToCFunctor @{monad}) a))
->          (mapObj (verifiedMonadToCFunctor @{monad}) a)
-> verifiedMonadMultiplicationComp monad a = MkExtensionalTypeMorphism $ \x => x >>= Basics.id
->
-> verifiedMonadMapAsBind :
->      (monad : VerifiedMonad m)
->   -> (x : m a)
+>                  MkExtensionalTypeMorphism g => funExt $ verifiedMonadMapPure {m} g)
+> 
+> verifiedMonadMultiplicationComp : VerifiedMonad m =>
+>   mor TypesAsCategoryExtensional.typesAsCategoryExtensional
+>       (mapObj (verifiedMonadToCFunctor {m}) (mapObj (verifiedMonadToCFunctor {m}) a))
+>       (mapObj (verifiedMonadToCFunctor {m}) a)
+> verifiedMonadMultiplicationComp = MkExtensionalTypeMorphism $ \x => x >>= Basics.id
+> 
+> verifiedMonadMapAsBind : VerifiedMonad m => 
+>      (x : m a)
 >   -> (g : a -> b)
 >   -> map g x = x >>= \y => pure (g y)
-> verifiedMonadMapAsBind monad x g = trans
+> verifiedMonadMapAsBind x g = trans
 >   (applicativeMap x g)
 >   (trans (monadApplicative (pure g) x)
 >          (monadLeftIdentity g (\f => x >>= (\y => pure (f y)))))
@@ -93,95 +88,82 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > -- proving these lemmas would require function extensionality and we don't want its whole power for now
 > -- hence we postulate only the special cases we need
 > postulate
-> verifiedMonadMapAsBindExt :
->      (monad : VerifiedMonad m)
->   -> (g : a -> b)
+> verifiedMonadMapAsBindExt : VerifiedMonad m =>
+>      (g : a -> b)
 >   -> (\y => pure {f = m} (map {f = m} g y)) = (\y => pure (y >>= \z => pure (g z)))
 >
 > postulate
-> verifiedMonadLeftIdentityExt :
->      (monad : VerifiedMonad m)
->   -> (g : a -> b)
+> verifiedMonadLeftIdentityExt : VerifiedMonad m =>
+>      (g : a -> b)
 >   -> (\y => (pure {f = m} ((>>=) {m} y (\z => pure {f = m} (g z)))) >>= Basics.id)
 >    = (\y => (>>=) {m} y (\z => pure {f = m} (g z)))
 >
-> verifiedMonadMapJoin :
->      (monad : VerifiedMonad m)
->   -> (g : a -> b)
+> verifiedMonadMapJoin : VerifiedMonad m =>
+>      (g : a -> b)
 >   -> (x : m (m a))
 >   -> map g (x >>= Basics.id) = map (map g) x >>= Basics.id
-> verifiedMonadMapJoin monad g x =
->   rewrite verifiedMonadMapAsBind monad (x >>= Basics.id) g in
->   rewrite verifiedMonadMapAsBind monad x (map g) in
+> verifiedMonadMapJoin {m} g x =
+>   rewrite verifiedMonadMapAsBind {m} (x >>= Basics.id) g in
+>   rewrite verifiedMonadMapAsBind {m} x (map g) in
 >   rewrite monadAssociativity x Basics.id (\y => pure (g y)) in
->   rewrite verifiedMonadMapAsBindExt monad g in
+>   rewrite verifiedMonadMapAsBindExt {m} g in
 >   rewrite monadAssociativity x (\y => pure (y >>= (\z => pure (g z)))) Basics.id in
->   rewrite verifiedMonadLeftIdentityExt monad g in Refl
+>   rewrite verifiedMonadLeftIdentityExt {m} g in Refl
 >
-> verifiedMonadMultiplication :
->      (monad : VerifiedMonad m)
->   -> NaturalTransformation _ _ (functorComposition _ _ _ (verifiedMonadToCFunctor @{monad})
->                                                          (verifiedMonadToCFunctor @{monad}))
->                                (verifiedMonadToCFunctor @{monad})
-> verifiedMonadMultiplication monad = MkNaturalTransformation
->   (verifiedMonadMultiplicationComp monad)
->   (\a, b, f => case f of
->                  MkExtensionalTypeMorphism g => funExt $ verifiedMonadMapJoin monad g)
->
+> verifiedMonadMultiplication : VerifiedMonad m =>
+>   NaturalTransformation _ _ (functorComposition _ _ _ (verifiedMonadToCFunctor {m})
+>                                                       (verifiedMonadToCFunctor {m}))
+>                             (verifiedMonadToCFunctor {m})
+> verifiedMonadMultiplication {m} = MkNaturalTransformation
+>   (\_ => verifiedMonadMultiplicationComp {m})
+>   (\a, b, (MkExtensionalTypeMorphism g) => funExt $ verifiedMonadMapJoin {m} g)
+> 
 > postulate
-> verifiedMonadLeftIdentityExt' :
->      (monad : VerifiedMonad m)
->   -> (\y => pure ((>>=) {m} y Basics.id) >>= Basics.id) = (\y => y >>= Basics.id)
+> verifiedMonadLeftIdentityExt' : VerifiedMonad m =>
+>   (\y => pure ((>>=) {m} y Basics.id) >>= Basics.id) = (\y => y >>= Basics.id)
 >
-> verifiedMonadAssociativityComp :
->      (monad : VerifiedMonad m)
->   -> (x : m (m (m a)))
+> verifiedMonadAssociativityComp : VerifiedMonad m =>
+>      (x : m (m (m a)))
 >   -> map (\y => y >>= Basics.id) x >>= Basics.id = x >>= Basics.id >>= Basics.id
-> verifiedMonadAssociativityComp monad x =
->   rewrite verifiedMonadMapAsBind monad x (\y => y >>= Basics.id) in
+> verifiedMonadAssociativityComp {m} x =
+>   rewrite verifiedMonadMapAsBind {m} x (\y => y >>= Basics.id) in
 >   rewrite monadAssociativity x (\y => pure (y >>= Basics.id)) Basics.id in
 >   rewrite monadAssociativity x Basics.id Basics.id in
->   cong {f = (>>=) x} (verifiedMonadLeftIdentityExt' monad)
+>   cong {f = (>>=) x} (verifiedMonadLeftIdentityExt' {m})
 >
-> verifiedMonadAssociativity :
->      (monad : VerifiedMonad m)
->   -> MonadAssociativity (verifiedMonadToCFunctor @{monad}) (verifiedMonadMultiplication monad)
-> verifiedMonadAssociativity monad = naturalTransformationExt _ _ _ _ _ _
->   (\a => funExt $ \x => verifiedMonadAssociativityComp monad {a} x)
->
-> verifiedMonadLeftUnit :
->      (monad : VerifiedMonad m)
->   -> MonadLeftUnit (verifiedMonadToCFunctor @{monad}) (verifiedMonadUnit monad) (verifiedMonadMultiplication monad)
-> verifiedMonadLeftUnit monad = naturalTransformationExt _ _ _ _ _ _
+> verifiedMonadAssociativity : VerifiedMonad m =>
+>   MonadAssociativity (verifiedMonadToCFunctor {m}) (verifiedMonadMultiplication {m})
+> verifiedMonadAssociativity {m} = naturalTransformationExt _ _ _ _ _ _
+>   (\a => funExt $ \x => verifiedMonadAssociativityComp {m} {a} x)
+> 
+> verifiedMonadLeftUnit : VerifiedMonad m =>
+>   MonadLeftUnit (verifiedMonadToCFunctor {m}) (verifiedMonadUnit {m}) (verifiedMonadMultiplication {m})
+> verifiedMonadLeftUnit = naturalTransformationExt _ _ _ _ _ _
 >   (\a => funExt $ \x => monadLeftIdentity x Basics.id)
 >
 > postulate
-> verifiedMonadPurePureExt :
->      (monad : VerifiedMonad m)
->   -> (\y => pure (pure {f = m} y) >>= Basics.id) = pure
+> verifiedMonadPurePureExt : VerifiedMonad m =>
+>   (\y => pure (pure {f = m} y) >>= Basics.id) = pure
 >
-> verifiedMonadRightUnitComp :
->      (monad : VerifiedMonad m)
->   -> (x : m a)
+> verifiedMonadRightUnitComp : VerifiedMonad m =>
+>      (x : m a)
 >   -> map Applicative.pure x >>= Basics.id = x
-> verifiedMonadRightUnitComp monad x =
->   trans (cong {f = \y => y >>= Basics.id} (verifiedMonadMapAsBind monad x Applicative.pure))
+> verifiedMonadRightUnitComp {m} x =
+>   trans (cong {f = \y => y >>= Basics.id} (verifiedMonadMapAsBind {m} x Applicative.pure))
 >   (trans (monadAssociativity x (\y => pure (pure y)) Basics.id)
->   (trans (cong {f = (>>=) x} (verifiedMonadPurePureExt monad)) (monadRightIdentity x)))
+>   (trans (cong {f = (>>=) x} (verifiedMonadPurePureExt {m})) (monadRightIdentity x)))
 >
-> verifiedMonadRightUnit :
->      (monad : VerifiedMonad m)
->   -> MonadRightUnit (verifiedMonadToCFunctor @{monad}) (verifiedMonadUnit monad) (verifiedMonadMultiplication monad)
-> verifiedMonadRightUnit monad = naturalTransformationExt _ _ _ _ _ _
->   (\a => funExt $ verifiedMonadRightUnitComp monad)
+> verifiedMonadRightUnit : VerifiedMonad m =>
+>    MonadRightUnit (verifiedMonadToCFunctor {m}) (verifiedMonadUnit {m}) (verifiedMonadMultiplication {m})
+> verifiedMonadRightUnit {m} = naturalTransformationExt _ _ _ _ _ _
+>   (\a => funExt $ verifiedMonadRightUnitComp {m})
 >
-> verifiedMonadToExtMonad :
->      VerifiedMonad m
->   -> M.Monad TypesAsCategoryExtensional.typesAsCategoryExtensional
-> verifiedMonadToExtMonad {m} monad = MkMonad
->   (functorToCFunctor $ verifiedMonadToVerifiedFunctor @{monad})
->   (verifiedMonadUnit @{monad})
->   (verifiedMonadMultiplication @{monad})
->   (verifiedMonadAssociativity @{monad})
->   (verifiedMonadLeftUnit @{monad})
->   (verifiedMonadRightUnit @{monad})
+> verifiedMonadToExtMonad : VerifiedMonad m =>
+>   M.Monad TypesAsCategoryExtensional.typesAsCategoryExtensional
+> verifiedMonadToExtMonad {m} = MkMonad
+>   (verifiedMonadToCFunctor {m})
+>   (verifiedMonadUnit {m})
+>   (verifiedMonadMultiplication {m})
+>   (verifiedMonadAssociativity {m})
+>   (verifiedMonadLeftUnit {m})
+>   (verifiedMonadRightUnit {m})
