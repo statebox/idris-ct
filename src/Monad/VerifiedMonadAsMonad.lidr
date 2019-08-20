@@ -55,28 +55,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > verifiedMonadToCFunctor : VerifiedMonad m => CFunctor TypesAsCategoryExtensional.typesAsCategoryExtensional
 >                                                       TypesAsCategoryExtensional.typesAsCategoryExtensional
 > verifiedMonadToCFunctor {m} = functorToCFunctor $ verifiedMonadToVerifiedFunctor {m}
-> 
+>
 > verifiedMonadMapPure : VerifiedMonad m =>
 >      (g : a -> b)
 >   -> (x : a)
 >   -> map {f = m} g (pure x) = pure (g x)
 > verifiedMonadMapPure {m} g x = trans (applicativeMap @{verifiedMonadToVerifiedApplicative {m}} (pure x) g)
->                                        (applicativeHomomorphism @{verifiedMonadToVerifiedApplicative {m}} x g)
-> 
+>                                      (applicativeHomomorphism @{verifiedMonadToVerifiedApplicative {m}} x g)
+>
 > verifiedMonadUnit : VerifiedMonad m =>
 >   NaturalTransformation _ _ (idFunctor _) (verifiedMonadToCFunctor {m})
 > verifiedMonadUnit {m} = MkNaturalTransformation
 >   (\_ => MkExtensionalTypeMorphism $ pure)
->   (\a, b, f => case f of
->                  MkExtensionalTypeMorphism g => funExt $ verifiedMonadMapPure {m} g)
-> 
+>   (\a, b, (MkExtensionalTypeMorphism g) => funExt $ verifiedMonadMapPure {m} g)
+>
 > verifiedMonadMultiplicationComp : VerifiedMonad m =>
 >   mor TypesAsCategoryExtensional.typesAsCategoryExtensional
 >       (mapObj (verifiedMonadToCFunctor {m}) (mapObj (verifiedMonadToCFunctor {m}) a))
 >       (mapObj (verifiedMonadToCFunctor {m}) a)
 > verifiedMonadMultiplicationComp = MkExtensionalTypeMorphism $ \x => x >>= Basics.id
-> 
-> verifiedMonadMapAsBind : VerifiedMonad m => 
+>
+> verifiedMonadMapAsBind : VerifiedMonad m =>
 >      (x : m a)
 >   -> (g : a -> b)
 >   -> map g x = x >>= \y => pure (g y)
@@ -117,7 +116,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > verifiedMonadMultiplication {m} = MkNaturalTransformation
 >   (\_ => verifiedMonadMultiplicationComp {m})
 >   (\a, b, (MkExtensionalTypeMorphism g) => funExt $ verifiedMonadMapJoin {m} g)
-> 
+>
 > postulate
 > verifiedMonadLeftIdentityExt' : VerifiedMonad m =>
 >   (\y => pure ((>>=) {m} y Basics.id) >>= Basics.id) = (\y => y >>= Basics.id)
@@ -135,7 +134,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   MonadAssociativity (verifiedMonadToCFunctor {m}) (verifiedMonadMultiplication {m})
 > verifiedMonadAssociativity {m} = naturalTransformationExt _ _ _ _ _ _
 >   (\a => funExt $ \x => verifiedMonadAssociativityComp {m} {a} x)
-> 
+>
 > verifiedMonadLeftUnit : VerifiedMonad m =>
 >   MonadLeftUnit (verifiedMonadToCFunctor {m}) (verifiedMonadUnit {m}) (verifiedMonadMultiplication {m})
 > verifiedMonadLeftUnit = naturalTransformationExt _ _ _ _ _ _
