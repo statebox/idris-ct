@@ -51,6 +51,8 @@ modules =
   Idris.FunctorAsCFunctor,
   Idris.TypesAsCategory,
   Idris.TypesAsCategoryExtensional,
+  Monad.IOMonad,
+  Monad.VerifiedMonadAsMonad,
   Monad.Monad,
   Monad.KleisliCategory,
   Monoid.Monoid,
