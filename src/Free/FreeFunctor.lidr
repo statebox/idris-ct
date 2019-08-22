@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
-> import Data.List
+> import Data.Vect
 > import Free.Graph
 > import Free.Path
 > import Free.PathCategory
@@ -66,8 +66,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >         (associativity cat _ _ _ _ (mapEdges ge x) (foldPath g ge xs) (foldPath g ge h))
 >
 > freeFunctor : (g : Graph) -> GraphEmbedding g cat -> CFunctor (pathCategory g) cat
-> freeFunctor g@(MkGraph v e) ge@(MkGraphEmbedding mapV mapE) = MkCFunctor
->   mapV
+> freeFunctor g ge = MkCFunctor
+>   (mapVertices ge)
 >   (\i, j, p => foldPath g ge {i} {j} p)
 >   (\_ => Refl)
 >   (freeFunctorCompose g ge)

@@ -21,7 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 > module Free.Graph
 >
-> import Data.List
+> import Data.Vect
 >
 > %access public export
 > %default total
@@ -29,10 +29,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > record Graph where
 >   constructor MkGraph
 >   vertices : Type
->   edges    : List (vertices, vertices)
+>   edges    : Vect n (vertices, vertices)
 >
 > Edge : (g : Graph) -> (i, j : vertices g) -> Type
-> Edge (MkGraph _ e) v1 v2 = Elem (v1, v2) e
+> Edge g i j = Elem (i, j) (edges g)
 >
 > edgeOrigin : {g : Graph} -> Edge g i j -> vertices g
 > edgeOrigin {i} _ = i

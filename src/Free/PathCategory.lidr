@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module Free.PathCategory
 >
 > import Basic.Category
+> import Data.Vect
 > import Free.Graph
 > import Free.Path
 >
@@ -29,8 +30,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %default total
 >
 > pathCategory : Graph -> Category
-> pathCategory g@(MkGraph v e) = MkCategory
->   v
+> pathCategory g = MkCategory
+>   (vertices g)
 >   (Path g)
 >   (\a => Nil)
 >   (\a, b, c, f, g => joinPath f g)
