@@ -30,16 +30,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > %access public export
 > %default total
+> %auto_implicits off
 >
 > identityCoCone :
->      (cocone : CoCone dia apex)
+>      {index, cat : Category}
+>   -> {dia : Diagram index cat}
+>   -> {apex : obj cat}
+>   -> (cocone : CoCone dia apex)
 >   -> CoConeMorphism index cat dia apex apex cocone cocone
 > identityCoCone {cat} {dia} {apex} cocone = MkCoConeMorphism
 >   (identity cat apex)
 >   (\i => rightIdentity cat (mapObj dia i) apex (component cocone i))
 >
 > composeCoCone :
->      (a : CoCone dia apexA)
+>      {index, cat : Category}
+>   -> {dia : Diagram index cat}
+>   -> {apexA, apexB, apexC : obj cat}
+>   -> (a : CoCone dia apexA)
 >   -> (b : CoCone dia apexB)
 >   -> (c : CoCone dia apexC)
 >   -> (f : CoConeMorphism index cat dia apexA apexB a b)
@@ -56,7 +63,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >    in trans assoc leftMakesRightCommute)
 >
 > leftIdentityCoCone :
->      (a : CoCone dia apexA)
+>      {index, cat : Category}
+>   -> {dia : Diagram index cat}
+>   -> {apexA, apexB : obj cat}
+>   -> (a : CoCone dia apexA)
 >   -> (b : CoCone dia apexB)
 >   -> (f : CoConeMorphism index cat dia apexA apexB a b)
 >   -> composeCoCone a a b (identityCoCone a) f = f
@@ -66,7 +76,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > in coConeMorphismEquality leftIdCompose f catLeftIdentity
 >
 > rightIdentityCoCone :
->      (a : CoCone dia apexA)
+>      {index, cat : Category}
+>   -> {dia : Diagram index cat}
+>   -> {apexA, apexB : obj cat}
+>   -> (a : CoCone dia apexA)
 >   -> (b : CoCone dia apexB)
 >   -> (f : CoConeMorphism index cat dia apexA apexB a b)
 >   -> composeCoCone a b b f (identityCoCone b) = f
@@ -76,7 +89,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > in coConeMorphismEquality rightIdCompose f catRightIdentity
 >
 > associativityCoCone :
->      (a : CoCone dia apexA)
+>      {index, cat : Category}
+>   -> {dia : Diagram index cat}
+>   -> {apexA, apexB, apexC, apexD : obj cat}
+>   -> (a : CoCone dia apexA)
 >   -> (b : CoCone dia apexB)
 >   -> (c : CoCone dia apexC)
 >   -> (d : CoCone dia apexD)

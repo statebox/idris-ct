@@ -29,6 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > %access public export
 > %default total
+> %auto_implicits off
 >
 > Delta : (cat1, cat2 : Category) -> (n : obj cat2) -> CFunctor cat1 cat2
 > Delta cat1 cat2 n = MkCFunctor
@@ -38,7 +39,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (\a, b, c, f, g => sym (leftIdentity cat2 n n (identity cat2 n)))
 >
 > CoCone :
->      (diagram : Diagram index cat)
+>      {index, cat : Category}
+>   -> (diagram : Diagram index cat)
 >   -> (n : obj cat)
 >   -> Type
 > CoCone {index} {cat} diagram n = NaturalTransformation index cat diagram (Delta index cat n)
@@ -55,6 +57,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                 = (component target i)
 >
 > postulate coConeMorphismEquality :
->      (f, g : CoConeMorphism index cat diagram a b source target)
+>      {index, cat : Category}
+>   -> {diagram : Diagram index cat}
+>   -> {a, b : obj cat}
+>   -> {source : CoCone diagram a}
+>   -> {target : CoCone diagram b}
+>   -> (f, g : CoConeMorphism index cat diagram a b source target)
 >   -> apexMorphism f = apexMorphism g
 >   -> f = g

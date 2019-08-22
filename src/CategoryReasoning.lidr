@@ -19,29 +19,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Empty.EmptyFunctor
+> module CategoryReasoning
 >
 > import Basic.Category
-> import Basic.Functor
-> import Empty.EmptyCategory
 >
 > %access public export
 > %default total
-> %auto_implicits off
 >
-> emptyMapObj : (cat : Category) -> obj emptyCategory -> obj cat
-> emptyMapObj cat = void
+> -- Preorder reasoning syntax for morphisms in a category
+> ||| Used for preorder reasoning syntax. Not intended for direct use.
+> qed : (cat : Category) -> (a : obj cat) -> mor _ a a
+> qed cat a = identity cat a
 >
-> emptyMapMor :
->      (cat : Category)
->   -> (a, b : obj emptyCategory)
->   -> (f : mor emptyCategory a b)
->   -> mor cat (emptyMapObj cat a) (emptyMapObj cat b)
-> emptyMapMor cat a b = void
+> ||| Used for preorder reasoning syntax. Not intended for direct use.
+> step : (cat : Category) -> (a : obj cat) -> mor cat a b -> mor cat b c -> mor cat a c
+> step cat a f g = compose _ _ _ _ f g
 >
-> emptyFunctor : (cat: Category) -> CFunctor emptyCategory cat
-> emptyFunctor cat = MkCFunctor
->   (emptyMapObj cat)
->   (emptyMapMor cat)
->   (\a => absurd a)
->   (\a => absurd a)
+> liftEquality : (cat : Category) -> (a, b : obj cat) -> a = b -> mor cat a b
+> liftEquality cat a a Refl = identity _ a

@@ -40,4 +40,5 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   %include ../src/Basic/Category.lidr
   %include ../src/Basic/Functor.lidr
   %include ../src/Basic/NaturalTransformation.lidr
+  %include ../src/Monad/Monad.lidr
 \end{document}
