@@ -2,6 +2,9 @@ module Quotients
 
 import Quotient.Quotient
 
+%access public export
+%default total
+
 trivialEqRel : (x : Type) -> EqRel x
 trivialEqRel x = MkEqRel (\x, y => x = y) (\x => Refl) (\x, y, r => sym r) (\x, y, z, l, r => trans l r)
 
