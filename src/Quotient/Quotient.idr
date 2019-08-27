@@ -5,20 +5,8 @@ import Control.Isomorphism
 %access public export
 %default total
 
-Singleton : Type -> Type
-Singleton x = (x, (a, b : x) -> a = b)
-
-extract : Singleton x -> x
-extract = fst
-
-extractPf : Singleton x -> (a, b : x) -> a = b
-extractPf = snd
-
 extEq : (a -> b) -> (a -> b) -> Type
 extEq {a} f g = (x : a) -> f x = g x
-
-toExtEq : (f = g) -> extEq f g
-toExtEq Refl = \x => Refl
 
 Rel : Type -> Type
 Rel x = x -> x -> Type
@@ -29,10 +17,6 @@ record EqRel (x : Type) where
   refl : (a : x) -> rel a a
   sym : (a, b : x) -> rel a b -> rel b a
   trans : (a, b, c : x) -> rel a b -> rel b c -> rel a c
-
-extEqEqRel : EqRel (a -> b)
-extEqEqRel {a} =
-  MkEqRel (extEq {a}) (\f, x => Refl) (\f, g, s, x => sym $ s x) (\f, g, h, t1, t2, x => trans (t1 x) (t2 x))
 
 RespectingMap : (x, y : Type) -> EqRel x -> Type
 RespectingMap x y eq = (f : (x -> y) ** ((a, b : x) -> (rel eq) a b -> f a = f b))
