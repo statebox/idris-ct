@@ -19,32 +19,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Free.Path
-> 
-> import Free.Graph
-> 
+> module Free.Finite.FinPathCategory
+>
+> import Basic.Category
+> import Data.Vect
+> import Free.FinGraph
+> import Free.FinPath
+>
 > %access public export
 > %default total
-> 
-> data Path : (g : Graph) -> vertices g -> vertices g -> Type where
->   Nil  : Path g i i
->   (::) : edges g i j -> Path g j k -> Path g i k
 >
-> edgeToPath : {g : Graph} -> edges g i j -> Path g i j
-> edgeToPath a = [a]
-> 
-> joinPath : Path g i j -> Path g j k -> Path g i k
-> joinPath [] y = y
-> joinPath (x :: xs) y = x :: joinPath xs y
-> 
-> joinPathNil : (p : Path g i j) -> joinPath p [] = p
-> joinPathNil Nil       = Refl
-> joinPathNil (x :: xs) = cong $ joinPathNil xs
-> 
-> joinPathAssoc :
->      (p : Path g i j)
->   -> (q : Path g j k)
->   -> (r : Path g k l)
->   -> joinPath p (joinPath q r) = joinPath (joinPath p q) r
-> joinPathAssoc Nil q r = Refl
-> joinPathAssoc (x :: xs) q r = cong $ joinPathAssoc xs q r
+> pathCategory : FinGraph -> Category
+> pathCategory g = MkCategory
+>   (vertices g)
+>   (FinPath g)
+>   (\a => Nil)
+>   (\a, b, c, f, g => joinFinPath f g)
+>   (\a, b, f => Refl)
+>   (\a, b, f => joinFinPathNil f)
+>   (\a, b, c, d, f, g, h => joinFinPathAssoc f g h)

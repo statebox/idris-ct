@@ -20,27 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
 > module Free.Graph
->
-> import Data.Vect
->
+> 
 > %access public export
 > %default total
->
+> 
 > record Graph where
 >   constructor MkGraph
 >   vertices : Type
->   edges    : Vect n (vertices, vertices)
->
-> Edge : (g : Graph) -> (i, j : vertices g) -> Type
-> Edge g i j = Elem (i, j) (edges g)
->
-> edgeOrigin : {g : Graph} -> Edge g i j -> vertices g
-> edgeOrigin {i} _ = i
->
-> edgeTarget : {g : Graph} -> Edge g i j -> vertices g
-> edgeTarget {j} _ = j
-
-data TriangleVertices = One | Two | Three
-
-triangle : Graph
-triangle = MkGraph TriangleVertices [(One, Two), (Two, Three), (Three, One)]
+>   edges    : vertices -> vertices -> Type

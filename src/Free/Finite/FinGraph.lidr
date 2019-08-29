@@ -19,32 +19,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Free.Path
-> 
-> import Free.Graph
-> 
+> module Free.Finite.FinGraph
+>
+> import Data.Vect
+>
 > %access public export
 > %default total
-> 
-> data Path : (g : Graph) -> vertices g -> vertices g -> Type where
->   Nil  : Path g i i
->   (::) : edges g i j -> Path g j k -> Path g i k
 >
-> edgeToPath : {g : Graph} -> edges g i j -> Path g i j
-> edgeToPath a = [a]
-> 
-> joinPath : Path g i j -> Path g j k -> Path g i k
-> joinPath [] y = y
-> joinPath (x :: xs) y = x :: joinPath xs y
-> 
-> joinPathNil : (p : Path g i j) -> joinPath p [] = p
-> joinPathNil Nil       = Refl
-> joinPathNil (x :: xs) = cong $ joinPathNil xs
-> 
-> joinPathAssoc :
->      (p : Path g i j)
->   -> (q : Path g j k)
->   -> (r : Path g k l)
->   -> joinPath p (joinPath q r) = joinPath (joinPath p q) r
-> joinPathAssoc Nil q r = Refl
-> joinPathAssoc (x :: xs) q r = cong $ joinPathAssoc xs q r
+> record FinGraph where
+>   constructor MkFinGraph
+>   vertices : Type
+>   edges    : Vect n (vertices, vertices)
+>
+> Edge : (g : FinGraph) -> (i, j : vertices g) -> Type
+> Edge g i j = Elem (i, j) (edges g)
+>
+> edgeOrigin : {g : FinGraph} -> Edge g i j -> vertices g
+> edgeOrigin {i} _ = i
+>
+> edgeTarget : {g : FinGraph} -> Edge g i j -> vertices g
+> edgeTarget {j} _ = j
+
+data TriangleVertices = One | Two | Three
+
+triangle : FinGraph
+triangle = MkFinGraph TriangleVertices [(One, Two), (Two, Three), (Three, One)]

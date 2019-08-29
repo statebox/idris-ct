@@ -20,15 +20,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
 > module Free.PathCategory
->
+> 
 > import Basic.Category
 > import Data.Vect
 > import Free.Graph
 > import Free.Path
->
+> 
 > %access public export
 > %default total
->
+> 
 > pathCategory : Graph -> Category
 > pathCategory g = MkCategory
 >   (vertices g)

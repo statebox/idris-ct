@@ -22,3 +22,5 @@ target
 elba.lock
 build
 compare
+*.ttc
+*.ttm
