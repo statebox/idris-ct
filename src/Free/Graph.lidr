@@ -20,10 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
 > module Free.Graph
-> 
+>
 > %access public export
 > %default total
-> 
+>
 > record Graph where
 >   constructor MkGraph
 >   vertices : Type
