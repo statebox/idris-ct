@@ -23,8 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Data.Vect
-> import Free.FinGraph
-> import Free.FinPath
+> import Free.Finite.FinGraph
+> import Free.Finite.FinPath
 >
 > %access public export
 > %default total
