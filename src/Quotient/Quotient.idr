@@ -18,6 +18,19 @@ record EqRel (x : Type) where
   sym : (a, b : x) -> rel a b -> rel b a
   trans : (a, b, c : x) -> rel a b -> rel b c -> rel a c
 
+parameters (rel : Rel x)
+  data EqClosure' : Rel x where
+    ClosureIncl : rel a b -> EqClosure' a b
+    ClosureRefl : EqClosure' a a
+    ClosureSym : EqClosure' a b -> EqClosure' b a
+    ClosureTrans : EqClosure' a b -> EqClosure' b c -> EqClosure' a c
+
+EqClosure : Rel x -> EqRel x
+EqClosure r = MkEqRel (EqClosure' r)
+                      (\a => ClosureRefl r)
+                      (\a, b, h => ClosureSym r h)
+                      (\a, b, c, h, h' => ClosureTrans r h h')
+
 RespectingMap : (x, y : Type) -> EqRel x -> Type
 RespectingMap x y eq = (f : (x -> y) ** ((a, b : x) -> (rel eq) a b -> f a = f b))
 
@@ -30,6 +43,9 @@ record Quotient (x : Type) (eq : EqRel x) where
   unique : (y : Type) -> (f : RespectingMap x y eq)
         -> (g : (carrier -> y)) -> extEq (fst f) (g . (fst proj))
         -> extEq g (fst (exists y f))
+
+Quotient' : (x : Type) -> Rel x -> Type
+Quotient' x eq = Quotient x (EqClosure eq)
 
 existsUnique : (q : Quotient x eq) -> (f : RespectingMap x y eq)
             -> (g : carrier q -> y) -> (extEq (fst f) (g . (fst $ proj q)))

@@ -28,3 +28,6 @@ UnsafeQuotient x eq = MkQuotient
                         (Wrap ** (\a, b, h => QuotientEquality x eq h))
                         (\y, f => ((\a => fst f $ unwrap a) ** (\a => Refl)))
                         (\y, f, g, h, (InternalWrap a) => sym $ h a)
+
+UnsafeQuotient' : (x : Type) -> (eq : Rel x) -> Quotient' x eq
+UnsafeQuotient' x eq = UnsafeQuotient x (EqClosure eq)
