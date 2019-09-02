@@ -30,8 +30,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   constructor MkExtensionalTypeMorphism
 >   func : a -> b
 >
+> postulate
 > funExt : {f, g : ExtensionalTypeMorphism a b} -> ((x : a) -> func f x = func g x) -> f = g
-> funExt fxgx = really_believe_me fxgx
 >
 > extIdentity : (a : Type) -> ExtensionalTypeMorphism a a
 > extIdentity a = MkExtensionalTypeMorphism id

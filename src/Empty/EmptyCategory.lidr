@@ -19,26 +19,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\usepackage{tikz-cd}
-\usepackage[font=small,labelfont=bf]{caption}
-
-%include polycode.fmt
-%include style.fmt
-
-\begin{document}
-
-\section{Introduction}
-
-\section{Category theory preliminaries}
-  %include ../src/Basic/Category.lidr
-  %include ../src/Basic/Functor.lidr
-  %include ../src/Basic/NaturalTransformation.lidr
-  %include ../src/Monad/Monad.lidr
-\end{document}
+> module Empty.EmptyCategory
+>
+> import Basic.Category
+>
+> %access public export
+> %default total
+>
+> emptyObject : Type
+> emptyObject = Void
+>
+> emptyMorphism : Void -> Void -> Type
+> emptyMorphism x y = Void
+>
+> emptyCategory : Category
+> emptyCategory = MkCategory
+>  (emptyObject)
+>  (emptyMorphism)
+>  (\a => absurd a)
+>  (\a => absurd a)
+>  (\a => absurd a)
+>  (\a => absurd a)
+>  (\a => absurd a)

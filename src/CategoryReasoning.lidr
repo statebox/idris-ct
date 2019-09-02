@@ -19,26 +19,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\usepackage{tikz-cd}
-\usepackage[font=small,labelfont=bf]{caption}
-
-%include polycode.fmt
-%include style.fmt
-
-\begin{document}
-
-\section{Introduction}
-
-\section{Category theory preliminaries}
-  %include ../src/Basic/Category.lidr
-  %include ../src/Basic/Functor.lidr
-  %include ../src/Basic/NaturalTransformation.lidr
-  %include ../src/Monad/Monad.lidr
-\end{document}
+> module CategoryReasoning
+>
+> import Basic.Category
+>
+> %access public export
+> %default total
+>
+> -- Preorder reasoning syntax for morphisms in a category
+> ||| Used for preorder reasoning syntax. Not intended for direct use.
+> qed : (cat : Category) -> (a : obj cat) -> mor _ a a
+> qed cat a = identity cat a
+>
+> ||| Used for preorder reasoning syntax. Not intended for direct use.
+> step : (cat : Category) -> (a : obj cat) -> mor cat a b -> mor cat b c -> mor cat a c
+> step cat a f g = compose _ _ _ _ f g
+>
+> liftEquality : (cat : Category) -> (a, b : obj cat) -> a = b -> mor cat a b
+> liftEquality cat a a Refl = identity _ a

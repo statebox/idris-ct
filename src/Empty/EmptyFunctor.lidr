@@ -19,26 +19,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\usepackage{tikz-cd}
-\usepackage[font=small,labelfont=bf]{caption}
-
-%include polycode.fmt
-%include style.fmt
-
-\begin{document}
-
-\section{Introduction}
-
-\section{Category theory preliminaries}
-  %include ../src/Basic/Category.lidr
-  %include ../src/Basic/Functor.lidr
-  %include ../src/Basic/NaturalTransformation.lidr
-  %include ../src/Monad/Monad.lidr
-\end{document}
+> module Empty.EmptyFunctor
+>
+> import Basic.Category
+> import Basic.Functor
+> import Empty.EmptyCategory
+>
+> %access public export
+> %default total
+> %auto_implicits off
+>
+> emptyMapObj : (cat : Category) -> obj emptyCategory -> obj cat
+> emptyMapObj cat = void
+>
+> emptyMapMor :
+>      (cat : Category)
+>   -> (a, b : obj emptyCategory)
+>   -> (f : mor emptyCategory a b)
+>   -> mor cat (emptyMapObj cat a) (emptyMapObj cat b)
+> emptyMapMor cat a b = void
+>
+> emptyFunctor : (cat: Category) -> CFunctor emptyCategory cat
+> emptyFunctor cat = MkCFunctor
+>   (emptyMapObj cat)
+>   (emptyMapMor cat)
+>   (\a => absurd a)
+>   (\a => absurd a)

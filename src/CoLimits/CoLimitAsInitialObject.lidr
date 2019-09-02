@@ -19,26 +19,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\usepackage{tikz-cd}
-\usepackage[font=small,labelfont=bf]{caption}
-
-%include polycode.fmt
-%include style.fmt
-
-\begin{document}
-
-\section{Introduction}
-
-\section{Category theory preliminaries}
-  %include ../src/Basic/Category.lidr
-  %include ../src/Basic/Functor.lidr
-  %include ../src/Basic/NaturalTransformation.lidr
-  %include ../src/Monad/Monad.lidr
-\end{document}
+> module CoLimits.CoLimitAsInitialObject
+>
+> import Basic.Category
+> import Basic.Functor
+> import Basic.NaturalTransformation
+>
+> import CoLimits.InitialObject
+> import CoLimits.CoConeCat
+> import CoLimits.CoCone
+> import CommutativeDiagram.Diagram
+> import CoLimits.CoLimit
+>
+> %access public export
+> %default total
+>
+> coLimitToInitial :
+>      (colimit: CoLimit index cat dia)
+>   -> InitialObject (CoConeCategory index cat dia)
+> coLimitToInitial colimit = MkInitialObject
+>   (MkCoConeObject (carrier colimit) (cocone colimit))
+>   (\b => exists colimit (apex b) (cocone b))
+>   (\b, f, g => unique colimit (apex b) (cocone b) f g)

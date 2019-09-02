@@ -19,26 +19,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\usepackage{tikz-cd}
-\usepackage[font=small,labelfont=bf]{caption}
-
-%include polycode.fmt
-%include style.fmt
-
-\begin{document}
-
-\section{Introduction}
-
-\section{Category theory preliminaries}
-  %include ../src/Basic/Category.lidr
-  %include ../src/Basic/Functor.lidr
-  %include ../src/Basic/NaturalTransformation.lidr
-  %include ../src/Monad/Monad.lidr
-\end{document}
+> module Free.PathCategory
+>
+> import Basic.Category
+> import Data.Vect
+> import Free.Graph
+> import Free.Path
+>
+> %access public export
+> %default total
+>
+> pathCategory : Graph -> Category
+> pathCategory g = MkCategory
+>   (vertices g)
+>   (Path g)
+>   (\a => Nil)
+>   (\a, b, c, f, g => joinPath f g)
+>   (\a, b, f => Refl)
+>   (\a, b, f => joinPathNil f)
+>   (\a, b, c, d, f, g, h => joinPathAssoc f g h)

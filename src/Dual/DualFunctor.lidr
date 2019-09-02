@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Cats.CatsAsCategory as Cats
 > import Dual.DualCategory
 >
 > %access public export
@@ -32,7 +33,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >      CFunctor cat1 cat2
 >   -> CFunctor (dualCategory cat1) (dualCategory cat2)
 > dualFunctor func = MkCFunctor
->   (\a => (mapObj func a))
->   (\a, b, f => (mapMor func b a f))
->   (\a => preserveId func a)
->   (\a, b, c, f, g => (preserveCompose func c b a g f))
+>   (mapObj func)
+>   (\a, b => mapMor func b a)
+>   (preserveId func)
+>   (\a, b, c, f, g => preserveCompose func c b a g f)
+>
+> dualIsFunctorial : CFunctor Cats.catsAsCategory Cats.catsAsCategory
+> dualIsFunctorial = MkCFunctor dualCategory (\a, b => dualFunctor) (\c => Refl) (\a, b, c, f, g => Refl)

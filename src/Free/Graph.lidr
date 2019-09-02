@@ -19,26 +19,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-\documentclass{article}
+> module Free.Graph
+>
+> import Data.Vect
+>
+> %access public export
+> %default total
+>
+> record Graph where
+>   constructor MkGraph
+>   vertices : Type
+>   edges    : Vect n (vertices, vertices)
+>
+> Edge : (g : Graph) -> (i, j : vertices g) -> Type
+> Edge g i j = Elem (i, j) (edges g)
+>
+> edgeOrigin : {g : Graph} -> Edge g i j -> vertices g
+> edgeOrigin {i} _ = i
+>
+> edgeTarget : {g : Graph} -> Edge g i j -> vertices g
+> edgeTarget {j} _ = j
 
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\usepackage{tikz-cd}
-\usepackage[font=small,labelfont=bf]{caption}
+data TriangleVertices = One | Two | Three
 
-%include polycode.fmt
-%include style.fmt
-
-\begin{document}
-
-\section{Introduction}
-
-\section{Category theory preliminaries}
-  %include ../src/Basic/Category.lidr
-  %include ../src/Basic/Functor.lidr
-  %include ../src/Basic/NaturalTransformation.lidr
-  %include ../src/Monad/Monad.lidr
-\end{document}
+triangle : Graph
+triangle = MkGraph TriangleVertices [(One, Two), (Two, Three), (Three, One)]

@@ -19,26 +19,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\usepackage{tikz-cd}
-\usepackage[font=small,labelfont=bf]{caption}
-
-%include polycode.fmt
-%include style.fmt
-
-\begin{document}
-
-\section{Introduction}
-
-\section{Category theory preliminaries}
-  %include ../src/Basic/Category.lidr
-  %include ../src/Basic/Functor.lidr
-  %include ../src/Basic/NaturalTransformation.lidr
-  %include ../src/Monad/Monad.lidr
-\end{document}
+> module CommutativeDiagram.Diagram
+>
+> import Basic.Category
+> import Basic.Functor
+> import Preorder.PreorderAsCategory
+> import Preorder.UniquePreorder
+>
+> %access public export
+> %default total
+>
+> Diagram : Category -> Category -> Type
+> Diagram = CFunctor
+>
+> CommutativeDiagram : (preorder : UniquePreorder t po) => Category -> Type
+> CommutativeDiagram @{preorder} = Diagram (preorderAsCategory @{preorder})
