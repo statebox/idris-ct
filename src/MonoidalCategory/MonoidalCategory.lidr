@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
-> import Basic.NaturalIsomorphism
+> import Basic.Isomorphism
+> import Cats.FunctorsAsCategory
 > import MonoidalCategory.MonoidalCategoryHelpers
 > import Product.ProductCategory
 >
@@ -37,8 +38,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     -> (tensor : CFunctor (productCategory cat cat) cat)
 >     -> (unit : obj cat)
 >     -> (associator : Associator cat tensor)
->     -> (leftUnitor  : NaturalIsomorphism cat cat (leftIdTensor  cat tensor unit) (idFunctor cat))
->     -> (rightUnitor : NaturalIsomorphism cat cat (rightIdTensor cat tensor unit) (idFunctor cat))
+>     -> (leftUnitor  : Isomorphism (functorCategory cat cat) (leftIdTensor cat tensor unit) (idFunctor cat))
+>     -> (rightUnitor : Isomorphism (functorCategory cat cat) (rightIdTensor cat tensor unit) (idFunctor cat))
 >     -> ((a, b, c, d : obj cat) -> MonoidalPentagon cat tensor associator a b c d)
 >     -> ((a, b : obj cat) -> MonoidalTriangle cat tensor unit associator leftUnitor rightUnitor a b)
 >     -> MonoidalCategory
@@ -55,14 +56,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > associator : (mCat : MonoidalCategory) -> Associator (cat mCat) (tensor mCat)
 > associator (MkMonoidalCategory _ _ _ associator _ _ _ _) = associator
 >
-> leftUnitor : (mCat : MonoidalCategory) -> NaturalIsomorphism (cat mCat)
->                                                              (cat mCat)
->                                                              (leftIdTensor (cat mCat) (tensor mCat) (unit mCat))
->                                                              (idFunctor (cat mCat))
+> leftUnitor : (mCat : MonoidalCategory) -> Isomorphism (functorCategory (cat mCat) (cat mCat))
+>                                                       (leftIdTensor (cat mCat) (tensor mCat) (unit mCat))
+>                                                       (idFunctor (cat mCat))
 > leftUnitor (MkMonoidalCategory _ _ _ _ leftUnitor _ _ _) = leftUnitor
 >
-> rightUnitor : (mCat : MonoidalCategory) -> NaturalIsomorphism (cat mCat)
->                                                              (cat mCat)
+> rightUnitor : (mCat : MonoidalCategory) -> Isomorphism (functorCategory (cat mCat) (cat mCat))
 >                                                              (rightIdTensor (cat mCat) (tensor mCat) (unit mCat))
 >                                                              (idFunctor (cat mCat))
 > rightUnitor (MkMonoidalCategory _ _ _ _ _ rightUnitor _ _) = rightUnitor

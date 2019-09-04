@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
-> import Basic.NaturalIsomorphism
+> import Basic.Isomorphism
+> import Cats.FunctorsAsCategory
 > import MonoidalCategory.MonoidalCategory
 > import MonoidalCategory.MonoidalCategoryHelpers
 > import Product.ProductCategory
@@ -35,17 +36,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > data SymmetricMonoidalCategory : Type where
 >   MkSymmetricMonoidalCategory :
 >        (monoidalCategory : MonoidalCategory)
->     -> (symmetry : NaturalIsomorphism (productCategory (cat monoidalCategory) (cat monoidalCategory))
->                                       (cat monoidalCategory)
->                                       (tensor monoidalCategory)
->                                       (functorComposition (productCategory (cat monoidalCategory)
->                                                                            (cat monoidalCategory))
->                                                           (productCategory (cat monoidalCategory)
->                                                                            (cat monoidalCategory))
->                                                           (cat monoidalCategory)
->                                                           (swapFunctor (cat monoidalCategory)
->                                                                        (cat monoidalCategory))
->                                                           (tensor monoidalCategory)))
+>     -> (symmetry : Isomorphism (functorCategory (productCategory (cat monoidalCategory) (cat monoidalCategory))
+>                                                 (cat monoidalCategory))
+>                                (tensor monoidalCategory)
+>                                (functorComposition (productCategory (cat monoidalCategory)
+>                                                                     (cat monoidalCategory))
+>                                                    (productCategory (cat monoidalCategory)
+>                                                                     (cat monoidalCategory))
+>                                                    (cat monoidalCategory)
+>                                                    (swapFunctor (cat monoidalCategory)
+>                                                                 (cat monoidalCategory))
+>                                                    (tensor monoidalCategory)))
 >     -> ((a : obj (cat monoidalCategory)) -> UnitCoherence (cat monoidalCategory)
 >                                                         (tensor monoidalCategory)
 >                                                         (unit monoidalCategory)

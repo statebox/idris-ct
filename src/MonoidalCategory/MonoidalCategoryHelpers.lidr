@@ -23,8 +23,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
-> import Basic.NaturalIsomorphism
+> import Basic.Isomorphism
 > import Basic.NaturalTransformation
+> import Cats.FunctorsAsCategory
 > import Product.ProductCategory
 > import Product.ProductFunctor
 > import Utils
@@ -60,8 +61,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >      (cat : Category)
 >   -> (tensor : CFunctor (productCategory cat cat) cat)
 >   -> Type
-> Associator cat tensor = NaturalIsomorphism (productCategory cat (productCategory cat cat))
->                                            cat
+> Associator cat tensor = Isomorphism (functorCategory (productCategory cat (productCategory cat cat)) cat)
 >                                            (leftTensor3  cat tensor)
 >                                            (rightTensor3 cat tensor)
 >
@@ -116,8 +116,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >            (mapObj tensor (mapObj tensor (mapObj tensor (a, b), c), d))
 >            (mapObj tensor (mapObj tensor (a, b), mapObj tensor (c, d)))
 >            (mapObj tensor (a, (mapObj tensor (b, mapObj tensor (c, d)))))
->            (component (natTrans associator) (mapObj tensor (a, b), c, d))
->            (component (natTrans associator) (a, b, mapObj tensor (c, d))))
+>            (component (morphism associator) (mapObj tensor (a, b), c, d))
+>            (component (morphism associator) (a, b, mapObj tensor (c, d))))
 >            =
 >   (compose cat
 >            (mapObj tensor (mapObj tensor (mapObj tensor (a, b), c), d))
@@ -126,38 +126,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >            (mapMor tensor
 >                    (mapObj tensor (mapObj tensor (a, b), c), d)
 >                    (mapObj tensor (a, mapObj tensor (b, c)), d)
->                    (MkProductMorphism (component (natTrans associator) (a, b, c)) (identity cat d)))
+>                    (MkProductMorphism (component (morphism associator) (a, b, c)) (identity cat d)))
 >            (compose cat
 >                     (mapObj tensor (mapObj tensor (a, mapObj tensor (b, c)),d))
 >                     (mapObj tensor (a, mapObj tensor (mapObj tensor (b, c), d)))
 >                     (mapObj tensor (a, (mapObj tensor (b, mapObj tensor (c, d)))))
->                     (component (natTrans associator) (a, mapObj tensor (b, c), d))
+>                     (component (morphism associator) (a, mapObj tensor (b, c), d))
 >                     (mapMor tensor
 >                             (a, mapObj tensor (mapObj tensor (b, c), d))
 >                             (a, (mapObj tensor (b, mapObj tensor (c, d))))
->                             (MkProductMorphism (identity cat a) (component (natTrans associator) (b, c, d))))))
+>                             (MkProductMorphism (identity cat a) (component (morphism associator) (b, c, d))))))
 >
 > MonoidalTriangle :
 >      (cat : Category)
 >   -> (tensor : CFunctor (productCategory cat cat) cat)
 >   -> (unit : obj cat)
 >   -> (associator : Associator cat tensor)
->   -> (leftUnitor  : NaturalIsomorphism cat cat (leftIdTensor  cat tensor unit) (idFunctor cat))
->   -> (rightUnitor : NaturalIsomorphism cat cat (rightIdTensor cat tensor unit) (idFunctor cat))
+>   -> (leftUnitor  : Isomorphism (functorCategory cat cat) (leftIdTensor  cat tensor unit) (idFunctor cat))
+>   -> (rightUnitor : Isomorphism (functorCategory cat cat) (rightIdTensor cat tensor unit) (idFunctor cat))
 >   -> (a, b : obj cat)
 >   -> Type
 > MonoidalTriangle cat tensor unit associator leftUnitor rightUnitor a b =
 >   (mapMor tensor
 >           (mapObj tensor (a, unit), b)
 >           (a, b)
->           (MkProductMorphism (component (natTrans rightUnitor) a) (identity cat b)))
+>           (MkProductMorphism (component (morphism rightUnitor) a) (identity cat b)))
 >           =
 >   (compose cat
 >            (mapObj tensor (mapObj tensor (a, unit), b))
 >            (mapObj tensor (a, mapObj tensor (unit, b)))
 >            (mapObj tensor (a, b))
->            (component (natTrans associator) (a, unit, b))
+>            (component (morphism associator) (a, unit, b))
 >            (mapMor tensor
 >                    (a, mapObj tensor (unit, b))
 >                    (a, b)
->                    (MkProductMorphism (identity cat a) (component (natTrans leftUnitor) b))))
+>                    (MkProductMorphism (identity cat a) (component (morphism leftUnitor) b))))
