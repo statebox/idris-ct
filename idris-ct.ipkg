@@ -25,7 +25,6 @@ modules =
   Basic.Category,
   Basic.Functor,
   Basic.Isomorphism,
-  Basic.NaturalIsomorphism,
   Basic.NaturalTransformation,
   Cats.CatsAsCategory,
   Cats.FunctorsAsCategory,
