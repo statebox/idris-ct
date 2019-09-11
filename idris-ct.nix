@@ -34,5 +34,5 @@ idrisPackages.build-idris-package {
     homepage = "https://github.com/statebox/idris-ct";
   };
 
-  idrisBuildOptions = [ "--log" "1" "--verbose" ];
+  idrisBuildOptions = [ "--log" "10" "--verbose" ];
 }
