@@ -33,6 +33,4 @@ idrisPackages.build-idris-package {
     description = "Idris category theory library";
     homepage = "https://github.com/statebox/idris-ct";
   };
-
-  idrisBuildOptions = [ "--log" "10" "--verbose" ];
 }

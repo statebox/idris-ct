@@ -21,3 +21,12 @@ language: nix
 os:
 #   - linux
   - osx
+script:
+  # Ping stdout every 9 minutes or Travis kills build,
+  # while travis_wait does not show the command output while processing.
+  # https://docs.travis-ci.com/user/common-build-problems/#build-times-out-because-no-output-was-received
+  - |
+    while sleep 540; do
+      echo "====[ $SECONDS seconds still running ]===="
+    done &
+  - nix-build
