@@ -1,4 +1,4 @@
-module Quotients
+module Quotient.Quotients
 
 import Quotient.Quotient
 

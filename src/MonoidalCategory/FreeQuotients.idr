@@ -19,7 +19,7 @@
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -- \fi
 
-module MonoidalCategory.FreeMonoidalCategory
+module MonoidalCategory.FreeQuotients
 
 import Basic.Category
 import Basic.Functor

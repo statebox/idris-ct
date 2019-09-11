@@ -1,4 +1,4 @@
-module Quotient
+module Quotient.Quotient
 
 import Control.Isomorphism
 
