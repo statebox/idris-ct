@@ -21,6 +21,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 > module Monad.IOMonad
 >
+> import Basic.Category
+> import Idris.TypesAsCategoryExtensional
+> import Monad.Monad as M
+> import Monad.VerifiedMonadAsMonad
+>
 > -- contrib
 > import Interfaces.Verified
 >
@@ -111,3 +116,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   monadLeftIdentity = ioMLeftIdentity
 >   monadRightIdentity = ioMRightIdentity
 >   monadAssociativity = ioMAssociativity
+>
+> ioMonad : FFI -> M.Monad TypesAsCategoryExtensional.typesAsCategoryExtensional
+> ioMonad ffi = verifiedMonadToExtMonad {m = IO' ffi}
