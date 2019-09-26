@@ -51,6 +51,8 @@ modules =
   Idris.FunctorAsCFunctor,
   Idris.TypesAsCategory,
   Idris.TypesAsCategoryExtensional,
+  Lens.Lens,
+  Lens.SimpleLens,
   Monad.IOMonad,
   Monad.VerifiedMonadAsMonad,
   Monad.Monad,
