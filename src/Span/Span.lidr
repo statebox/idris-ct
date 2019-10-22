@@ -19,15 +19,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module CoLimits.Pushout
+> module Span.Span
 >
 > import Basic.Category
-> import CoLimits.CoLimit
 > import CommutativeDiagram.Diagram
-> import Span.Span
+> import Data.Vect
+> import Free.Graph
+> import Free.PathCategory
 >
 > %access public export
 > %default total
 >
-> Pushout : {cat : Category} -> Span {cat} -> Type
-> Pushout {cat} diagram = CoLimit SpanIndexCategory cat diagram
+> data SpanObject = X | Y | Z
+>
+> SpanGraph : Graph
+> SpanGraph = MkGraph
+>   SpanObject
+>   [(Z, X), (Z, Y)]
+>
+> SpanIndexCategory : Category
+> SpanIndexCategory = pathCategory SpanGraph
+>
+> Span : {cat : Category} -> Type
+> Span {cat} = Diagram SpanIndexCategory cat
