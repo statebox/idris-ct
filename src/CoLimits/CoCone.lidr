@@ -24,19 +24,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 >
 > import CommutativeDiagram.Diagram
+> import Basic.ConstantFunctor
 > import Basic.Functor
 > import Basic.NaturalTransformation
 >
 > %access public export
 > %default total
 > %auto_implicits off
->
-> Delta : (cat1, cat2 : Category) -> (n : obj cat2) -> CFunctor cat1 cat2
-> Delta cat1 cat2 n = MkCFunctor
->   (\a => n)
->   (\a, b, f => identity cat2 n)
->   (\a => Refl)
->   (\a, b, c, f, g => sym (leftIdentity cat2 n n (identity cat2 n)))
 >
 > CoCone :
 >      {index, cat : Category}
@@ -49,7 +43,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (index : Category) (cat : Category)
 >   (diagram : Diagram index cat)
 >   (a: obj cat) (b : obj cat)
->   (source : CoCone diagram a) (target : CoCone diagram b) where
+>   (source : CoCone diagram a) (target : CoCone diagram b)
+> where
 >   constructor MkCoConeMorphism
 >   apexMorphism   : mor cat a b
 >   commutativity : (i : obj index)
