@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 modules =
   Basic.Category,
+  Basic.ConstantFunctor,
   Basic.Functor,
   Basic.Isomorphism,
   Basic.NaturalIsomorphism,
@@ -36,6 +37,7 @@ modules =
   CoLimits.CoProduct,
   CoLimits.InitialObject,
   CoLimits.InitialObjectAsCoLimit,
+  CoLimits.Pushout,
   CommutativeDiagram.Diagram,
   Discrete.DiscreteCategory,
   Discrete.FunctionAsFunctor,
@@ -53,6 +55,9 @@ modules =
   Idris.TypesAsCategoryExtensional,
   Lens.Lens,
   Lens.SimpleLens,
+  Limits.Limit,
+  Limits.Pullback,
+  Limits.TerminalObject,
   Monad.IOMonad,
   Monad.KleisliCategory,
   Monad.Monad,
