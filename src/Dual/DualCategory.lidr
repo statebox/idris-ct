@@ -22,6 +22,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module Dual.DualCategory
 >
 > import Basic.Category
+> import Basic.Functor
+> import Basic.Isomorphism
+> import Cats.CatsAsCategory
 >
 > %access public export
 > %default total
@@ -73,3 +76,45 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (dualLeftIdentity cat)
 >   (dualRightIdentity cat)
 >   (dualAssoc cat)
+>
+> doubleDualTo : (cat : Category) -> CFunctor (dualCategory $ dualCategory cat) cat
+> doubleDualTo cat = MkCFunctor
+>   id
+>   (\_, _ => id)
+>   (\_ => Refl)
+>   (\_, _, _, _, _ => Refl)
+>
+> doubleDualFrom : (cat : Category) -> CFunctor cat (dualCategory $ dualCategory cat)
+> doubleDualFrom cat = MkCFunctor
+>   id
+>   (\_, _ => id)
+>   (\_ => Refl)
+>   (\_, _, _, _, _ => Refl)
+>
+> doubleDualIsomorphism : (cat : Category)
+>                      -> Isomorphism CatsAsCategory.catsAsCategory
+>                                     cat
+>                                     (dualCategory $ dualCategory cat)
+> doubleDualIsomorphism cat = MkIsomorphism
+>   (doubleDualFrom cat)
+>   (doubleDualTo   cat)
+>   (functorEq cat
+>              cat
+>              (functorComposition cat
+>                                  (dualCategory $ dualCategory cat)
+>                                  cat
+>                                  (doubleDualFrom cat)
+>                                  (doubleDualTo cat))
+>              (idFunctor cat)
+>              (\_ => Refl)
+>              (\_, _, _ => Refl))
+>   (functorEq (dualCategory $ dualCategory cat)
+>              (dualCategory $ dualCategory cat)
+>              (functorComposition (dualCategory $ dualCategory cat)
+>                                  cat
+>                                  (dualCategory $ dualCategory cat)
+>                                  (doubleDualTo cat)
+>                                  (doubleDualFrom cat))
+>              (idFunctor (dualCategory $ dualCategory cat))
+>              (\_ => Refl)
+>              (\_, _, _ => Refl))
