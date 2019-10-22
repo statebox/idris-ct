@@ -37,4 +37,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > where
 >   constructor MkNaturalIsomorphism
 >   natTrans : NaturalTransformation cat1 cat2 fun1 fun2
->   isIso    : (a : obj cat1) -> Isomorphism cat2 (mapObj fun1 a) (mapObj fun2 a) (component natTrans a)
+>   isIso    : (a : obj cat1) -> Isomorphism cat2 (mapObj fun1 a) (mapObj fun2 a)
