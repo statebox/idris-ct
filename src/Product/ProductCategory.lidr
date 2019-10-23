@@ -94,3 +94,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (\abc1, abc2, f => MkProductMorphism (MkProductMorphism (pi1 f) (pi1 (pi2 f))) (pi2 (pi2 f)))
 >   (\abc => Refl)
 >   (\abc1, abc2, abc3, f, g => Refl)
+>
+> flipFunctor :
+>      {cat1, cat2 : Category}
+>   -> CFunctor (productCategory cat1 cat2) (productCategory cat2 cat1)
+> flipFunctor = MkCFunctor
+>   (\a => (snd a, fst a))
+>   (\a, b, f => MkProductMorphism (pi2 f) (pi1 f))
+>   (\a => Refl)
+>   (\a, b, c, f, g => Refl)
