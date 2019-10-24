@@ -29,11 +29,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Dual.DualCategory
 > import Dual.DualFunctor
 > import Free.Path
+> import Span.Span
 >
 > %access public export
 > %default total
 >
-> Pullback : {cat : Category} -> Diagram (dualCategory PushoutIndexCategory) cat -> Type
+> Pullback : {cat : Category} -> Diagram (dualCategory SpanIndexCategory) cat -> Type
 > Pullback {cat} diagram = Pushout
 >   {cat = dualCategory cat}
->   (functorComposition _ _ _ (doubleDualFrom PushoutIndexCategory) (dualFunctor diagram))
+>   (functorComposition _ _ _ (doubleDualFrom SpanIndexCategory) (dualFunctor diagram))
