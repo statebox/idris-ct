@@ -197,3 +197,10 @@ Summing up and putting it all together, our definition of |Category| now looks l
 >                -> (g : mor b c)
 >                -> (h : mor c d)
 >                -> compose a b d f (compose b c d g h) = compose a c d (compose a b c f g) h
+>
+> composeEq : (cat : Category)
+>           -> {x1, x2, y1, y2, z1, z2 : obj cat}
+>           -> {f1 : mor cat x1 y1} -> {f2 : mor cat x2 y2} -> {g1 : mor cat y1 z1} -> {g2 : mor cat y2 z2}
+>           -> x1 = x2 -> y1 = y2 -> z1 = z2 -> f1 = f2 -> g1 = g2
+>           -> compose cat x1 y1 z1 f1 g1 = compose cat x2 y2 z2 f2 g2
+> composeEq cat Refl Refl Refl Refl Refl = Refl

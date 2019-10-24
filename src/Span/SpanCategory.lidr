@@ -62,7 +62,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                    (component (fst f) Y)
 >                                    (component (fst g) Y)
 >                      = compose cat b b b (identity cat b) (identity cat b)
-> spanCompositionLemma {cat} {a} {b} s1 s2 s3 f g = ?qwer
+> spanCompositionLemma {cat} {a} {b} (fun1 ** prfX1 ** prfY1) (fun2 ** prfX2 ** prfY2) (fun3 ** prfX3 ** prfY3) (fnt ** fprf) (gnt ** gprf) =
+>   composeEq cat prfY1 prfY2 prfY3 fprf gprf
 >
 > spanComposition : {cat : Category}
 >                -> {a, b : obj cat}
