@@ -34,6 +34,7 @@ horizontalIdPostcomposition {cat1} {cat2} identityMorphism hc = MkCFunctor
                                                         (identity cat2 identityMorphism)))
                               pc)
 
+public export
 horizontalIdPrecomposition : {cat1, cat2, cat3 : Category}
                           -> (obj cat1)
                           -> (hc : CFunctor (productCategory cat1 cat2) cat3)
@@ -46,6 +47,7 @@ horizontalIdPrecomposition {cat1} {cat2} {cat3} identityMorphism hc = horizontal
                       flipFunctor
                       hc)
 
+public export
 leftAssociator : {cat1, cat2, cat3, cat4, cat5 : Category}
               -> CFunctor (productCategory cat2 cat3) cat5
               -> CFunctor (productCategory cat1 cat5) cat4
@@ -57,6 +59,7 @@ leftAssociator {cat1} {cat2} {cat3} {cat4} {cat5} f g = functorComposition
   (productFunctor (idFunctor cat1) f)
   g
 
+public export
 rightAssociator : {cat1, cat2, cat3, cat4, cat5 : Category}
                -> CFunctor (productCategory cat1 cat2) cat5
                -> CFunctor (productCategory cat5 cat3) cat4
@@ -72,6 +75,7 @@ rightAssociator {cat1} {cat2} {cat3} {cat4} {cat5} f g = functorComposition
                       (productFunctor f (idFunctor cat3))
                       g)
 
+public export
 record Bicategory where
   constructor MkBicategory
   cell0                 : Type
