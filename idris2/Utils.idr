@@ -4,7 +4,7 @@ public export
 cong2 : (f : t -> u -> v) -> a = b -> c = d -> f a c = f b d
 cong2 f Refl Refl = Refl
 
-public export 
+public export
 swap : (a, b) -> (b, a)
 swap (x, y) = (y, x)
 
@@ -16,10 +16,6 @@ interface Functor f => VerifiedFunctor (f : Type -> Type) where
                        map (g2 . g1) x = (map g2 . map g1) x
 
 public export
-functorIdentity' : VerifiedFunctor f => (x : f a) -> map Prelude.id x = x
-functorIdentity' = functorIdentity id (\x => Refl)
-
-public export
 interface Semigroup a => VerifiedSemigroup a where
   semigroupOpIsAssociative : (l, c, r : a) -> l <+> (c <+> r) = (l <+> c) <+> r
 
@@ -27,3 +23,8 @@ public export
 interface (VerifiedSemigroup a, Monoid a) => VerifiedMonoid a where
   monoidNeutralIsNeutralL : (l : a) -> l <+> Prelude.neutral = l
   monoidNeutralIsNeutralR : (r : a) -> Prelude.neutral <+> r = r
+
+-- explicitely heterogeneous version of trans
+public export
+hTrans : (a ~=~ b) -> (b ~=~ c) -> (a ~=~ c)
+hTrans Refl Refl = Refl
