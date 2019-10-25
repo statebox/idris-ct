@@ -26,6 +26,7 @@ pdf:
 
 clean:
 	$(MAKE) -C docs clean
+	rm -rf compare
 
 cleanAuxiliary:
 	$(MAKE) -C docs cleanAuxiliary
@@ -35,3 +36,7 @@ cleanBinaries:
 
 cleanSources:
 	$(MAKE) -C docs cleanSources
+
+compare:
+	idris fileDiff/FileDiff.idr -o compare
+	./compare src idris2

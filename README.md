@@ -73,6 +73,14 @@ Look directly in the [Makefile](Makefile) for additional options.
 
 You can also consult the documentation directly [here](https://github.com/statebox/idris-ct-docs/blob/master/idris-ct-docs.pdf).
 
+### Generate comparaison data with Idris2
+
+Use `make compare` to output which files have not been converted to Idris2.
+
+If the executable has already been generated, simply execute `./compare src/ idris2/` to rerun the
+comparaison between the two file trees.
+
+
 ### Build code
 
 You can build manually all the code using
