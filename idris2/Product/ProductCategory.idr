@@ -78,3 +78,13 @@ productAssociator cat1 cat2 cat3 = MkCFunctor
   (\_, _, f => MkProductMorphism (MkProductMorphism (pi1 f) (pi1 (pi2 f))) (pi2 (pi2 f)))
   (\_ => Refl)
   (\_, _, _, _, _ => Refl)
+
+public export
+flipFunctor :
+     {cat1, cat2 : Category}
+  -> CFunctor (productCategory cat1 cat2) (productCategory cat2 cat1)
+flipFunctor = MkCFunctor
+  (\a => (snd a, fst a))
+  (\a, b, f => MkProductMorphism (pi2 f) (pi1 f))
+  (\a => Refl)
+  (\a, b, c, f, g => Refl)
