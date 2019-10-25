@@ -39,7 +39,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >             -> Type
 > SpanMorphism {cat} {a} {b} s1 s2 =
 >   (nt  : NaturalTransformation SpanIndexCategory cat (spanFunctor s1) (spanFunctor s2)
->   -- ** e : (component nt X = identity cat a)
+>   ** e : (component nt X = identity cat a)
 >   **      component nt Y = identity cat b)
 >
 > spanIdentity : {cat : Category}
@@ -48,22 +48,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >             -> SpanMorphism s s
 > spanIdentity {cat} s =
 >   (  idTransformation SpanIndexCategory cat (spanFunctor s)
->   -- ** rewrite fst $ snd s in Refl
+>   ** rewrite fst $ snd s in Refl
 >   ** rewrite snd $ snd s in Refl)
->
-> spanCompositionLemma : {cat : Category}
->                     -> {a, b : obj cat}
->                     -> (s1, s2, s3 : Span a b)
->                     -> (f : SpanMorphism s1 s2)
->                     -> (g : SpanMorphism s2 s3)
->                     -> compose cat (mapObj (fst s1) Y)
->                                    (mapObj (fst s2) Y)
->                                    (mapObj (fst s3) Y)
->                                    (component (fst f) Y)
->                                    (component (fst g) Y)
->                      = compose cat b b b (identity cat b) (identity cat b)
-> spanCompositionLemma {cat} {a} {b} (fun1 ** prfX1 ** prfY1) (fun2 ** prfX2 ** prfY2) (fun3 ** prfX3 ** prfY3) (fnt ** fprf) (gnt ** gprf) =
->   composeEq cat prfY1 prfY2 prfY3 fprf gprf
 >
 > spanComposition : {cat : Category}
 >                -> {a, b : obj cat}
@@ -79,8 +65,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                       (spanFunctor s3)
 >                                       (DPair.fst f)
 >                                       (DPair.fst g)
->   -- ** trans (DPair.fst $ DPair.snd f) (DPair.fst $ DPair.snd g)
->   ** trans (spanCompositionLemma {cat} {a} {b} s1 s2 s3 f g) (leftIdentity cat b b (identity cat b)))
+>   ** trans (composeEq cat (fst $ snd s1) (fst $ snd s2) (fst $ snd s3) (fst $ snd f) (fst $ snd g))
+>            (leftIdentity cat a a (identity cat a))
+>   ** ?qwer)
+>   -- TODO: find out why the compiler crashes with the code below
+> --  ** trans (composeEq cat (snd $ snd s1) (snd $ snd s2) (snd $ snd s3) (snd $ snd f) (snd $ snd g))
+> --           (leftIdentity cat b b (identity cat b)))
 >
 > -- SpanCategory : {cat : Category}
 > --             -> (a, b : obj cat)
