@@ -19,6 +19,7 @@ SpanMorphism {cat} {a} {b} s1 s2 =
   ** e : (component nt X ~=~ identity cat a)
   **      component nt Y ~=~ identity cat b)
 
+public export
 spanIdentity : {cat : Category}
             -> {a, b : obj cat}
             -> (s : Span {cat} a b)
@@ -28,6 +29,7 @@ spanIdentity {cat} s =
   ** rewrite fst $ snd s in Refl
   ** rewrite snd $ snd s in Refl)
 
+public export
 spanComposition : {cat : Category}
                -> {a, b : obj cat}
                -> (s1, s2, s3 : Span {cat} a b)
@@ -46,3 +48,16 @@ spanComposition {cat} {a} {b} s1 s2 s3 f g =
             (leftIdentity cat a a (identity cat a))
   ** hTrans (composeEq cat (snd $ snd s1) (snd $ snd s2) (snd $ snd s3) (snd $ snd f) (snd $ snd g))
             (leftIdentity cat b b (identity cat b)))
+
+public export
+SpanCategory : {cat : Category}
+            -> (a, b : obj cat)
+            -> Category
+SpanCategory a b = MkCategory
+  (Span a b)
+  (SpanMorphism {a} {b})
+  spanIdentity
+  spanComposition
+  (\a, b, f => ?lId)
+  (\a, b, f => ?rId)
+  (\a, b, c, d, f, g, h => ?assoc)
