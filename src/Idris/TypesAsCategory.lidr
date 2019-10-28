@@ -30,7 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > TypeMorphism a b = a -> b
 >
 > identity : (a : Type) -> TypeMorphism a a
-> identity a = id
+> identity a = \x => x
 >
 > compose :
 >      (a, b, c : Type)
