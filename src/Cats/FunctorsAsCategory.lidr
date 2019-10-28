@@ -64,7 +64,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> NaturalTransformation cat1 cat3
 >     (functorComposition cat1 cat2 cat3 fun1 fun2)
 >     (functorComposition cat1 cat2 cat3 fun1 fun3)
-> composeNatTransFunctor cat1 cat2 cat3 fun1 fun2 fun3 natTrans = MkNaturalTransformation
+> composeNatTransFunctor cat1 cat2 cat3 fun1 fun2 fun3 natTrans =
 >   naturalTransformationHorizontalComposition cat1 cat2 cat3 fun1 fun1 fun2 fun3
 >     (idTransformation cat1 cat2 fun1)
 >     natTrans
