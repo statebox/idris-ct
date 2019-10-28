@@ -43,6 +43,32 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     (compose cat2 _ _ _ (mapMor fun a b f) (identity cat2 (mapObj fun b)))
 >     QED)
 >
+> composeFunctorNatTrans :
+>      (cat1, cat2, cat3 : Category)
+>   -> (fun1, fun2 : CFunctor cat1 cat2)
+>   -> NaturalTransformation cat1 cat2 fun1 fun2
+>   -> (fun3 : CFunctor cat2 cat3)
+>   -> NaturalTransformation cat1 cat3
+>      (functorComposition cat1 cat2 cat3 fun1 fun3)
+>      (functorComposition cat1 cat2 cat3 fun2 fun3)
+> composeFunctorNatTrans cat1 cat2 cat3 fun1 fun2 natTrans fun3 =
+>   naturalTransformationHorizontalComposition cat1 cat2 cat3 fun1 fun2 fun3 fun3
+>     natTrans
+>     (idTransformation cat2 cat3 fun3)
+>
+> composeNatTransFunctor :
+>      (cat1, cat2, cat3 : Category)
+>   -> (fun1 : CFunctor cat1 cat2)
+>   -> (fun2, fun3 : CFunctor cat2 cat3)
+>   -> NaturalTransformation cat2 cat3 fun2 fun3
+>   -> NaturalTransformation cat1 cat3
+>     (functorComposition cat1 cat2 cat3 fun1 fun2)
+>     (functorComposition cat1 cat2 cat3 fun1 fun3)
+> composeNatTransFunctor cat1 cat2 cat3 fun1 fun2 fun3 natTrans = MkNaturalTransformation
+>   naturalTransformationHorizontalComposition cat1 cat2 cat3 fun1 fun1 fun2 fun3
+>     (idTransformation cat1 cat2 fun1)
+>     natTrans
+>
 > functorCategory : (cat1, cat2 : Category) -> Category
 > functorCategory cat1 cat2 = MkCategory
 >   (CFunctor cat1 cat2)
