@@ -203,35 +203,22 @@ The code above is everything we need to define what a natural transformation is.
 >              (component natTrans34 (mapObj fun2 a)))
 >     (\a, b, f =>
 >       let
->         fun1a = mapObj fun1 a
->         fun2a = mapObj fun2 a
->         fun1b = mapObj fun1 b
->         fun2b = mapObj fun2 b
->         fun1f = mapMor fun1 a b f
->         fun2f = mapMor fun2 a b f
->         fun3fun1a = mapObj fun3 fun1a
->         fun3fun1b = mapObj fun3 fun1b
->         fun3fun2a = mapObj fun3 fun2a
->         fun3fun2b = mapObj fun3 fun2b
->         fun4fun2a = mapObj fun4 fun2a
->         fun4fun2b = mapObj fun4 fun2b
->         fun3fun1f = mapMor fun3 fun1a fun1b fun1f
->         fun3fun2f = mapMor fun3 fun2a fun2b fun2f
->         fun4fun2f = mapMor fun4 fun2a fun2b fun2f
+>         fun3fun1f = mapMor fun3 (mapObj fun1 a) (mapObj fun1 b) (mapMor fun1 a b f)
+>         fun3fun2f = mapMor fun3 (mapObj fun2 a) (mapObj fun2 b) (mapMor fun2 a b f)
+>         fun4fun2f = mapMor fun4 (mapObj fun2 a) (mapObj fun2 b) (mapMor fun2 a b f)
 >         natTrans12a = component natTrans12 a
 >         natTrans12b = component natTrans12 b
->         fun3natTrans12a = mapMor fun3 fun1a fun2a natTrans12a
->         fun3natTrans12b = mapMor fun3 fun1b fun2b natTrans12b
->         natTrans34fun2a = component natTrans34 fun2a
->         natTrans34fun2b = component natTrans34 fun2b
+>         fun3natTrans12a = mapMor fun3 (mapObj fun1 a) (mapObj fun2 a) natTrans12a
+>         fun3natTrans12b = mapMor fun3 (mapObj fun1 b) (mapObj fun2 b) natTrans12b
+>         natTrans34fun2a = component natTrans34 (mapObj fun2 a)
+>         natTrans34fun2b = component natTrans34 (mapObj fun2 b)
 >       in
->         (((sym (associativity cat3 fun3fun1a fun3fun2a fun4fun2a fun4fun2b fun3natTrans12a natTrans34fun2a fun4fun2f) `trans`
->         cong (commutativity natTrans34 fun2a fun2b fun2f)) `trans`
->         associativity cat3 fun3fun1a fun3fun2a fun3fun2b fun4fun2b fun3natTrans12a fun3fun2f natTrans34fun2b) `trans`
+>         (((sym (associativity cat3 (mapObj fun3 (mapObj fun1 a)) (mapObj fun3 (mapObj fun2 a)) (mapObj fun4 (mapObj fun2 a)) (mapObj fun4 (mapObj fun2 b)) fun3natTrans12a natTrans34fun2a fun4fun2f) `trans`
+>         cong (commutativity natTrans34 (mapObj fun2 a) (mapObj fun2 b) (mapMor fun2 a b f))) `trans`
+>         associativity cat3 (mapObj fun3 (mapObj fun1 a)) (mapObj fun3 (mapObj fun2 a)) (mapObj fun3 (mapObj fun2 b)) (mapObj fun4 (mapObj fun2 b)) fun3natTrans12a fun3fun2f natTrans34fun2b) `trans`
 >         cong2 (
->           (sym (preserveCompose fun3 fun1a fun2a fun2b natTrans12a fun2f) `trans`
+>           (sym (preserveCompose fun3 (mapObj fun1 a) (mapObj fun2 a) (mapObj fun2 b) natTrans12a (mapMor fun2 a b f)) `trans`
 >           cong (commutativity natTrans12 a b f)) `trans`
->           preserveCompose fun3 fun1a fun1b fun2b fun1f natTrans12b
+>           preserveCompose fun3 (mapObj fun1 a) (mapObj fun1 b) (mapObj fun2 b) (mapMor fun1 a b f) natTrans12b
 >         ) (Refl { x = natTrans34fun2b })) `trans`
->         sym (associativity cat3 fun3fun1a fun3fun1b fun3fun2b fun4fun2b fun3fun1f fun3natTrans12b natTrans34fun2b))
-
+>         sym (associativity cat3 (mapObj fun3 (mapObj fun1 a)) (mapObj fun3 (mapObj fun1 b)) (mapObj fun3 (mapObj fun2 b)) (mapObj fun4 (mapObj fun2 b)) fun3fun1f fun3natTrans12b natTrans34fun2b))
