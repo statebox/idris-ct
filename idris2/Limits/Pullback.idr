@@ -14,7 +14,7 @@ Pullback {cat} {x} {y} {z} f g = Pushout {cat = dualCategory cat} {x} {y} {z} f 
 
 public export
 HasPullbacks : (cat : Category) -> Type
-HasPullbacks cat = {x, y, z : obj cat}
+HasPullbacks cat = (x, y, z : obj cat)
                 -> (f : mor cat x z)
                 -> (g : mor cat y z)
                 -> Pullback {cat} {x} {y} {z} f g
