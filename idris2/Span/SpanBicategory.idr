@@ -4,6 +4,7 @@ import Basic.Category
 import Basic.Functor
 import CoLimits.CoLimit
 import Data.List.Elem
+import Dual.DualCategory
 import Free.Path
 import Higher.Bicategory
 import Limits.Pullback
@@ -48,6 +49,39 @@ spanHorizontalCompositionMor : {cat : Category}
                             -> ProductMorphism (SpanCategory {cat} x y) (SpanCategory {cat} y z) a b
                             -> SpanMorphism {cat} {a=x} {b=z} (spanHorizontalCompositionObj {cat} {x} {y} {z} hasPullbacks a)
                                                               (spanHorizontalCompositionObj {cat} {x} {y} {z} hasPullbacks b)
+spanHorizontalCompositionMor {cat} {x} {y} {z} hasPullbacks a b (MkProductMorphism f1 f2) =
+  (  MkNaturalTransformation
+       (\c => case c of
+               X => rewrite fst $ snd (spanHorizontalCompositionObj hasPullbacks a) in
+                    rewrite fst $ snd (spanHorizontalCompositionObj hasPullbacks b) in
+                      identity cat x
+               Y => rewrite snd $ snd (spanHorizontalCompositionObj hasPullbacks a) in
+                    rewrite snd $ snd (spanHorizontalCompositionObj hasPullbacks b) in
+                      identity cat z
+               Z => let
+                      aPullback = hasPullbacks (mapObj {cat1=SpanIndexCategory} {cat2=cat} (fst $ fst a) Z)
+                                               (mapObj {cat1=SpanIndexCategory} {cat2=cat} (fst $ snd a) Z)
+                                               y
+                                               (castMor Refl (snd $ snd $ fst a) $ mapMor {cat1=SpanIndexCategory} {cat2=cat} (fst $ fst a) Z Y [There Here])
+                                               (castMor Refl (fst $ snd $ snd a) $ mapMor {cat1=SpanIndexCategory} {cat2=cat} (fst $ snd a) Z X [Here])
+                      bPullback = hasPullbacks (mapObj {cat1=SpanIndexCategory} {cat2=cat} (fst $ fst b) Z)
+                                               (mapObj {cat1=SpanIndexCategory} {cat2=cat} (fst $ snd b) Z)
+                                               y
+                                               (castMor Refl (snd $ snd $ fst b) $ mapMor {cat1=SpanIndexCategory} {cat2=cat} (fst $ fst b) Z Y [There Here])
+                                               (castMor Refl (fst $ snd $ snd b) $ mapMor {cat1=SpanIndexCategory} {cat2=cat} (fst $ snd b) Z X [Here])
+                      coSpan = span {cat = dualCategory cat}
+                                   (mapObj {cat1=SpanIndexCategory} {cat2=cat} (fst $ fst b) Z)
+                                   (mapObj {cat1=SpanIndexCategory} {cat2=cat} (fst $ snd b) Z)
+                                   y
+                                   (castMor Refl (snd $ snd $ fst b) $ mapMor {cat1=SpanIndexCategory} {cat2=cat} (fst $ fst b) Z Y [There Here])
+                                   (castMor Refl (fst $ snd $ snd b) $ mapMor {cat1=SpanIndexCategory} {cat2=cat} (fst $ snd b) Z X [Here])
+                      -- cone : NaturalTransformation SpanIndexCategory cat (Delta SpanIndexCategory cat (carrier aPullback)) (fst coSpan)
+                      -- cone = MkNaturalTransformation ?comp ?comm
+                      -- coconeMorph = exists bPullback (carrier aPullback) dCocone
+                    in ?asdf3)
+       ?poiu
+  ** ?qwer
+  ** ?zxcv)
 
 public export
 spanHorizontalComposition : {cat : Category}
