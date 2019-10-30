@@ -11,8 +11,8 @@ record Lens (s : Type) (t : Type) (a : Type) (b : Type) where
 
 public export
 eqLens : {l1, l2 : Lens s t a b}
-      -> get l1 = get l2
-      -> put l1 = put l2
+      -> ((x : s) -> get l1 x = get l2 x)
+      -> ((x : s) -> (y : b) -> put l1 x y = put l2 x y)
       -> l1 = l2
 eqLens _ _ = believe_me ()
 
@@ -26,11 +26,6 @@ lensComposition outerLens innerLens = MkLens
   (get innerLens . get outerLens)
   (\s, d => put outerLens s (put innerLens (get outerLens s) d))
 
-funExt : {f, g : a -> b}
-      -> ((x : a) -> f x = g x)
-      -> f = g
-funExt prf = believe_me ()
-
 public export
 lensesAsCategory : Category
 lensesAsCategory = MkCategory
@@ -40,10 +35,10 @@ lensesAsCategory = MkCategory
   (\_, _, _ => lensComposition)
   (\_, _, l => eqLens {l1=lensComposition l identityLens}
                       {l2=l}
-                      (funExt (\x => Refl))
-                      (funExt (\x => funExt {f=(\y => put l x y)} {g=put l x} (\y => Refl))))
+                      (\x => Refl)
+                      (\x, y => Refl))
   (\_, _, l => eqLens {l1=lensComposition identityLens l}
                       {l2=l}
-                      (funExt (\x => Refl))
-                      (funExt (\x => funExt {f=(\y => put l x y)} {g=put l x} (\y => Refl))))
+                      (\x => Refl)
+                      (\x, y => Refl))
   (\_, _, _, _, _, _, _ => Refl)
