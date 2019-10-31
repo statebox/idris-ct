@@ -29,3 +29,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > replace2 : {f : t -> u -> Type} -> a = b -> c = d -> f a c -> f b d
 > replace2 Refl Refl ff = ff
+>
+> idProof : {a : Type} -> {x : a} -> id x = x
+> idProof = Refl
