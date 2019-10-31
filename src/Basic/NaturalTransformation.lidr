@@ -133,6 +133,7 @@ The code above is everything we need to define what a natural transformation is.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Syntax.PreorderReasoning
 >
 > %access public export
 > %default total
@@ -159,6 +160,20 @@ The code above is everything we need to define what a natural transformation is.
 >                             (mapObj fun2 b)
 >                             (mapMor fun1 a b f)
 >                             (component b)
+>
+> idTransformation :
+>      (cat1, cat2 : Category)
+>   -> (fun : CFunctor cat1 cat2)
+>   -> NaturalTransformation cat1 cat2 fun fun
+> idTransformation cat1 cat2 fun = MkNaturalTransformation
+>   (\a => identity cat2 (mapObj fun a))
+>   (\a, b, f =>
+>     (compose cat2 _ _ _ (identity cat2 (mapObj fun a)) (mapMor fun a b f))
+>     ={ leftIdentity cat2 _ _ (mapMor fun a b f) }=
+>     (mapMor fun a b f)
+>     ={ sym $ rightIdentity cat2 _ _ (mapMor fun a b f) }=
+>     (compose cat2 _ _ _ (mapMor fun a b f) (identity cat2 (mapObj fun b)))
+>     QED)
 >
 > naturalTransformationExt :
 >      (cat1, cat2 : Category)
