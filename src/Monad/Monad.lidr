@@ -50,11 +50,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                                        functor)
 >                                    (functorComposition cat cat cat functor functor)
 >                                    functor
->                                    (composeFunctorNatTrans cat cat cat
->                                                            (functorComposition cat cat cat functor functor)
->                                                            functor
->                                                            multiplication
->                                                            functor)
+>                                    (composeFunctorNatTrans multiplication functor)
 >                                    multiplication
 >   = naturalTransformationComposition cat cat
 >                                      (functorComposition cat cat cat
@@ -77,11 +73,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                                                                               (functorComposition cat cat cat functor functor))
 >                                                                           (functorComposition cat cat cat functor functor)
 >                                                                           functor
->                                                                           (composeNatTransFunctor cat cat cat
->                                                                                                   functor
->                                                                                                   (functorComposition cat cat cat functor functor)
->                                                                                                   functor
->                                                                                                   multiplication)
+>                                                                           (composeNatTransFunctor functor multiplication)
 >                                                                           multiplication)
 >
 > MonadLeftUnit :
@@ -97,11 +89,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                    functor
 >                                    (replace {P = \x => NaturalTransformation cat cat x (functorComposition cat cat cat functor functor)}
 >                                             (catsRightIdentity cat cat functor)
->                                             (composeNatTransFunctor cat cat cat
->                                                                     functor
->                                                                     (idFunctor cat)
->                                                                     functor
->                                                                     unit))
+>                                             (composeNatTransFunctor functor unit))
 >                                    multiplication
 >   = idTransformation cat cat functor
 >
@@ -118,11 +106,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                    functor
 >                                    (replace {P = \x => NaturalTransformation cat cat x (functorComposition cat cat cat functor functor)}
 >                                             (catsLeftIdentity cat cat functor)
->                                             (composeFunctorNatTrans cat cat cat
->                                                                     (idFunctor cat)
->                                                                     functor
->                                                                     unit
->                                                                     functor))
+>                                             (composeFunctorNatTrans unit functor))
 >                                             multiplication
 >   = idTransformation cat cat functor
 >
