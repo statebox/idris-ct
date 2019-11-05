@@ -123,10 +123,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > verifiedMonadAssociativityComp : VerifiedMonad m =>
 >      (x : m (m (m a)))
->   -> map (\y => y >>= Basics.id) x >>= Basics.id = x >>= Basics.id >>= Basics.id
+>   -> map (\y => y >>= Basics.id) x >>= Basics.id = map (map Basics.id) x >>= Basics.id >>= Basics.id
 > verifiedMonadAssociativityComp {m} x =
 >   rewrite verifiedMonadMapAsBind {m} x (\y => y >>= Basics.id) in
 >   rewrite monadAssociativity x (\y => pure (y >>= Basics.id)) Basics.id in
+>   rewrite functorIdentity (map Basics.id) (\v => functorIdentity Basics.id (\w => Refl) v) x in
 >   rewrite monadAssociativity x Basics.id Basics.id in
 >   cong {f = (>>=) x} (verifiedMonadLeftIdentityExt' {m})
 >
