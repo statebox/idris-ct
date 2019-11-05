@@ -33,13 +33,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import CommutativeDiagram.Diagram
 > import Idris.TypesAsCategoryExtensional as Idris
 >
+> homIsoLawLeft : {index, cat : Category} -> {diagram : Diagram index cat} -> (colimit : CoLimit index cat diagram) -> (b : obj cat)
+>   -> (f : mor cat (carrier colimit) b) -> apexMorphism (exists colimit b (naturalTransformationComposition _ _ _ _ _ (cocone colimit) (mapMor (DiagonalFunctor index cat) (carrier colimit) b f))) = f
+> homIsoLawLeft colimit b f = ?w1
+>
+> homIsoLawRight : {index, cat : Category} -> {diagram : Diagram index cat} -> (colimit : CoLimit index cat diagram) -> (b : obj cat)
+>   -> (coconeB : CoCone diagram b) -> naturalTransformationComposition _ _ _ _ _ (cocone colimit) (mapMor (DiagonalFunctor index cat) (carrier colimit) b (apexMorphism (exists colimit b coconeB))) = coconeB
+> homIsoLawRight colimit b coconeB = naturalTransformationExt _ _ _ _ _ _ (\a => commutativity (exists colimit b coconeB) a)
+>
 > homIso : {index, cat : Category} -> {diagram : Diagram index cat} -> (colimit : CoLimit index cat diagram) -> (b : obj cat)
 >   -> Isomorphism Idris.typesAsCategoryExtensional (mor cat (carrier colimit) b) (NaturalTransformation index cat diagram (Delta index cat b))
 > homIso {index} {cat} {diagram} colimit b = MkIsomorphism
 >   (MkExtensionalTypeMorphism (\h => naturalTransformationComposition index cat diagram (Delta index cat (carrier colimit)) (Delta index cat b) (cocone colimit) (mapMor (DiagonalFunctor index cat) _ _ h)))
 >   (MkExtensionalTypeMorphism (\n => apexMorphism (exists colimit b n)))
->   (funExt (\x => ?w1))
->   (funExt (\n => ?w2))
+>   (funExt (homIsoLawLeft colimit b))
+>   (funExt (homIsoLawRight colimit b))
 >
 > colimitAdjunction : (index, cat : Category)
 >                  -> (colimitsExist : (diagram : Diagram index cat) -> CoLimit index cat diagram)
@@ -48,4 +56,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                       (DiagonalFunctor index cat)
 > colimitAdjunction index cat colimitsExist = MkAdjunction
 >   (\diagram, b => homIso (colimitsExist diagram) b)
->   (\f, g, h => ?commutativity)
+>   (\f, g, h => ?comm)
