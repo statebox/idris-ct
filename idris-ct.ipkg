@@ -69,6 +69,7 @@ modules =
   Monoid.MonoidsCategory,
   MonoidalCategory.MonoidalCategory,
   MonoidalCategory.MonoidalCategoryHelpers,
+  MonoidalCategory.MonoidalFunctor,
   MonoidalCategory.StrictMonoidalCategory,
   MonoidalCategory.SymmetricMonoidalCategory,
   MonoidalCategory.SymmetricMonoidalCategoryHelpers,
