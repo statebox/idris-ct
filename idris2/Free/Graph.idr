@@ -22,6 +22,6 @@ edgeTarget : {0 i : vertices g} -> {j : vertices g} -> Edge g i j -> vertices g
 edgeTarget _ = j
 
 -- data TriangleVertices = One | Two | Three
--- 
+--
 -- triangle : Graph
 -- triangle = MkGraph TriangleVertices [(One, Two), (Two, Three), (Three, One)]
