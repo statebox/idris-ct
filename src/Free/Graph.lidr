@@ -21,6 +21,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 > module Free.Graph
 >
+> import Data.Vect
+>
 > %access public export
 > %default total
 >
@@ -28,3 +30,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   constructor MkGraph
 >   vertices : Type
 >   edges    : vertices -> vertices -> Type
+>
+> edgeList : Eq vertices
+>         => (edges : Vect n (vertices, vertices))
+>         -> Graph
+> edgeList edges = MkGraph
+>   vertices
+>   (\v1, v2 => Fin $ fst $ filter ((==) (v1, v2)) edges)
