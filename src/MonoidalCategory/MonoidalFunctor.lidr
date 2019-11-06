@@ -79,7 +79,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                               (MkProductMorphism (component coherenceNat (a, b))
 >                                                  (identity (cat mcat2) (mapObj func c))))
 >                       (component coherenceNat (mapObj (tensor mcat1) (a, b), c)))
->              ?asdf -- TODO: need composition between Functor and natural NaturalTransformation
+>              (component (composeFunctorNatTrans (natTrans $ associator mcat1) func) (a, (b, c)))
 >    = compose (cat mcat2)
 >              (mapObj (tensor mcat2) (mapObj (tensor mcat2) (mapObj func a, mapObj func b), mapObj func c))
 >              (mapObj (tensor mcat2) (mapObj func a, mapObj func (mapObj (tensor mcat1) (b, c))))
