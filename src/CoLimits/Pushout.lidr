@@ -33,10 +33,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > data PushoutIndexObject = X | Y | Z
 >
+> Eq PushoutIndexObject where
+>   X == X = True
+>   Y == Y = True
+>   Z == Z = True
+>   _ == _ = False
+>
 > PushoutIndexGraph : Graph
-> PushoutIndexGraph = MkGraph
->   PushoutIndexObject
->   [(Z, X), (Z, Y)]
+> PushoutIndexGraph = edgeList [(Z, X), (Z, Y)]
 >
 > PushoutIndexCategory : Category
 > PushoutIndexCategory = pathCategory PushoutIndexGraph
