@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 > module Free.Path
 >
+> import Data.Vect
 > import Free.Graph
 >
 > %access public export
@@ -48,3 +49,24 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> joinPath p (joinPath q r) = joinPath (joinPath p q) r
 > joinPathAssoc Nil q r = Refl
 > joinPathAssoc (x :: xs) q r = cong $ joinPathAssoc xs q r
+>
+> data EdgeListPath : (edges : Vect n (vertices, vertices)) -> vertices -> vertices -> Type where
+>   Empty : EdgeListPath edges i i
+>   Cons  : Elem (i, j) edges -> EdgeListPath edges j k -> EdgeListPath edges i k
+>
+>
+> filterElemWhichIsHere : Eq t => (x : t) -> (l : Vect _ t) -> (k : Nat ** DPair.fst $ filter ((==) x) (x :: l) = S k)
+> filterElemWhichIsHere x [] = (0 ** ?asdf)
+> filterElemWhichIsHere x xs = ?qwer
+>
+> -- countOccurence : Eq vertices => {v1, v2 : vertices} -> Elem (v1, v2) edges -> Fin $ fst $ filter ((==) (v1, v2)) edges
+> -- countOccurence           {edges = (v1 , v2 ) :: l} Here      = rewrite DPair.snd $ filterElemWhichIsHere l (v1, v2) in 0
+> -- countOccurence {v1} {v2} {edges = (v1', v2') :: l} (There a) = let rec = countOccurence a in if (v1', v2') == (v1,v2) then weaken rec else ?qwer
+>
+> -- edgeListPath : Eq vertices
+> --             => {edges : Vect n (vertices, vertices)}
+> --             -> {i, j : vertices}
+> --             -> EdgeListPath edges i j
+> --             -> Path (edgeList edges) i j
+> -- edgeListPath Empty           = Nil
+> -- edgeListPath (Cons elem elp) = (countOccurence {edges} elem) :: (edgeListPath elp)
