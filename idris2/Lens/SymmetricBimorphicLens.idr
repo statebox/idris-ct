@@ -5,14 +5,14 @@ import Quotient.EquivalenceRelation
 import Quotient.ImplicitQuotient
 import Quotient.Quotient
 
-record SymmetricBimorphicLens (S : Type) (T : Type) (A : Type) (B : Type) where
+record SymmetricBimorphicLens (s : Type) (t : Type) (a : Type) (b : Type) where
   constructor MkSymmetricBimorphicLens
   X           : Type
   Y           : X -> Type
-  leftView    : X -> S
-  rightView   : X -> A
-  leftUpdate  : (x : X) -> T -> Y x
-  rightUpdate : (x : X) -> B -> Y x
+  leftView    : X -> s
+  rightView   : X -> a
+  leftUpdate  : (x : X) -> t -> Y x
+  rightUpdate : (x : X) -> b -> Y x
 
 idSymmetricBimorphicLens : {s, t : Type} -> SymmetricBimorphicLens s t s t
 idSymmetricBimorphicLens {s} {t} = MkSymmetricBimorphicLens
@@ -65,3 +65,12 @@ symmetricBimorphicLensCategory = MkCategory
   ?lId
   ?rId
   ?assoc
+
+pairSymmetricBimorphicLens : {s, t, a, b : Type} -> SymmetricBimorphicLens s t a b
+pairSymmetricBimorphicLens {s} {t} {a} {b} = MkSymmetricBimorphicLens
+  (s, a)
+  (\_ => Either (s, t) (a, b))
+  fst
+  snd
+  (\(s, _), t' => Left  (s, t'))
+  (\(_, a), b' => Right (a, b'))
