@@ -44,6 +44,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > extCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g)
 >   = MkExtensionalTypeMorphism (g . f)
 >
+> funcPreserveCompose :
+>      {a, b, c : Type}
+>   -> (f : ExtensionalTypeMorphism a b)
+>   -> (g : ExtensionalTypeMorphism b c)
+>   -> func (extCompose a b c f g) = func g . func f
+> funcPreserveCompose (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
+>
 > extLeftIdentity :
 >      (a, b : Type)
 >   -> (f : ExtensionalTypeMorphism a b)

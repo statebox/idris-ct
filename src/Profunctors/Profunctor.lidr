@@ -19,15 +19,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Basic.NaturalIsomorphism
+> module Profunctors.Profunctor
 >
 > import Basic.Category
 > import Basic.Functor
-> import Basic.Isomorphism
-> import Cats.FunctorsAsCategory
+> import Dual.DualCategory as D
+> import Idris.TypesAsCategoryExtensional as Idris
+> import Product.ProductCategory as P
 >
 > %access public export
 > %default total
 >
-> NaturalIsomorphism: (cat1, cat2: Category) -> (fun1 : CFunctor cat1 cat2) -> (fun2 : CFunctor cat1 cat2) -> Type
-> NaturalIsomorphism cat1 cat2 fun1 fun2 = Isomorphism (functorCategory cat1 cat2) fun1 fun2
+> Profunctor : Category -> Category -> Type
+> Profunctor c d = CFunctor (P.productCategory (D.dualCategory d) c) Idris.typesAsCategoryExtensional

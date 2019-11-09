@@ -24,83 +24,42 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category as Cat
 > import Basic.Functor
 > import Basic.Isomorphism
+> import Basic.NaturalIsomorphism
 > import Basic.NaturalTransformation
 > import Cats.CatsAsCategory
 > import Cats.FunctorsAsCategory
+> import Dual.DualCategory
+> import Dual.DualFunctor
 > import Idris.TypesAsCategoryExtensional as Idris
+> import Product.ProductCategory
+> import Product.ProductFunctor
+> import Profunctors.HomFunctor
 > import Utils
 >
 > %access public export
 > %default total
 >
-> record Adjunction
->   (cat1 : Category)
->   (cat2 : Category)
->   (funL : CFunctor cat2 cat1)
->   (funR : CFunctor cat1 cat2)
-> where
->   constructor MkAdjunction
->   homIsomorphism : (a : obj cat2)
->                 -> (b : obj cat1)
->                 -> Isomorphism Idris.typesAsCategoryExtensional (mor cat1 (mapObj funL a) b) (mor cat2 a (mapObj funR b))
->   commutativity : {a, a' : obj cat2}
->                -> {b, b' : obj cat1}
->                -> (f: mor cat2 a' a)
->                -> (g: mor cat1 b b')
->                -> (h: mor cat1 (mapObj funL a) b)
->                -> compose cat2 a' a (mapObj funR b') f
->                     (compose cat2 a (mapObj funR b) (mapObj funR b')
->                       (func (morphism (homIsomorphism a b)) h) (mapMor funR b b' g))
->                 = func (morphism (homIsomorphism a' b'))
->                     (compose cat1 (mapObj funL a') (mapObj funL a) b'
->                       (mapMor funL a' a f) (compose cat1 (mapObj funL a) b b' h g))
+> Adjunction : (cat1, cat2 : Category) -> CFunctor cat2 cat1 -> CFunctor cat1 cat2 -> Type
+> Adjunction cat1 cat2 funL funR = NaturalIsomorphism
+>   (productCategory (dualCategory cat2) cat1)
+>   Idris.typesAsCategoryExtensional
+>   (costar funL)
+>   (star funR)
 
-funL f . (Inv h . g) =
-id (funL f . (Inv h . g)) =
-Inv (phi (funL f . (Inv h . g))) =
-Inv (f . (phi (Inv h) . funR g)) =
-Inv (f . (id h . funR g)) =
-Inv (f . (h . funR g))
+phi id_funLa; funR (funL f) = f; phi id_funLb
+-- comm f g h := f; (phi h; funR g) = phi (funL f; (h; g))
+-- comm f g h := phi (a,b); Hom(f, funR g) = Hom(funL f, g); phi (a', b')
+id_a; (phi id_funLa; funR (funL f)) = phi (funL id_a; (id_funLa; funL f))
+f; (phi id_funLb; funR id_funLb) = phi (funL f; (id_funLb; id_funLb))
 
 > {-
-> adjunctionInverseCommutativity :
->        {cat1, cat2 : Category}
->     -> {funL : CFunctor cat2 cat1}
->     -> {funR : CFunctor cat1 cat2}
->     -> (adj: Adjunction cat1 cat2 funL funR)
->     -> {a, a' : obj cat2}
->     -> {b, b' : obj cat1}
->     -> (f: mor cat2 a' a)
->     -> (g: mor cat1 b b')
->     -> (h: mor cat2 a (mapObj funR b))
->     -> compose cat1 (mapObj funL a') (mapObj funL a) b' (mapMor funL a' a f)
->          (compose cat1 (mapObj funL a) b b'
->            (func (Inverse (homIsomorphism adj a b)) h) g)
->      = func (Inverse (homIsomorphism adj a' b'))
->          (compose cat2 a' a (mapObj funR b')
->            f (compose cat2 a (mapObj funR b) (mapObj funR b') h (mapMor funR b b' g)))
-> adjunctionInverseCommutativity {cat1} {cat2} {funL} {funR} (MkAdjunction iso comm) {a} {a'} {b} {b'} f g h =
->   trans (sym idProof)
->   (trans (sym
->     (cong
->       (lawleft (iso _ _))))
->   (trans (cong (sym (comm f g (func (Inverse (iso a b)) h))))
->   (cong (cong {f=compose cat2 _ _ _ f} (cong2
->     (trans (cong {f=\(MkExtensionalTypeMorphism m) => m h} (lawright (iso _ _))) idProof) (Refl { x = mapMor funR _ _ g }))))))
-> -}
-
-phi id_funLa . funR (funL f) = f . phi id_funLb
--- comm f g h := f . (phi h . funR g) = phi (funL f . (h . g))
-id_a . (phi id_funLa . funR (funL f)) = phi (funL id_a . (id_funLa . funL f))
-f . (phi id_funLb . funR id_funLb) = phi (funL f . (id_funLb . id_funLb))
-
 > unit : {cat1, cat2 : Category}
 >     -> {funL : CFunctor cat2 cat1}
 >     -> {funR : CFunctor cat1 cat2}
 >     -> Adjunction cat1 cat2 funL funR
 >     -> NaturalTransformation cat2 cat2 (idFunctor cat2) (functorComposition cat2 cat1 cat2 funL funR)
-> unit {cat1} {cat2} {funL} {funR} (MkAdjunction iso comm) = MkNaturalTransformation
->   (\a => func (morphism (iso a (mapObj funL a))) (identity cat1 (mapObj funL a)))
+> unit {cat1} {cat2} {funL} {funR} adj = MkNaturalTransformation
+>   (\a => func (component (morphism adj) (a, mapObj funL a)) (identity cat1 (mapObj funL a)))
 >   (\a, b, f =>
 >     trans (sym (leftIdentity cat2 a _ _))
 >     (trans (comm (identity cat2 a) (mapMor funL a b f) (identity cat1 (mapObj funL a)))
@@ -112,6 +71,7 @@ f . (phi id_funLb . funR id_funLb) = phi (funL f . (id_funLb . id_funLb))
 >       (cong (sym (rightIdentity cat1 (mapObj funL b) _ _))))))))
 >     (trans (sym (comm f (identity cat1 (mapObj funL b)) (identity cat1 (mapObj funL b))))
 >     (cong (trans (cong (preserveId funR _)) (rightIdentity cat2 _ _ _)))))))
+> -}
 
 Inv id_funRa . f = funL (funR f) . Inv id_funRb
 -- invComm f g h := funL f . (Inv h . g) = Inv (f . (h . funR g))
