@@ -13,10 +13,10 @@ productFunctor :
 productFunctor func1 func2 = MkCFunctor
   (\a => (mapObj func1 (fst a), mapObj func2 (snd a)))
   (\a, b, f => MkProductMorphism (mapMor func1 (fst a) (fst b) (pi1 f)) (mapMor func2 (snd a) (snd b) (pi2 f)))
-  (\a => cong2 (MkProductMorphism {a = (mapObj func1 (fst a), mapObj func2 (snd a))} 
+  (\a => cong2 (MkProductMorphism {a = (mapObj func1 (fst a), mapObj func2 (snd a))}
                                   {b = (mapObj func1 (fst a), mapObj func2 (snd a))}
                )
-               (preserveId func1 (fst a)) 
+               (preserveId func1 (fst a))
                (preserveId func2 (snd a))
   )
   (\a, b, c, f, g => cong2 MkProductMorphism (preserveCompose func1 (fst a) (fst b) (fst c) (pi1 f) (pi1 g))
