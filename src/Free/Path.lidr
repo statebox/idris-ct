@@ -54,10 +54,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   Empty : EdgeListPath edges i i
 >   Cons  : Elem (i, j) edges -> EdgeListPath edges j k -> EdgeListPath edges i k
 >
->
-> filterElemWhichIsHere : Eq t => (x : t) -> (l : Vect _ t) -> (k : Nat ** DPair.fst $ filter ((==) x) (x :: l) = S k)
-> filterElemWhichIsHere x [] = (0 ** ?asdf)
-> filterElemWhichIsHere x xs = ?qwer
+> filterElemWhichIsHere : DecEq t => (x : t) -> (l : Vect _ t) -> (k : Nat ** fst $ decEqFilter x (x :: l) = S k)
+> filterElemWhichIsHere x [] with (decEq x x)
+>   filterElemWhichIsHere x [] | Yes Refl  = (0 ** Refl)
+>   filterElemWhichIsHere x [] | No contra = void $ contra Refl
+> filterElemWhichIsHere x xs with (decEq x x)
+>   filterElemWhichIsHere x xs | Yes Refl with (decEqFilter x xs)
+>     filterElemWhichIsHere x xs | Yes Refl | (i ** vs) = (i ** Refl)
+>   filterElemWhichIsHere x xs | No contra = void $ contra Refl
 >
 > -- countOccurence : Eq vertices => {v1, v2 : vertices} -> Elem (v1, v2) edges -> Fin $ fst $ filter ((==) (v1, v2)) edges
 > -- countOccurence           {edges = (v1 , v2 ) :: l} Here      = rewrite DPair.snd $ filterElemWhichIsHere l (v1, v2) in 0
