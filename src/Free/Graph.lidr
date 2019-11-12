@@ -31,15 +31,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   vertices : Type
 >   edges    : vertices -> vertices -> Type
 >
-> decidableFilter : DecEq a => (v : a) -> Vect n a -> (k ** Vect k (e ** e = v))
-> decidableFilter v [] = (0 ** [])
-> decidableFilter v (x :: xs) with (decEq x v)
->   decidableFilter v (x :: xs) | Yes prf = let (i ** vs) = decidableFilter v xs in (S i ** (x ** prf) :: vs)
->   decidableFilter v (x :: xs) | No cont = decidableFilter v xs
+> decEqFilter : DecEq a => (v : a) -> Vect n a -> (k ** Vect k (e ** e = v))
+> decEqFilter v [] = (0 ** [])
+> decEqFilter v (x :: xs) with (decEq x v)
+>   decEqFilter v (x :: xs) | Yes prf = let (i ** vs) = decEqFilter v xs in (S i ** (x ** prf) :: vs)
+>   decEqFilter v (x :: xs) | No cont = decEqFilter v xs
 >
 > edgeList : DecEq vertices
 >         => (edges : Vect n (vertices, vertices))
 >         -> Graph
 > edgeList edges = MkGraph
 >   vertices
->   (\v1, v2 => Fin $ DPair.fst $ decidableFilter (v1, v2) edges)
+>   (\v1, v2 => Fin $ fst $ decEqFilter (v1, v2) edges)
