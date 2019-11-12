@@ -63,14 +63,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     filterElemWhichIsHere x xs | Yes Refl | (i ** vs) = (i ** Refl)
 >   filterElemWhichIsHere x xs | No contra = void $ contra Refl
 >
-> -- countOccurence : Eq vertices => {v1, v2 : vertices} -> Elem (v1, v2) edges -> Fin $ fst $ filter ((==) (v1, v2)) edges
-> -- countOccurence           {edges = (v1 , v2 ) :: l} Here      = rewrite DPair.snd $ filterElemWhichIsHere l (v1, v2) in 0
-> -- countOccurence {v1} {v2} {edges = (v1', v2') :: l} (There a) = let rec = countOccurence a in if (v1', v2') == (v1,v2) then weaken rec else ?qwer
+> countOccurrence : DecEq vertices
+>               => {i, j : vertices}
+>               -> (edges : Vect n (vertices, vertices))
+>               -> Elem (i, j) edges
+>               -> Fin $ fst $ decEqFilter (i, j) edges
+> countOccurrence {i} {j} ((i, j) :: xs) Here with (decEq (i,j) (i,j))
+>   countOccurrence {i} {j} ((i, j) :: xs) Here | Yes Refl with (decEqFilter (i, j) xs)
+>     countOccurrence {i} {j} ((i, j) :: xs) Here | Yes Refl | (k ** vs) = 0
+>   countOccurrence {i} {j} ((i, j) :: xs) Here | No contra = void $ contra Refl
+> countOccurrence {i} {j} ((k, l) :: xs) (There e) with (decEq (i, j) (k, l))
+>   countOccurrence {i} {j} ((i, j) :: xs) (There e) | Yes Refl with (decEq (i, j) (i, j))
+>     countOccurrence {i} {j} ((i, j) :: xs) (There e) | Yes Refl | Yes Refl with (decEqFilter (i, j) xs) proof prf
+>       countOccurrence {i} {j} ((i, j) :: xs) (There e) | Yes Refl | Yes Refl | (k ** vs)
+>         = FS $ rewrite cong {f=DPair.fst} prf in countOccurrence {i} {j} xs e
+>     countOccurrence {i} {j} ((i, j) :: xs) (There e) | Yes Refl | No contra = void $ contra Refl
+>   countOccurrence {i} {j} ((k, l) :: xs) (There e) | No contra with (decEqFilter (i, j) xs) proof prf
+>     countOccurrence {i} {j} ((k, l) :: xs) (There e) | No contra | (m ** vs) with (decEq k i)
+>       countOccurrence {i} {j} ((i, l) :: xs) (There e) | No contra | (m ** vs) | Yes Refl with (decEq l j)
+>         countOccurrence {i} {j} ((i, j) :: xs) (There e) | No contra | (m ** vs) | Yes Refl | Yes Refl
+>           = void $ contra Refl
+>         countOccurrence {i} {j} ((i, l) :: xs) (There e) | No contra | (m ** vs) | Yes Refl | No contra'
+>           = countOccurrence {i} {j} xs e
+>       countOccurrence {i} {j} ((k, l) :: xs) (There e) | No contra | (m ** vs) | No contra' with (decEq l j)
+>         countOccurrence {i} {j} ((k, j) :: xs) (There e) | No contra | (m ** vs) | No contra' | Yes Refl
+>           = countOccurrence {i} {j} xs e
+>         countOccurrence {i} {j} ((k, l) :: xs) (There e) | No contra | (m ** vs) | No contra' | No contra''
+>           = countOccurrence {i} {j} xs e
 >
-> -- edgeListPath : Eq vertices
-> --             => {edges : Vect n (vertices, vertices)}
-> --             -> {i, j : vertices}
-> --             -> EdgeListPath edges i j
-> --             -> Path (edgeList edges) i j
-> -- edgeListPath Empty           = Nil
-> -- edgeListPath (Cons elem elp) = (countOccurence {edges} elem) :: (edgeListPath elp)
+> edgeListPath : DecEq vertices
+>             => {edges : Vect n (vertices, vertices)}
+>             -> {i, j : vertices}
+>             -> EdgeListPath edges i j
+>             -> Path (edgeList edges) i j
+> edgeListPath Empty           = Nil
+> edgeListPath (Cons elem elp) = (countOccurrence edges elem) :: (edgeListPath elp)
