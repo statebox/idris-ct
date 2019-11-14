@@ -26,9 +26,3 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > cong2 : {f : t -> u -> v} -> a = b -> c = d -> f a c = f b d
 > cong2 Refl Refl = Refl
->
-> replace2 : {f : t -> u -> Type} -> a = b -> c = d -> f a c -> f b d
-> replace2 Refl Refl ff = ff
->
-> idProof : {a : Type} -> {x : a} -> id x = x
-> idProof = Refl

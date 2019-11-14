@@ -22,12 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module CoLimits.CoLimit
 >
 > import Basic.Category
-> import Basic.Functor
-> import Basic.ConstantFunctor
-> import Basic.NaturalTransformation
-> import Cats.FunctorsAsCategory
 > import CoLimits.CoCone
-> import CoLimits.CoConeCat
 > import CommutativeDiagram.Diagram
 >
 > %access public export
@@ -51,10 +46,3 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     -> (b : CoCone diagram apexB)
 >     -> (f, g : CoConeMorphism index cat diagram carrier apexB cocone b)
 >     -> f = g
->
-> colimitMapMor : (index, cat : Category) -> (colimitsExist : (diagram : Diagram index cat) -> CoLimit index cat diagram)
->               -> (diag1, diag2: Diagram index cat) -> (trans : NaturalTransformation index cat diag1 diag2)
->               -> CoConeMorphism index cat diag1 (carrier $ colimitsExist diag1) (carrier $ colimitsExist diag2) (cocone $ colimitsExist diag1) (naturalTransformationComposition index cat diag1 diag2 (Delta index cat (carrier $ colimitsExist diag2)) trans (cocone $ colimitsExist diag2))
-> colimitMapMor index cat colimitsExist diag1 diag2 trans =
->   exists (colimitsExist diag1) (carrier $ colimitsExist diag2)
->                         (naturalTransformationComposition index cat diag1 diag2 (Delta index cat (carrier $ colimitsExist diag2)) trans (cocone $ colimitsExist diag2))

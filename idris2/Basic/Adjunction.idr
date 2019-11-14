@@ -10,4 +10,4 @@ import Profunctors.HomFunctor
 
 public export
 Adjunction : {cat1, cat2 : Category} -> CFunctor cat2 cat1 -> CFunctor cat1 cat2 -> Type
-Adjunction {cat1} {cat2} funL funR = NaturalIsomorphism (costar funL) (star funR)
+Adjunction funL funR = NaturalIsomorphism (costar funL) (star funR)
