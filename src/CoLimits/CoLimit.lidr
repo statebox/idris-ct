@@ -58,16 +58,3 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > colimitMapMor index cat colimitsExist diag1 diag2 trans =
 >   exists (colimitsExist diag1) (carrier $ colimitsExist diag2)
 >                         (naturalTransformationComposition index cat diag1 diag2 (Delta index cat (carrier $ colimitsExist diag2)) trans (cocone $ colimitsExist diag2))
->
-
- colimitFunctor : (index, cat : Category) -> ((diagram : Diagram index cat) -> CoLimit index cat diagram) -> CFunctor (functorCategory index cat) cat
- colimitFunctor index cat colimitsExist = MkCFunctor
-   (\diag => carrier $ colimitsExist diag)
-   (\diag1, diag2, trans => apexMorphism $ colimitMapMor index cat colimitsExist diag1 diag2 trans)
-   (\diag => cong {f=apexMorphism} $
-      unique (colimitsExist diag) (carrier $ colimitsExist diag) (cocone $ colimitsExist diag)
-             (replace {P=CoConeMorphism index cat diag (carrier (colimitsExist diag)) (carrier (colimitsExist diag)) (cocone $ colimitsExist diag)}
-                 (leftIdentity (functorCategory index cat) diag (Delta index cat (carrier $ colimitsExist diag)) (cocone $ colimitsExist diag))
-                 (colimitMapMor index cat colimitsExist diag diag (idTransformation index cat diag)))
-             (identityCoCone (cocone $ colimitsExist diag)))
-   ?wat2
