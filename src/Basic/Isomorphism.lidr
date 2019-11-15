@@ -34,56 +34,58 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   lawleft: compose cat a b a morphism Inverse = identity cat a
 >   lawright: compose cat b a b Inverse morphism = identity cat b
 >
-> isomorphismExt :
->      (cat : Category)
->   -> (a, b : obj cat)
+> postulate
+> isomorphismEq :
+>      {cat : Category}
+>   -> {a, b : obj cat}
 >   -> (iso1, iso2 : Isomorphism cat a b)
 >   -> (morphism iso1 = morphism iso2)
 >   -> (Inverse iso1 = Inverse iso2)
 >   -> trans1 = trans2
-> isomorphismExt _ _ _ _ _ _ _ = really_believe_me ()
 >
-> idIsomorphism : (cat : Category) -> (a : obj cat) -> Isomorphism cat a a
-> idIsomorphism cat a = MkIsomorphism
+> idIsomorphism : {cat : Category} -> (a : obj cat) -> Isomorphism cat a a
+> idIsomorphism {cat} a = MkIsomorphism
 >   (identity cat a)
 >   (identity cat a)
 >   (leftIdentity cat a a (identity cat a))
 >   (leftIdentity cat a a (identity cat a))
 >
-> isoMorphismComposition : (cat : Category) -> (a, b, c : obj cat)
+> isoMorphismComposition :
+>      {cat : Category}
+>   -> (a, b, c : obj cat)
 >   -> Isomorphism cat a b
 >   -> Isomorphism cat b c
 >   -> Isomorphism cat a c
-> isoMorphismComposition cat a b c iso1 iso2 = MkIsomorphism
+> isoMorphismComposition {cat} a b c iso1 iso2 = MkIsomorphism
 >   (compose cat a b c (morphism iso1) (morphism iso2))
 >   (compose cat c b a (Inverse iso2) (Inverse iso1))
 >   (trans (associativity cat a c b a _ (Inverse iso2) (Inverse iso1))
->     (trans (cong2
->       (trans (sym (associativity cat a b c b (morphism iso1) (morphism iso2) (Inverse iso2)))
->         (trans (cong (lawleft iso2)) (rightIdentity cat a b (morphism iso1))))
->       (Refl { x = Inverse iso1 }))
->     (lawleft iso1)))
+>          (trans (cong2 (trans (sym (associativity cat a b c b (morphism iso1) (morphism iso2) (Inverse iso2)))
+>                               (trans (cong (lawleft iso2))
+>                                      (rightIdentity cat a b (morphism iso1))))
+>                        (Refl { x = Inverse iso1 }))
+>                 (lawleft iso1)))
 >   (trans (associativity cat c a b c _ (morphism iso1) (morphism iso2))
->     (trans (cong2
->       (trans (sym (associativity cat c b a b (Inverse iso2) (Inverse iso1) (morphism iso1)))
->         (trans (cong (lawright iso1)) (rightIdentity cat c b (Inverse iso2))))
->       (Refl { x = morphism iso2 }))
->     (lawright iso2)))
+>          (trans (cong2 (trans (sym (associativity cat c b a b (Inverse iso2) (Inverse iso1) (morphism iso1)))
+>                               (trans (cong (lawright iso1))
+>                                      (rightIdentity cat c b (Inverse iso2))))
+>                        (Refl { x = morphism iso2 }))
+>                 (lawright iso2)))
 >
 > isomorphismCategory : (cat : Category) -> Category
 > isomorphismCategory cat = MkCategory
 >   (obj cat)
 >   (Isomorphism cat)
->   (idIsomorphism cat)
->   (isoMorphismComposition cat)
->   (\a, b, iso => isomorphismExt cat a b (isoMorphismComposition cat a a b (idIsomorphism cat a) iso) iso
+>   idIsomorphism
+>   isoMorphismComposition
+>   (\a, b, iso => isomorphismEq (isoMorphismComposition a a b (idIsomorphism a) iso) iso
 >     (leftIdentity cat a b (morphism iso))
 >     (rightIdentity cat b a (Inverse iso)))
->   (\a, b, iso => isomorphismExt cat a b (isoMorphismComposition cat a b b iso (idIsomorphism cat b)) iso
+>   (\a, b, iso => isomorphismEq (isoMorphismComposition a b b iso (idIsomorphism b)) iso
 >     (rightIdentity cat a b (morphism iso))
 >     (leftIdentity cat b a (Inverse iso)))
->   (\a, b, c, d, iso1, iso2, iso3 => isomorphismExt cat a d
->     (isoMorphismComposition cat a b d iso1 (isoMorphismComposition cat b c d iso2 iso3))
->     (isoMorphismComposition cat a c d (isoMorphismComposition cat a b c iso1 iso2) iso3)
+>   (\a, b, c, d, iso1, iso2, iso3 => isomorphismEq
+>     (isoMorphismComposition a b d iso1 (isoMorphismComposition b c d iso2 iso3))
+>     (isoMorphismComposition a c d (isoMorphismComposition a b c iso1 iso2) iso3)
 >     (associativity cat a b c d (morphism iso1) (morphism iso2) (morphism iso3))
 >     (sym (associativity cat d c b a (Inverse iso3) (Inverse iso2) (Inverse iso1))))
