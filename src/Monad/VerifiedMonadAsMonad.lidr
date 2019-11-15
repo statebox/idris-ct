@@ -29,7 +29,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Idris.FunctorAsCFunctor
 > import Idris.TypesAsCategoryExtensional
 > import Monad.Monad as M
-> import Syntax.PreorderReasoning
 >
 > -- contrib
 > import Interfaces.Verified
