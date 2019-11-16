@@ -279,10 +279,11 @@ The code above is everything we need to define what a natural transformation is.
 >   -> NaturalTransformation cat1 cat3
 >      (functorComposition cat1 cat2 cat3 fun1 fun3)
 >      (functorComposition cat1 cat2 cat3 fun2 fun3)
-> composeFunctorNatTrans {cat2} {cat3} natTrans fun3 =
->   naturalTransformationHorizontalComposition
->     natTrans
->     (idTransformation cat2 cat3 fun3)
+> composeFunctorNatTrans {cat3} {fun1} {fun2} natTrans fun3 = MkNaturalTransformation
+>   (\a => mapMor fun3 (mapObj fun1 a) (mapObj fun2 a) (component natTrans a))
+>   (\a, b, f => trans (sym $ preserveCompose fun3 _ _ _ (component natTrans a) (mapMor fun2 a b f))
+>                (trans (cong (commutativity natTrans a b f))
+>                       (preserveCompose fun3 _ _ _ (mapMor fun1 a b f) (component natTrans b))))
 >
 > composeNatTransFunctor :
 >      {cat1, cat2, cat3 : Category}
@@ -292,7 +293,6 @@ The code above is everything we need to define what a natural transformation is.
 >   -> NaturalTransformation cat1 cat3
 >     (functorComposition cat1 cat2 cat3 fun1 fun2)
 >     (functorComposition cat1 cat2 cat3 fun1 fun3)
-> composeNatTransFunctor {cat1} {cat2} fun1 natTrans =
->   naturalTransformationHorizontalComposition
->     (idTransformation cat1 cat2 fun1)
->     natTrans
+> composeNatTransFunctor fun1 natTrans = MkNaturalTransformation
+>   (\a => component natTrans (mapObj fun1 a))
+>   (\a, b, f => commutativity natTrans _ _ (mapMor fun1 a b f))
