@@ -24,10 +24,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 > import Basic.Functor
 > import Basic.Isomorphism
-> import Cats.FunctorsAsCategory
+> import Basic.NaturalTransformation
 >
 > %access public export
 > %default total
 >
-> NaturalIsomorphism: {cat1, cat2: Category} -> (fun1 : CFunctor cat1 cat2) -> (fun2 : CFunctor cat1 cat2) -> Type
-> NaturalIsomorphism {cat1} {cat2} fun1 fun2 = Isomorphism (functorCategory cat1 cat2) fun1 fun2
+> record NaturalIsomorphism
+>   (cat1 : Category)
+>   (cat2 : Category)
+>   (fun1 : CFunctor cat1 cat2)
+>   (fun2 : CFunctor cat1 cat2)
+> where
+>   constructor MkNaturalIsomorphism
+>   natTrans : NaturalTransformation cat1 cat2 fun1 fun2
+>   isIso    : (a : obj cat1) -> Isomorphism cat2 (mapObj fun1 a) (mapObj fun2 a)
