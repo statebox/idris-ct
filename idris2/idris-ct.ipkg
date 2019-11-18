@@ -4,37 +4,40 @@ modules = Utils
         , Basic.Category
         , Basic.Functor
         , Basic.Isomorphism
-        , Basic.NaturalTransformation
         , Basic.NaturalIsomorphism
+        , Basic.NaturalTransformation
         , Cats.CatsAsCategory
+        , Cats.FunctorsAsCategory
         , CoLimits.CoProduct
         , CoLimits.InitialObject
         , Discrete.DiscreteCategory
         , Discrete.FunctionAsFunctor
-        , Idris.TypesAsCategory
-        , Idris.TypesAsCategoryExtensional
-        , Idris.FunctorAsCFunctor
-        , Idris.EitherAsCoProduct
         , Dual.DualCategory
         , Dual.DualFunctor
+        , Free.FreeFunctor
         , Free.Graph
         , Free.Path
         , Free.PathCategory
-        , Free.FreeFunctor
+        , Hom.HomFunctor
+        , Idris.EitherAsCoProduct
+        , Idris.FunctorAsCFunctor
+        , Idris.TypesAsCategory
+        , Idris.TypesAsCategoryExtensional
         , Monoid.Monoid
         , Monoid.MonoidAsCategory
         , Monoid.MonoidMorphism
         , Monoid.MonoidMorphismAsFunctor
         , Monoid.MonoidsCategory
-        , MonoidalCategory.MonoidalCategoryHelpers
         , MonoidalCategory.MonoidalCategory
+        , MonoidalCategory.MonoidalCategoryHelpers
         , MonoidalCategory.StrictMonoidalCategory
-        , MonoidalCategory.SymmetricMonoidalCategoryHelpers
         , MonoidalCategory.SymmetricMonoidalCategory
-        , Product.ProductCategory
-        , Product.ProductFunctor
+        , MonoidalCategory.SymmetricMonoidalCategoryHelpers
         , PointedTypes.PointedTypesCategory
         , Preorder.MonotoneMap
-        , Preorder.UniquePreorder
         , Preorder.MonotoneMapAsFunctor
         , Preorder.PreorderAsCategory
+        , Preorder.UniquePreorder
+        , Product.ProductCategory
+        , Product.ProductFunctor
+        , Profunctors.Profunctor
