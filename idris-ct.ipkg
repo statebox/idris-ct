@@ -49,6 +49,7 @@ modules =
   Free.Graph,
   Free.Path,
   Free.PathCategory,
+  Hom.HomFunctor
   Idris.EitherAsCoProduct,
   Idris.FunctorAsCFunctor,
   Idris.TypesAsCategory,
@@ -80,6 +81,7 @@ modules =
   Preorder.UniquePreorder,
   Product.ProductCategory,
   Product.ProductFunctor,
+  Profunctors.Profunctor
   CategoryReasoning,
   Utils
 
