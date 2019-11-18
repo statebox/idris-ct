@@ -48,8 +48,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > initialObjectsAreIsomorphic :
 >      (cat : Category)
 >   -> (a, b : InitialObject cat)
->   -> Isomorphism cat (carrier a) (carrier b)
-> initialObjectsAreIsomorphic cat a b = MkIsomorphism
+>   -> Isomorphic cat (carrier a) (carrier b)
+> initialObjectsAreIsomorphic cat a b = buildIsomorphic
 >   (exists a (carrier b))
 >   (exists b (carrier a))
 >   (unique a (carrier a) (composeInitialMorphisms cat a b) (identity cat (carrier a)))

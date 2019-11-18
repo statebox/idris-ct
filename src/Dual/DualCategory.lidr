@@ -91,11 +91,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (\_ => Refl)
 >   (\_, _, _, _, _ => Refl)
 >
-> doubleDualIsomorphism : (cat : Category)
->                      -> Isomorphism CatsAsCategory.catsAsCategory
->                                     cat
->                                     (dualCategory $ dualCategory cat)
-> doubleDualIsomorphism cat = MkIsomorphism
+>
+> doubleDualIsomorphism :
+>      (cat : Category)
+>   -> Isomorphic CatsAsCategory.catsAsCategory
+>                  cat
+>                  (dualCategory $ dualCategory cat)
+> doubleDualIsomorphism cat = buildIsomorphic
 >   (doubleDualFrom cat)
 >   (doubleDualTo   cat)
 >   (functorEq cat
