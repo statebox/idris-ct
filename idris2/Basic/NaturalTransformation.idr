@@ -33,9 +33,8 @@ idTransformation :
   -> NaturalTransformation cat1 cat2 fun fun
 idTransformation cat1 cat2 fun = MkNaturalTransformation
   (\a => identity cat2 (mapObj fun a))
-  (\a, b, f =>
-    trans (leftIdentity cat2 _ _ (mapMor fun a b f))
-    (sym $ rightIdentity cat2 _ _ (mapMor fun a b f)))
+  (\a, b, f => trans (leftIdentity cat2 _ _ (mapMor fun a b f))
+                     (sym $ rightIdentity cat2 _ _ (mapMor fun a b f)))
 
 naturalTransformationExt :
      (cat1, cat2 : Category)
