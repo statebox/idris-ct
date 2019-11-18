@@ -38,7 +38,7 @@ freeFunctorCompose :
              (mapVertices ge k)
              (foldPath g ge f)
              (foldPath g ge {i = j} {j = k} h)
-freeFunctorCompose g ge j j k []        h = 
+freeFunctorCompose g ge j j k []        h =
   sym $ leftIdentity cat
     (mapVertices ge j)
     (mapVertices ge k)
@@ -49,7 +49,7 @@ freeFunctorCompose g ge i j k (x :: xs) h =
 
 public export
 freeFunctor : (g : Graph)   -> {cat : Category}-> GraphEmbedding g cat -> CFunctor (pathCategory g) cat
-freeFunctor g@(MkGraph _ _) ge@(MkGraphEmbedding mapV _) = 
+freeFunctor g@(MkGraph _ _) ge@(MkGraphEmbedding mapV _) =
   MkCFunctor
     mapV
     (\i, j, p => foldPath g ge {i} {j} p)

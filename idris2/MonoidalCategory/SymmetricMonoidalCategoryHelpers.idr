@@ -20,17 +20,17 @@ swapFunctor : (cat1, cat2 : Category) -> CFunctor (productCategory cat1 cat2) (p
 swapFunctor cat1 cat2 = MkCFunctor
   swap
   swapMorphisms
-  (\a12 => case a12 of 
+  (\a12 => case a12 of
              (a1,a2) => Refl)
   swapCompose
-  where 
-  swapCompose : (a, b, c : (obj cat1, obj cat2)) -> (f : ProductMorphism cat1 cat2 a b) -> (g : ProductMorphism cat1 cat2 b c) -> 
-                swapMorphisms a c (MkProductMorphism (compose cat1 (fst a) (fst b) (fst c) (pi1 f) (pi1 g)) 
-                                                     (compose cat2 (snd a) (snd b) (snd c) (pi2 f) (pi2 g))) = 
-                  MkProductMorphism (compose cat2 (fst (swap a)) (fst (swap b)) (fst (swap c)) (pi1 (swapMorphisms a b f)) (pi1 (swapMorphisms b c g))) 
+  where
+  swapCompose : (a, b, c : (obj cat1, obj cat2)) -> (f : ProductMorphism cat1 cat2 a b) -> (g : ProductMorphism cat1 cat2 b c) ->
+                swapMorphisms a c (MkProductMorphism (compose cat1 (fst a) (fst b) (fst c) (pi1 f) (pi1 g))
+                                                     (compose cat2 (snd a) (snd b) (snd c) (pi2 f) (pi2 g))) =
+                  MkProductMorphism (compose cat2 (fst (swap a)) (fst (swap b)) (fst (swap c)) (pi1 (swapMorphisms a b f)) (pi1 (swapMorphisms b c g)))
                                     (compose cat1 (snd (swap a)) (snd (swap b)) (snd (swap c)) (pi2 (swapMorphisms a b f)) (pi2 (swapMorphisms b c g)))
   swapCompose (a1, a2) (b1, b2) (c1, c2) (MkProductMorphism f1 f2) (MkProductMorphism g1 g2) = Refl
-  
+
 public export
 UnitCoherence :
      (cat : Category)
@@ -160,4 +160,3 @@ InverseLaw cat tensor symmetry a b =
            (component (natTrans symmetry) (a, b))
            (component (natTrans symmetry) (b, a))) =
   (identity cat (mapObj tensor (a, b)))
-           

@@ -10,10 +10,10 @@ data Path : (g : Graph) -> vertices g -> vertices g -> Type where
 
 -- nullPath : Path Graph.triangle One One
 -- nullPath = Nil
--- 
+--
 -- oneToThree : Path Graph.triangle One Three
 -- oneToThree = [Here, There Here]
--- 
+--
 -- oneToThree' : Path Graph.triangle One Three
 -- oneToThree' = Here :: There Here :: Nil
 

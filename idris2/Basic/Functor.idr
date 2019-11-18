@@ -2,7 +2,7 @@ module Basic.Functor
 
 import Basic.Category
 
-public export 
+public export
 record CFunctor (cat1 : Category) (cat2 : Category) where
   constructor MkCFunctor
   mapObj          : obj cat1 -> obj cat2
@@ -42,7 +42,7 @@ functorComposition :
 functorComposition cat1 cat2 cat3 fun1 fun2 = MkCFunctor
   ((mapObj fun2) . (mapObj fun1))
   (\a, b => (mapMor fun2 (mapObj fun1 a) (mapObj fun1 b)) . (mapMor fun1 a b))
-  (\a => trans (cong (mapMor fun2 (mapObj fun1 a) (mapObj fun1 a)) (preserveId fun1 a)) 
+  (\a => trans (cong (mapMor fun2 (mapObj fun1 a) (mapObj fun1 a)) (preserveId fun1 a))
                (preserveId fun2 (mapObj fun1 a))
   )
   (\a, b, c, f, g => trans (cong (mapMor fun2 (mapObj fun1 a) (mapObj fun1 c)) (preserveCompose fun1 a b c f g))
