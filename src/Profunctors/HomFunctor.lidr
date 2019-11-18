@@ -45,14 +45,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >           (cong (trans (cong (associativity cat _ _ _ _ x (pi2 f) (pi2 g)))
 >                        (associativity cat _ _ _ _ (pi1 f) _ (pi2 g))))))
 
-costar f takes f : C -> D to D(F, 1)
+costar f takes f : C -> D to D(f, 1)
 
 > costar : {cat1, cat2 : Category}
 >       -> CFunctor cat1 cat2
 >       -> Profunctor cat2 cat1
 > costar {cat2} f = functorComposition _ _ _ (productFunctor (dualFunctor f) (idFunctor cat2)) (homFunctor cat2)
 
-star f takes f : C -> D to D(1, F)
+star f takes f : C -> D to D(1, f)
 
 > star : {cat1, cat2 : Category}
 >     -> CFunctor cat1 cat2
