@@ -94,13 +94,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (leftIdentity cat a a (identity cat a))
 >   (leftIdentity cat a a (identity cat a))
 >
-> isoMorphicComposition :
+> isomorphicComposition :
 >      {cat : Category}
 >   -> (a, b, c : obj cat)
 >   -> Isomorphic cat a b
 >   -> Isomorphic cat b c
 >   -> Isomorphic cat a c
-> isoMorphicComposition {cat} a b c iso1 iso2 = buildIsomorphic
+> isomorphicComposition {cat} a b c iso1 iso2 = buildIsomorphic
 >   (compose cat a b c (morphism iso1) (morphism iso2))
 >   (compose cat c b a (inverse $ isomorphism iso2) (inverse $ isomorphism iso1))
 >   (trans (associativity cat a c b a _ (inverse $ isomorphism iso2) (inverse $ isomorphism iso1))
@@ -121,15 +121,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (obj cat)
 >   (Isomorphic cat)
 >   idIsomorphic
->   isoMorphicComposition
->   (\a, b, iso => isomorphicEq (isoMorphicComposition a a b (idIsomorphic a) iso) iso
+>   isomorphicComposition
+>   (\a, b, iso => isomorphicEq (isomorphicComposition a a b (idIsomorphic a) iso) iso
 >     (leftIdentity cat a b (morphism iso))
 >     (rightIdentity cat b a (inverse $ isomorphism iso)))
->   (\a, b, iso => isomorphicEq (isoMorphicComposition a b b iso (idIsomorphic b)) iso
+>   (\a, b, iso => isomorphicEq (isomorphicComposition a b b iso (idIsomorphic b)) iso
 >     (rightIdentity cat a b (morphism iso))
 >     (leftIdentity cat b a (inverse $ isomorphism iso)))
 >   (\a, b, c, d, iso1, iso2, iso3 => isomorphicEq
->     (isoMorphicComposition a b d iso1 (isoMorphicComposition b c d iso2 iso3))
->     (isoMorphicComposition a c d (isoMorphicComposition a b c iso1 iso2) iso3)
+>     (isomorphicComposition a b d iso1 (isomorphicComposition b c d iso2 iso3))
+>     (isomorphicComposition a c d (isomorphicComposition a b c iso1 iso2) iso3)
 >     (associativity cat a b c d (morphism iso1) (morphism iso2) (morphism iso3))
 >     (sym (associativity cat d c b a (inverse $ isomorphism iso3) (inverse $ isomorphism iso2) (inverse $ isomorphism iso1))))
