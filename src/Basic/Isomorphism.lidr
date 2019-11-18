@@ -26,66 +26,110 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > %access public export
 > %default total
+> %auto_implicits off
 >
-> record Isomorphism (cat : Category) (a : obj cat) (b : obj cat) where
+> LeftInverse : {cat : Category} -> {a, b : obj cat} -> mor cat a b -> mor cat b a -> Type
+> LeftInverse {cat} {a} {b} morphism inverse = compose cat a b a morphism inverse = identity cat a
+>
+> RightInverse : {cat : Category} -> {a, b : obj cat} -> mor cat a b -> mor cat b a -> Type
+> RightInverse {cat} {a} {b} morphism inverse = compose cat b a b inverse morphism = identity cat b
+>
+> record InverseMorphisms (cat : Category)
+>                         (a : obj cat)
+>                         (b : obj cat)
+>                         (morphism : mor cat a b)
+>                         (inverse : mor cat b a)
+> where
+>   constructor MkInverseMorphisms
+>   lawLeft  : LeftInverse  morphism inverse
+>   lawRight : RightInverse morphism inverse
+>
+> record Isomorphism (cat : Category) (a : obj cat) (b : obj cat) (morphism : mor cat a b) where
 >   constructor MkIsomorphism
->   morphism : mor cat a b
->   Inverse: mor cat b a
->   lawleft: compose cat a b a morphism Inverse = identity cat a
->   lawright: compose cat b a b Inverse morphism = identity cat b
+>   inverse : mor cat b a
+>   inverseMorphisms : InverseMorphisms cat a b morphism inverse
 >
-> postulate
-> isomorphismEq :
+> buildIsomorphism :
 >      {cat : Category}
 >   -> {a, b : obj cat}
->   -> (iso1, iso2 : Isomorphism cat a b)
+>   -> (morphism : mor cat a b)
+>   -> (inverse : mor cat b a)
+>   -> LeftInverse morphism inverse
+>   -> RightInverse morphism inverse
+>   -> Isomorphism cat a b morphism
+> buildIsomorphism {cat} {a} {b} morphism inverse leftInverse rightInverse = MkIsomorphism
+>   inverse
+>   (MkInverseMorphisms leftInverse rightInverse)
+>
+> record Isomorphic (cat : Category) (a : obj cat) (b : obj cat) where
+>   constructor MkIsomorphic
+>   morphism : mor cat a b
+>   isomorphism : Isomorphism cat a b morphism
+>
+> buildIsomorphic :
+>      {cat : Category}
+>   -> {a, b : obj cat}
+>   -> (morphism : mor cat a b)
+>   -> (inverse : mor cat b a)
+>   -> LeftInverse morphism inverse
+>   -> RightInverse morphism inverse
+>   -> Isomorphic cat a b
+> buildIsomorphic {cat} {a} {b} morphism inverse leftInverse rightInverse = MkIsomorphic
+>   morphism
+>   (buildIsomorphism morphism inverse leftInverse rightInverse)
+>
+> postulate
+> isomorphicEq :
+>      {cat : Category}
+>   -> {a, b : obj cat}
+>   -> (iso1, iso2 : Isomorphic cat a b)
 >   -> (morphism iso1 = morphism iso2)
->   -> (Inverse iso1 = Inverse iso2)
->   -> trans1 = trans2
+>   -> (inverse $ isomorphism iso1 = inverse $ isomorphism iso2)
+>   -> iso1 = iso2
 >
-> idIsomorphism : {cat : Category} -> (a : obj cat) -> Isomorphism cat a a
-> idIsomorphism {cat} a = MkIsomorphism
+> idIsomorphic : {cat : Category} -> (a : obj cat) -> Isomorphic cat a a
+> idIsomorphic {cat} a = buildIsomorphic
 >   (identity cat a)
 >   (identity cat a)
 >   (leftIdentity cat a a (identity cat a))
 >   (leftIdentity cat a a (identity cat a))
 >
-> isoMorphismComposition :
+> isoMorphicComposition :
 >      {cat : Category}
 >   -> (a, b, c : obj cat)
->   -> Isomorphism cat a b
->   -> Isomorphism cat b c
->   -> Isomorphism cat a c
-> isoMorphismComposition {cat} a b c iso1 iso2 = MkIsomorphism
+>   -> Isomorphic cat a b
+>   -> Isomorphic cat b c
+>   -> Isomorphic cat a c
+> isoMorphicComposition {cat} a b c iso1 iso2 = buildIsomorphic
 >   (compose cat a b c (morphism iso1) (morphism iso2))
->   (compose cat c b a (Inverse iso2) (Inverse iso1))
->   (trans (associativity cat a c b a _ (Inverse iso2) (Inverse iso1))
->          (trans (cong2 (trans (sym (associativity cat a b c b (morphism iso1) (morphism iso2) (Inverse iso2)))
->                               (trans (cong (lawleft iso2))
+>   (compose cat c b a (inverse $ isomorphism iso2) (inverse $ isomorphism iso1))
+>   (trans (associativity cat a c b a _ (inverse $ isomorphism iso2) (inverse $ isomorphism iso1))
+>          (trans (cong2 (trans (sym (associativity cat a b c b (morphism iso1) (morphism iso2) (inverse $ isomorphism iso2)))
+>                               (trans (cong (lawLeft $ inverseMorphisms $ isomorphism iso2))
 >                                      (rightIdentity cat a b (morphism iso1))))
->                        (Refl { x = Inverse iso1 }))
->                 (lawleft iso1)))
+>                        (Refl { x = inverse $ isomorphism iso1 }))
+>                 (lawLeft $ inverseMorphisms $ isomorphism iso1)))
 >   (trans (associativity cat c a b c _ (morphism iso1) (morphism iso2))
->          (trans (cong2 (trans (sym (associativity cat c b a b (Inverse iso2) (Inverse iso1) (morphism iso1)))
->                               (trans (cong (lawright iso1))
->                                      (rightIdentity cat c b (Inverse iso2))))
+>          (trans (cong2 (trans (sym (associativity cat c b a b (inverse $ isomorphism iso2) (inverse $ isomorphism iso1) (morphism iso1)))
+>                               (trans (cong (lawRight $ inverseMorphisms $ isomorphism iso1))
+>                                      (rightIdentity cat c b (inverse $ isomorphism iso2))))
 >                        (Refl { x = morphism iso2 }))
->                 (lawright iso2)))
+>                 (lawRight $ inverseMorphisms $ isomorphism iso2)))
 >
-> isomorphismCategory : (cat : Category) -> Category
-> isomorphismCategory cat = MkCategory
+> isomorphicCategory : (cat : Category) -> Category
+> isomorphicCategory cat = MkCategory
 >   (obj cat)
->   (Isomorphism cat)
->   idIsomorphism
->   isoMorphismComposition
->   (\a, b, iso => isomorphismEq (isoMorphismComposition a a b (idIsomorphism a) iso) iso
+>   (Isomorphic cat)
+>   idIsomorphic
+>   isoMorphicComposition
+>   (\a, b, iso => isomorphicEq (isoMorphicComposition a a b (idIsomorphic a) iso) iso
 >     (leftIdentity cat a b (morphism iso))
->     (rightIdentity cat b a (Inverse iso)))
->   (\a, b, iso => isomorphismEq (isoMorphismComposition a b b iso (idIsomorphism b)) iso
+>     (rightIdentity cat b a (inverse $ isomorphism iso)))
+>   (\a, b, iso => isomorphicEq (isoMorphicComposition a b b iso (idIsomorphic b)) iso
 >     (rightIdentity cat a b (morphism iso))
->     (leftIdentity cat b a (Inverse iso)))
->   (\a, b, c, d, iso1, iso2, iso3 => isomorphismEq
->     (isoMorphismComposition a b d iso1 (isoMorphismComposition b c d iso2 iso3))
->     (isoMorphismComposition a c d (isoMorphismComposition a b c iso1 iso2) iso3)
+>     (leftIdentity cat b a (inverse $ isomorphism iso)))
+>   (\a, b, c, d, iso1, iso2, iso3 => isomorphicEq
+>     (isoMorphicComposition a b d iso1 (isoMorphicComposition b c d iso2 iso3))
+>     (isoMorphicComposition a c d (isoMorphicComposition a b c iso1 iso2) iso3)
 >     (associativity cat a b c d (morphism iso1) (morphism iso2) (morphism iso3))
->     (sym (associativity cat d c b a (Inverse iso3) (Inverse iso2) (Inverse iso1))))
+>     (sym (associativity cat d c b a (inverse $ isomorphism iso3) (inverse $ isomorphism iso2) (inverse $ isomorphism iso1))))
