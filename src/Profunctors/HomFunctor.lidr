@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Functor
 > import Dual.DualCategory
 > import Dual.DualFunctor
-> import Idris.TypesAsCategoryExtensional
+> import Idris.TypesAsCategoryExtensional as Idris
 > import Product.ProductCategory
 > import Product.ProductFunctor
 > import Profunctors.Profunctor
@@ -44,6 +44,24 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     trans (sym (associativity cat _ _ _ _ (pi1 g) (pi1 f) _))
 >           (cong (trans (cong (associativity cat _ _ _ _ x (pi2 f) (pi2 g)))
 >                        (associativity cat _ _ _ _ (pi1 f) _ (pi2 g))))))
+
+postCompose cat a is Hom(a,–), it takes a morphism g to \f => (f; g)
+
+> postCompose : (cat : Category) -> (a : obj cat) -> CFunctor cat Idris.typesAsCategoryExtensional
+> postCompose cat a = MkCFunctor
+>   (\b => mor cat a b)
+>   (\b, c, g => MkExtensionalTypeMorphism (\f => compose cat a b c f g))
+>   (\b => funExt (\f => rightIdentity cat a b f))
+>   (\b, c, d, g, h => funExt (\f => associativity cat a b c d f g h))
+
+preCompose cat a is Hom(–,a), it takes a morphism g to \f => (g; f)
+
+> preCompose : (cat : Category) -> (a : obj cat) -> CFunctor (dualCategory cat) Idris.typesAsCategoryExtensional
+> preCompose cat a = MkCFunctor
+>   (\b => mor cat b a)
+>   (\b, c, g => MkExtensionalTypeMorphism (\f => compose cat c b a g f))
+>   (\b => funExt (\f => leftIdentity cat b a f))
+>   (\b, c, d, g, h => funExt (\f => sym (associativity cat d c b a h g f)))
 
 costar f takes f : C -> D to D(f, 1)
 
