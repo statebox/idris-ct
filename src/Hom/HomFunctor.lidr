@@ -19,7 +19,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Profunctors.HomFunctor
+> module Hom.HomFunctor
 >
 > import Basic.Category
 > import Basic.Functor
