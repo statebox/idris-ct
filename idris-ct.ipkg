@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 modules =
   Basic.Category,
-  Basic.ConstantFunctor,
+  Basic.DiagonalFunctor,
   Basic.Functor,
   Basic.Isomorphism,
   Basic.NaturalIsomorphism,
