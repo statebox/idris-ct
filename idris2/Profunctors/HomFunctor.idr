@@ -2,7 +2,6 @@ module Profunctors.HomFunctor
 
 import Basic.Category
 import Basic.Functor
-import Dual.DualCategory
 import Dual.DualFunctor
 import Idris.TypesAsCategoryExtensional
 import Product.ProductCategory
