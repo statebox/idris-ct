@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 >
 > import CommutativeDiagram.Diagram
-> import Basic.ConstantFunctor
+> import Basic.DiagonalFunctor
 > import Basic.Functor
 > import Basic.NaturalTransformation
 >
