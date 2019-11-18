@@ -3,9 +3,6 @@ module Basic.Adjunction
 import Basic.Category
 import Basic.Functor
 import Basic.NaturalIsomorphism
-import Dual.DualCategory
-import Idris.TypesAsCategoryExtensional as Idris
-import Product.ProductCategory
 import Profunctors.HomFunctor
 
 public export
