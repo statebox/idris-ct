@@ -27,3 +27,18 @@ public export
 interface (VerifiedSemigroup a, Monoid a) => VerifiedMonoid a where
   monoidNeutralIsNeutralL : (l : a) -> l <+> Prelude.neutral = l
   monoidNeutralIsNeutralR : (r : a) -> Prelude.neutral <+> r = r
+
+-- TODO: we couldn't find a proof for this, so we postulate it for the moment
+public export
+dPairEq : {x, y : DPair a b}
+       -> DPair.fst x ~=~ DPair.fst y
+       -> DPair.snd x ~=~ DPair.snd y
+       -> x ~=~ y
+dPairEq {x=MkDPair u v} {y=MkDPair _ _} Refl prf = believe_me ()
+
+public export
+pairEq : {x, y : (a, b)}
+      -> fst x ~=~ fst y
+      -> snd x ~=~ snd y
+      -> x ~=~ y
+pairEq {x=(u, v)} {y=(_, _)} Refl Refl = Refl
