@@ -26,3 +26,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > cong2 : {f : t -> u -> v} -> a = b -> c = d -> f a c = f b d
 > cong2 Refl Refl = Refl
+>
+> dPairEq : {x, y : DPair a b}
+>        -> fst x = fst y
+>        -> snd x = snd y
+>        -> x = y
+> dPairEq {x=(n ** m)} {y=(n ** m)} Refl Refl = Refl
+>
+> pairEq : {x, y : (a, b)}
+>       -> fst x = fst y
+>       -> snd x = snd y
+>       -> x = y
+> pairEq {x=(n, m)} {y=(n, m)} Refl Refl = Refl

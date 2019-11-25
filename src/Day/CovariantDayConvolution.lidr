@@ -26,21 +26,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Idris.TypesAsCategoryExtensional
 > import MonoidalCategory.MonoidalCategory
 > import Product.ProductCategory
+> import Utils
 >
 > %access public export
 > %default total
->
-> postulate
-> dPairEq : {x, y : DPair a b}
->        -> fst x = fst y
->        -> snd x = snd y
->        -> x = y
->
-> postulate
-> pairEq : {x, y : (a, b)}
->       -> fst x = fst y
->       -> snd x = snd y
->       -> x = y
 >
 > Day :
 >      {moncat : MonoidalCategory}
