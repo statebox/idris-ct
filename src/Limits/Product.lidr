@@ -19,14 +19,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Limits.TerminalObject
+> module Limits.Product
 >
 > import Basic.Category
-> import public CoLimits.InitialObject
+> import public CoLimits.CoProduct
 > import public Dual.DualCategory
 >
 > %access public export
 > %default total
 >
-> TerminalObject : Category -> Type
-> TerminalObject cat = InitialObject (dualCategory cat)
+> Product : (cat : Category) -> (a : obj cat) -> (b : obj cat) -> Type
+> Product cat a b = CoProduct (dualCategory cat) a b
