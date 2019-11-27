@@ -22,6 +22,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module Booleans.Booleans
 >
 > import Basic.Category
+> import Decidable.Order
+> import Preorder.PreorderAsCategory
+> import Preorder.UniquePreorder
 >
 > %access public export
 > %default total
@@ -40,25 +43,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > boolId False = FId
 > boolId True = TId
 >
-> boolCompose : BoolArr a b -> BoolArr b c -> BoolArr a c
-> boolCompose FId f = f
-> boolCompose f TId = f
+> boolCompose : (a, b, c : Bool) -> BoolArr a b -> BoolArr b c -> BoolArr a c
+> boolCompose _ _ _ FId f = f
+> boolCompose _ _ _ f TId = f
 >
-> boolLeftIdentity : (a : Bool) -> (b : Bool) -> (f : BoolArr a b) -> boolCompose (boolId a) f = f
-> boolLeftIdentity False b f = Refl
-> boolLeftIdentity True True TId = Refl
+> Preorder Bool BoolArr where
+>   transitive = boolCompose
+>   reflexive = boolId
 >
-> boolRightIdentity : (a : Bool) -> (b : Bool) -> (f : BoolArr a b) -> boolCompose f (boolId b) = f
-> boolRightIdentity a True f = Refl
-> boolRightIdentity False False FId = Refl
->
-> boolAssociativity : (a : Bool) -> (b : Bool) -> (c : Bool) -> (d : Bool)
->                  -> (f : BoolArr a b) -> (g : BoolArr b c) -> (h : BoolArr c d)
->                  -> boolCompose f (boolCompose g h) = boolCompose (boolCompose f g) h
-> boolAssociativity _ _ _ _ FId _ _ = Refl
-> boolAssociativity _ _ _ _ _ _ TId = Refl
+> UniquePreorder Bool BoolArr where
+>   unique = uniqueBoolArr
 
 The (pre)order of booleans, often referred to as just "2".
 
 > Booleans : Category
-> Booleans = MkCategory Bool BoolArr boolId (\_, _, _ => boolCompose) boolLeftIdentity boolRightIdentity boolAssociativity
+> Booleans = preorderAsCategory {t=Bool} {po=BoolArr}
