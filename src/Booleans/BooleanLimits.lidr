@@ -22,9 +22,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module Booleans.BooleanLimits
 >
 > import Basic.Category
+> import Booleans.Booleans
 > import Limits.TerminalObject
 > import Limits.Product
-> import Booleans.Booleans
+> import Preorder.PreorderAsCategory
 >
 > %access public export
 > %default total
@@ -36,24 +37,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > trueIsTerminal : TerminalObject Booleans
 > trueIsTerminal = MkInitialObject True boolTerminator (\b => uniqueBoolArr b True)
 >
-> boolPil : (a : Bool) -> (b : Bool) -> BoolArr (a && b) a
+> boolPil : (a, b : Bool) -> BoolArr (a && b) a
 > boolPil True  True  = TId
 > boolPil True  False = F2T
 > boolPil False _     = FId
 >
-> boolPir : (a : Bool) -> (b : Bool) -> BoolArr (a && b) b
+> boolPir : (a, b : Bool) -> BoolArr (a && b) b
 > boolPir True  True  = TId
 > boolPir False True  = F2T
 > boolPir True  False = FId
 > boolPir False False = FId
 >
-> boolProductExists : (a : Bool) -> (b : Bool) -> (c : Bool)
->                  -> (f : BoolArr c a) -> (g : BoolArr c b)
+> boolProductExists : (a, b, c : Bool)
+>                  -> (f : BoolArr c a)
+>                  -> (g : BoolArr c b)
 >                  -> CommutingMorphism (dualCategory Booleans) a b (a && b) c (boolPil a b) (boolPir a b) f g
 > boolProductExists True  True  c f g = MkCommutingMorphism f (uniqueBoolArr _ _ _ _) (uniqueBoolArr _ _ _ _)
 > boolProductExists True  False c f g = MkCommutingMorphism g (uniqueBoolArr _ _ _ _) (uniqueBoolArr _ _ _ _)
 > boolProductExists False b     c f g = MkCommutingMorphism f (uniqueBoolArr _ _ _ _) (uniqueBoolArr _ _ _ _)
 >
-> andIsProduct : (a : Bool) -> (b : Bool) -> Product Booleans a b
-> andIsProduct a b = MkCoProduct (a && b) (boolPil a b) (boolPir a b) (boolProductExists a b)
+> andIsProduct : (a, b : Bool) -> Product Booleans a b
+> andIsProduct a b = MkCoProduct
+>   (a && b)
+>   (boolPil a b)
+>   (boolPir a b)
+>   (boolProductExists a b)
 >   (\_, _, _, _ => uniqueBoolArr _ _ _ _)
