@@ -38,3 +38,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > edgeTarget : {graph : Graph vertices} -> Edge graph i j -> vertices
 > edgeTarget {j} _ = j
+>
+> numEdges : Graph vertices -> Nat
+> numEdges (MkGraph {n} _) = n
