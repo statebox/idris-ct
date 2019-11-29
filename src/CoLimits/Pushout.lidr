@@ -25,17 +25,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import CoLimits.CoLimit
 > import CommutativeDiagram.Diagram
 > import Data.Vect
-> import Free.Graph
-> import Free.PathCategory
+> import Graph.Graph
+> import Graph.PathCategory
 >
 > %access public export
 > %default total
 >
 > data PushoutIndexObject = X | Y | Z
 >
-> PushoutIndexGraph : Graph
+> PushoutIndexGraph : Graph PushoutIndexObject
 > PushoutIndexGraph = MkGraph
->   PushoutIndexObject
 >   [(Z, X), (Z, Y)]
 >
 > PushoutIndexCategory : Category

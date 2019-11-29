@@ -28,7 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Data.Vect
 > import Dual.DualCategory
 > import Dual.DualFunctor
-> import Free.Path
+> import Graph.Path
 >
 > %access public export
 > %default total
