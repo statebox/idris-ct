@@ -53,10 +53,10 @@ modules
   , Dual.DualFunctor
   , Empty.EmptyCategory
   , Empty.EmptyFunctor
-  , Free.FreeFunctor
-  , Free.Graph
-  , Free.Path
-  , Free.PathCategory
+  , Graph.FreeFunctor
+  , Graph.Graph
+  , Graph.Path
+  , Graph.PathCategory
   , Hom.HomFunctor
   , Idris.EitherAsCoProduct
   , Idris.FunctorAsCFunctor
