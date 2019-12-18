@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module Graph.Path
 >
 > import Data.List
+> import Data.Vect
 > import Graph.Graph
 >
 > %access public export
@@ -30,6 +31,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > data Path : (graph : Graph vertices) -> vertices -> vertices -> Type where
 >   Nil  : Path graph i i
 >   (::) : (a : Edge graph i j) -> Path graph j k -> Path graph i k
+>
+> Show (Path graph i j) where
+>   show [] = ""
+>   show (x :: xs) = show x ++ "," ++ show xs
 >
 > edgeToPath : {graph : Graph vertices} -> (a : Edge graph i j) -> Path graph (edgeOrigin a) (edgeTarget a)
 > edgeToPath a = [a]
