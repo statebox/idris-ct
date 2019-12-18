@@ -30,8 +30,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   constructor MkGraph
 >   edges : Vect n (vertices, vertices)
 >
+> Show vertices => Show (Graph vertices) where
+>   show (MkGraph edges) = show edges
+>
 > Edge : (graph : Graph vertices) -> (i, j : vertices) -> Type
 > Edge g i j = Elem (i, j) (edges g)
+>
+> Show (Elem element list) where
+>   show Here         = "Here"
+>   show (There next) = "There:" ++ show next
 >
 > edgeOrigin : {graph : Graph vertices} -> Edge graph i j -> vertices
 > edgeOrigin {i} _ = i
@@ -41,3 +48,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > numEdges : Graph vertices -> Nat
 > numEdges (MkGraph {n} _) = n
+>
+> lengthCorrect : (len : Nat) -> (xs : Vect len elem) -> length xs = len
+> lengthCorrect Z     []        = Refl
+> lengthCorrect (S n) (x :: xs) = rewrite lengthCorrect n xs in Refl
+>
+> numEdgesPrf : (graph : Graph vertices) -> numEdges graph = length (edges graph)
+> numEdgesPrf (MkGraph {n} edges) = sym $ lengthCorrect n edges
