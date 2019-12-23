@@ -36,7 +36,7 @@ Then, we implement the basic elements a category consists of.
 %
 < record Category where
 %
-A |record| in Idirs is just the product type of several values, which are called the fields of the record. It's a convenient syntax because Idris provides field access and update functions automatically for us. We add also the constructor |MkCategory| to be able to construct concrete values of type |Category|:
+A |record| in Idris is just the product type of several values, which are called the fields of the record. It's a convenient syntax because Idris provides field access and update functions automatically for us. We add also the constructor |MkCategory| to be able to construct concrete values of type |Category|:
 %
 %
 <   constructor MkCategory
