@@ -28,23 +28,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 >
-> functionMapMor : (f : a -> b) -> (x, y : a) -> DiscreteMorphism x y -> DiscreteMorphism (f x) (f y)
-> functionMapMor f x x Refl = Refl
+> discreteMapMor : {a : Type} -> {cat : Category}
+>   -> (f : a -> obj cat) -> (x, y : a)
+>   -> DiscreteMorphism x y -> mor cat (f x) (f y)
+> discreteMapMor {a} {cat} f x x Refl = identity cat (f x)
 >
-> functionPreserveCompose :
->      (f : a -> b)
->   -> (x, y, z : a)
->   -> (g : DiscreteMorphism x y)
->   -> (h : DiscreteMorphism y z)
->   -> functionMapMor f x z (discreteCompose x y z g h)
->    = discreteCompose (f x) (f y) (f z) (functionMapMor f x y g) (functionMapMor f y z h)
-> functionPreserveCompose f x x x Refl Refl = Refl
+> discretePreserveCompose : (a : Type) -> (cat : Category)
+>   -> (f : a -> obj cat)
+>   -> (x : a) -> (y : a) -> (z : a)
+>   -> (g : x = y) -> (h : y = z)
+>   ->     discreteMapMor f x z (discreteCompose x y z g h)
+>        = compose cat (f x) (f y) (f z) (discreteMapMor f x y g) (discreteMapMor f y z h)
+> discretePreserveCompose a cat f x x x Refl Refl = (sym (leftIdentity cat _ _ _))
 >
-> functionAsFunctor :
->      (f : a -> b)
->   -> CFunctor (discreteCategory a) (discreteCategory b)
-> functionAsFunctor f = MkCFunctor
+> discreteFunctor : (f : a -> obj cat) -> CFunctor (discreteCategory a) cat
+> discreteFunctor {a} {cat} f = MkCFunctor
 >   f
->   (functionMapMor f)
->   (\_ => Refl)
->   (functionPreserveCompose f)
+>   (discreteMapMor {a} {cat} f)
+>   (\ _ => Refl)
+>   (discretePreserveCompose a cat f)
