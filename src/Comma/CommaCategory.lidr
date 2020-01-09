@@ -28,7 +28,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 > %auto_implicits off
->
+
+We define \emph{Comma categories}: given a diagram
+  $F_1:C_1\rightarrow C\leftarrow C_2:F_2$
+of categories and functors, we can define the comma category
+  $F_1\downarrow F_2$.
+An object consists $(x,y,f)$ where $x$ is an object of $C_1$, $y$ an object of
+$C_2$, and $f:F_1(x)\rightarrow F_2(y)$ a morphism of $C$.
+
 > record CommaObject
 >   (cat  : Category)
 >   (cat1 : Category)
@@ -40,7 +47,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     comObj1 : obj cat1
 >     comObj2 : obj cat2
 >     comMor  : mor cat (mapObj fun1 comObj1) (mapObj fun2 comObj2)
->
+
+A morphism from $(x,y,f)$ to $(x',y',f')$ consists of a morphism $h:x\rightarrow x'$
+of $C_1$ and a morphism $k:y\rightarrow y'$ of $C_2$ such that $f;F_2(k) = F_1(h);f'$.
+
 > record CommaMorphism
 >   (cat  : Category)
 >   (cat1 : Category)
@@ -92,14 +102,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 The diagram chase below is as follows:
 
-  F_1(u_1; v_1)       ; h
-= (F_1(u_1); F_1(v_1)); h
-= F_1(u_1) ; (F_1(v_1); h)
-= F_1(u_1) ; (g; F_2(v_2))
-= (F_1(u_1); g); F_2(v_2)
-= (f; F_2(u_2)); F_2(v_2)
-= f; (F_2(u_2) ; F_2(v_2))
-= f; F_2(u_2; v_2)
+\begin{align*}
+ & F_1(u_1; v_1); h
+=& (F_1(u_1); F_1(v_1)); h
+=& F_1(u_1) ; (F_1(v_1); h)
+=& F_1(u_1) ; (g; F_2(v_2))
+=& (F_1(u_1); g); F_2(v_2)
+=& (f; F_2(u_2)); F_2(v_2)
+=& f; (F_2(u_2) ; F_2(v_2))
+=& f; F_2(u_2; v_2)
+\end{align*}
 
 > commaCompose :
 >      {cat, cat1, cat2 : Category}
