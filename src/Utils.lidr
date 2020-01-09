@@ -38,3 +38,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >       -> snd x = snd y
 >       -> x = y
 > pairEq {x=(n, m)} {y=(n, m)} Refl Refl = Refl
+>
+> equalitiesEqual : (p, q : x = y) -> p = q
+> equalitiesEqual {x = x} {y = _} Refl Refl = Refl
+
+We provide some helper functions, trans3, trans4, and so on; these make lengthy
+diagram chase proofs slightly easier to read.
+
+> trans3 : {a:w} -> {b:x} -> {c:y} -> {d:z}
+>   -> a = b -> b = c -> c = d -> a = d
+> trans3 Refl Refl Refl = Refl
+>
+> trans4 : {a:v} -> {b:w} -> {c:x} -> {d:y} -> {e:z}
+>   -> a = b -> b = c -> c = d -> d = e -> a = e
+> trans4 Refl Refl Refl Refl = Refl
+>
+> trans5 : {a:u} -> {b:v} -> {c:w} -> {d:x} -> {e:y} -> {f:z}
+>   -> a = b -> b = c -> c = d -> d = e -> e = f -> a = f
+> trans5 Refl Refl Refl Refl Refl = Refl
+>
+> trans6 : {a:t} -> {b:u} -> {c:v} -> {d:w} -> {e:x} -> {f:y} -> {g:z}
+>   -> a = b -> b = c -> c = d -> d = e -> e = f -> f = g -> a = g
+> trans6 Refl Refl Refl Refl Refl Refl = Refl
+>
+> trans7 : {a:s} -> {b:t} -> {c:u} -> {d:v} -> {e:w} -> {f:x} -> {g:y} -> {h:z}
+>   -> a = b -> b = c -> c = d -> d = e -> e = f -> f = g -> g = h -> a = h
+> trans7 Refl Refl Refl Refl Refl Refl Refl = Refl
