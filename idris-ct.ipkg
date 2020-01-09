@@ -38,9 +38,12 @@ modules
   , CoLimits.InitialObject
   , CoLimits.InitialObjectAsCoLimit
   , CoLimits.Pushout
+  , Comma.CommaCategory
+  , Comma.OverCategory
+  , Comma.UnderCategory
   , CommutativeDiagram.Diagram
   , Discrete.DiscreteCategory
-  , Discrete.FunctionAsFunctor
+  , Discrete.DiscreteFunctor
   , Dual.DualCategory
   , Dual.DualFunctor
   , Empty.EmptyCategory
@@ -82,9 +85,6 @@ modules
   , Product.ProductCategory
   , Product.ProductFunctor
   , Profunctors.Profunctor
-  , Slice.Comma
-  , Slice.OverCategory
-  , Slice.UnderCategory
   , Unit.UnitCategory
   , CategoryReasoning
   , Utils

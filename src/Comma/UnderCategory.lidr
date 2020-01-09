@@ -17,18 +17,20 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-\fi 
+\fi
 
-> module Slice.OverCategory
+> module Slice.UnderCategory
 >
 > import Basic.Category
 > import Basic.Functor
-> import Slice.Comma
+> import Comma.CommaCategory
 > import Unit.UnitCategory
 >
+> %access public export
+> %default total
 >
-> overCategory : (cat : Category) -> obj cat -> Category
-> overCategory cat x = commaCategory cat cat unitCategory (idFunctor cat) (functorFromUnit cat x)
+> underCategory : obj cat -> Category
+> underCategory {cat} x = commaCategory (functorFromUnit x) (idFunctor cat)
 >
-> overObject : (cat : Category) -> (x, y : obj cat) -> (f : mor cat x y) -> obj (overCategory cat y)
-> overObject cat x y f = MkCommaObject x () f
+> underObject : (x, y : obj cat) -> (f : mor cat x y) -> obj (underCategory x)
+> underObject x y f = MkCommaObject () y f
