@@ -17,15 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-\fi 
+\fi
 
 > module Unit.UnitCategory
 >
 > import Basic.Category
 > import Basic.Functor
 > import Discrete.DiscreteCategory
-> import Discrete.FunctionAsFunctor
->
+> import Discrete.DiscreteFunctor
 >
 > %access public export
 > %default total
@@ -35,8 +34,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > unitCategory : Category
 > unitCategory = discreteCategory ()
 >
-> functorFromUnit : (cat : Category) -> (x : obj cat) -> CFunctor unitCategory cat
-> functorFromUnit cat x = discreteFunctor (\ _ => x)
+> functorFromUnit : {cat : Category} -> (x : obj cat) -> CFunctor unitCategory cat
+> functorFromUnit x = discreteFunctor (\ _ => x)
 >
 > functorToUnit : (cat : Category) -> CFunctor cat unitCategory
 > functorToUnit cat = MkCFunctor

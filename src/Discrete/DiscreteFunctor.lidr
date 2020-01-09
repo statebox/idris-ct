@@ -19,7 +19,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Discrete.FunctionAsFunctor
+> module Discrete.DiscreteFunctor
 >
 > import Basic.Category
 > import Basic.Functor
@@ -28,22 +28,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %access public export
 > %default total
 >
-> discreteMapMor : {a : Type} -> {cat : Category}
->   -> (f : a -> obj cat) -> (x, y : a)
->   -> DiscreteMorphism x y -> mor cat (f x) (f y)
-> discreteMapMor {a} {cat} f x x Refl = identity cat (f x)
+> discreteMapMor :
+>      (f : a -> obj cat)
+>   -> (x, y : a)
+>   -> DiscreteMorphism x y
+>   -> mor cat (f x) (f y)
+> discreteMapMor {cat} f x x Refl = identity cat (f x)
 >
-> discretePreserveCompose : (a : Type) -> (cat : Category)
->   -> (f : a -> obj cat)
->   -> (x : a) -> (y : a) -> (z : a)
->   -> (g : x = y) -> (h : y = z)
->   ->     discreteMapMor f x z (discreteCompose x y z g h)
->        = compose cat (f x) (f y) (f z) (discreteMapMor f x y g) (discreteMapMor f y z h)
-> discretePreserveCompose a cat f x x x Refl Refl = (sym (leftIdentity cat _ _ _))
+> discretePreserveCompose :
+>      (f : a -> obj cat)
+>   -> (x, y, z : a)
+>   -> (g : x = y)
+>   -> (h : y = z)
+>   -> discreteMapMor f x z (discreteCompose x y z g h)
+>    = compose cat (f x) (f y) (f z) (discreteMapMor f x y g) (discreteMapMor f y z h)
+> discretePreserveCompose {cat} f x x x Refl Refl = (sym (leftIdentity cat _ _ _))
 >
 > discreteFunctor : (f : a -> obj cat) -> CFunctor (discreteCategory a) cat
 > discreteFunctor {a} {cat} f = MkCFunctor
 >   f
 >   (discreteMapMor {a} {cat} f)
->   (\ _ => Refl)
->   (discretePreserveCompose a cat f)
+>   (\_ => Refl)
+>   (discretePreserveCompose {a} {cat} f)
