@@ -33,7 +33,7 @@ We define \emph{Comma categories}: given a diagram
   $F_1:C_1\rightarrow C\leftarrow C_2:F_2$
 of categories and functors, we can define the comma category
   $F_1\downarrow F_2$.
-An object consists $(x,y,f)$ where $x$ is an object of $C_1$, $y$ an object of
+An object consists of a triple $(x,y,f)$ where $x$ is an object of $C_1$, $y$ an object of
 $C_2$, and $f:F_1(x)\rightarrow F_2(y)$ a morphism of $C$.
 
 > record CommaObject
@@ -48,8 +48,8 @@ $C_2$, and $f:F_1(x)\rightarrow F_2(y)$ a morphism of $C$.
 >     comObj2 : obj cat2
 >     comMor  : mor cat (mapObj fun1 comObj1) (mapObj fun2 comObj2)
 
-A morphism from $(x,y,f)$ to $(x',y',f')$ consists of a morphism $h:x\rightarrow x'$
-of $C_1$ and a morphism $k:y\rightarrow y'$ of $C_2$ such that $f;F_2(k) = F_1(h);f'$.
+A morphism in $F_1\downarrow F_2$ from $(x,y,f)$ to $(x',y',f')$ consists of a pair of morphisms $(h,k)$
+where $h:x\rightarrow x'$ is a morphism of $C_1$ and $k:y\rightarrow y'$ is a morphism of $C_2$ such that $f;F_2(k) = F_1(h);f'$.
 
 > record CommaMorphism
 >   (cat  : Category)
