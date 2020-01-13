@@ -33,10 +33,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > data PushoutIndexObject = X | Y | Z
 >
+> XnotY : X = Y -> Void
+> XnotY Refl impossible
+>
+> XnotZ : X = Z -> Void
+> XnotZ Refl impossible
+>
+> YnotZ : Y = Z -> Void
+> YnotZ Refl impossible
+>
+> DecEq PushoutIndexObject where
+>   decEq X X = Yes Refl
+>   decEq X Y = No XnotY
+>   decEq X Z = No XnotZ
+>   decEq Y X = No (negEqSym XnotY)
+>   decEq Y Y = Yes Refl
+>   decEq Y Z = No YnotZ
+>   decEq Z X = No (negEqSym XnotZ)
+>   decEq Z Y = No (negEqSym YnotZ)
+>   decEq Z Z = Yes Refl
+>
 > PushoutIndexGraph : Graph
-> PushoutIndexGraph = MkGraph
->   PushoutIndexObject
->   [(Z, X), (Z, Y)]
+> PushoutIndexGraph = edgeList [(Z, X), (Z, Y)]
 >
 > PushoutIndexCategory : Category
 > PushoutIndexCategory = pathCategory PushoutIndexGraph

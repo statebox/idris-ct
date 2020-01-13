@@ -29,18 +29,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > record Graph where
 >   constructor MkGraph
 >   vertices : Type
->   edges    : Vect n (vertices, vertices)
+>   edges    : vertices -> vertices -> Type
 >
-> Edge : (g : Graph) -> (i, j : vertices g) -> Type
-> Edge g i j = Elem (i, j) (edges g)
+> decEqFilter : DecEq a => (v : a) -> Vect n a -> (k ** Vect k (e ** e = v))
+> decEqFilter v [] = (0 ** [])
+> decEqFilter v (x :: xs) with (decEq x v)
+>   decEqFilter v (x :: xs) | Yes prf = let (i ** vs) = decEqFilter v xs in (S i ** (x ** prf) :: vs)
+>   decEqFilter v (x :: xs) | No cont = decEqFilter v xs
 >
-> edgeOrigin : {g : Graph} -> Edge g i j -> vertices g
-> edgeOrigin {i} _ = i
->
-> edgeTarget : {g : Graph} -> Edge g i j -> vertices g
-> edgeTarget {j} _ = j
-
-data TriangleVertices = One | Two | Three
-
-triangle : Graph
-triangle = MkGraph TriangleVertices [(One, Two), (Two, Three), (Three, One)]
+> edgeList : DecEq vertices
+>         => (edges : Vect n (vertices, vertices))
+>         -> Graph
+> edgeList edges = MkGraph
+>   vertices
+>   (\v1, v2 => Fin $ fst $ decEqFilter (v1, v2) edges)

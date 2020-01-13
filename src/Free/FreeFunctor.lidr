@@ -23,7 +23,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
-> import Data.Vect
 > import Free.Graph
 > import Free.Path
 > import Free.PathCategory
@@ -34,7 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > record GraphEmbedding (g : Graph) (cat : Category) where
 >   constructor MkGraphEmbedding
 >   mapVertices : vertices g -> obj cat
->   mapEdges    : (i, j : vertices g) -> Edge g i j -> mor cat (mapVertices i) (mapVertices j)
+>   mapEdges    : (i, j : vertices g) -> edges g i j -> mor cat (mapVertices i) (mapVertices j)
 >
 > foldPath :
 >      (g : Graph)
