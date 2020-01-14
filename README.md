@@ -105,7 +105,7 @@ It should be enough to add the following section
 
 ```
 [dependencies]
-"statebox/idris-ct" = { git = "ssh://git@github.com/statebox/idris-ct" }
+"statebox/idris-ct" = { git = "https://github.com/statebox/idris-ct" }
 ```
 
 to the `elba.toml` file of your project.
