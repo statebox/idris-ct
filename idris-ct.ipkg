@@ -29,7 +29,7 @@ modules
   , Basic.NaturalIsomorphism
   , Basic.NaturalTransformation
   , Booleans.BooleanCoLimits
-  , Boolean.BooleanLimits
+  , Booleans.BooleanLimits
   , Booleans.Booleans
   , Cats.CatsAsCategory
   , Cats.FunctorsAsCategory
