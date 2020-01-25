@@ -45,7 +45,7 @@ modules
   , Comma.OverCategory
   , Comma.UnderCategory
   , CommutativeDiagram.Diagram
-  , CoMonad.CoMonad
+  , Comonad.Comonad
   , Day.CovariantDayConvolution
   , Discrete.DiscreteCategory
   , Discrete.DiscreteFunctor
