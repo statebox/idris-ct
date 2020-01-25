@@ -28,6 +28,9 @@ modules
   , Basic.Isomorphism
   , Basic.NaturalIsomorphism
   , Basic.NaturalTransformation
+  , Booleans.BooleanCoLimits
+  , Boolean.BooleanLimits
+  , Booleans.Booleans
   , Cats.CatsAsCategory
   , Cats.FunctorsAsCategory
   , CoLimits.CoCone
@@ -42,6 +45,8 @@ modules
   , Comma.OverCategory
   , Comma.UnderCategory
   , CommutativeDiagram.Diagram
+  , CoMonad.CoMonad
+  , Day.CovariantDayConvolution
   , Discrete.DiscreteCategory
   , Discrete.DiscreteFunctor
   , Dual.DualCategory
