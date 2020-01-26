@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Utils
+> import Syntax.PreorderReasoning
 >
 > %access public export
 > %default total
@@ -61,6 +62,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   inverse
 >   (MkInverseMorphisms leftInverse rightInverse)
 >
+> isomorphismEq :
+>      {cat : Category}
+>   -> {a, b : obj cat}
+>   -> (hom : mor cat a b)
+>   -> (iso1, iso2 : Isomorphism cat a b hom)
+>   -> iso1 = iso2
+> isomorphismEq {cat} {a} {b} hom = allEq where
+>   inversesEq : (iso1, iso2 : Isomorphism cat a b hom) -> inverse iso1 = inverse iso2
+>   inversesEq (MkIsomorphism inv1 im1) (MkIsomorphism inv2 im2) =
+>     inv1
+>       ={ (sym $ rightIdentity cat b a inv1) }=
+>     (compose cat b a a inv1 (identity cat a))
+>       ={ (cong {f = compose cat b a a inv1} (sym $ lawLeft im2)) }=
+>     (compose cat b a a inv1 (compose cat a b a hom inv2))
+>       ={ (associativity cat b a b a inv1 hom inv2) }=
+>     (compose cat b b a (compose cat b a b inv1 hom) inv2)
+>       ={ (cong {f = \h => compose cat b b a h inv2} (lawRight im1)) }=
+>     (compose cat b b a (identity cat b) inv2)
+>       ={ (leftIdentity cat b a inv2) }=
+>     inv2 QED
+>   allEq : (iso1, iso2 : Isomorphism cat a b hom) -> iso1 = iso2
+>   allEq iso1 iso2 with (inversesEq iso1 iso2)
+>     allEq (MkIsomorphism inv (MkInverseMorphisms l1 r1))
+>           (MkIsomorphism inv (MkInverseMorphisms l2 r2)) | Refl =
+>       cong {f = MkIsomorphism inv} $
+>         cong2 {f = MkInverseMorphisms}
+>           (equalitiesEqual _ _)
+>           (equalitiesEqual _ _)
+>
 > record Isomorphic (cat : Category) (a : obj cat) (b : obj cat) where
 >   constructor MkIsomorphic
 >   morphism : mor cat a b
@@ -78,14 +108,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   morphism
 >   (buildIsomorphism morphism inverse leftInverse rightInverse)
 >
-> postulate
 > isomorphicEq :
 >      {cat : Category}
 >   -> {a, b : obj cat}
 >   -> (iso1, iso2 : Isomorphic cat a b)
 >   -> (morphism iso1 = morphism iso2)
->   -> (inverse $ isomorphism iso1 = inverse $ isomorphism iso2)
 >   -> iso1 = iso2
+> isomorphicEq (MkIsomorphic hom iso1) (MkIsomorphic hom iso2) Refl =
+>   cong {f = MkIsomorphic hom} (isomorphismEq hom iso1 iso2)
 >
 > idIsomorphic : {cat : Category} -> (a : obj cat) -> Isomorphic cat a a
 > idIsomorphic {cat} a = buildIsomorphic
@@ -123,13 +153,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   idIsomorphic
 >   isomorphicComposition
 >   (\a, b, iso => isomorphicEq (isomorphicComposition a a b (idIsomorphic a) iso) iso
->     (leftIdentity cat a b (morphism iso))
->     (rightIdentity cat b a (inverse $ isomorphism iso)))
+>     (leftIdentity cat a b (morphism iso)))
 >   (\a, b, iso => isomorphicEq (isomorphicComposition a b b iso (idIsomorphic b)) iso
->     (rightIdentity cat a b (morphism iso))
->     (leftIdentity cat b a (inverse $ isomorphism iso)))
+>     (rightIdentity cat a b (morphism iso)))
 >   (\a, b, c, d, iso1, iso2, iso3 => isomorphicEq
 >     (isomorphicComposition a b d iso1 (isomorphicComposition b c d iso2 iso3))
 >     (isomorphicComposition a c d (isomorphicComposition a b c iso1 iso2) iso3)
->     (associativity cat a b c d (morphism iso1) (morphism iso2) (morphism iso3))
->     (sym (associativity cat d c b a (inverse $ isomorphism iso3) (inverse $ isomorphism iso2) (inverse $ isomorphism iso1))))
+>     (associativity cat a b c d (morphism iso1) (morphism iso2) (morphism iso3)))
