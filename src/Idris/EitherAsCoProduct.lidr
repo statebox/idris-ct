@@ -26,6 +26,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 > import CoLimits.CoProduct
 >
+> %access public export
+> %default total
+>
 > applyLeftOrRight :
 >      (a, b, c : Type)
 >   -> (f : ExtensionalTypeMorphism a c)
