@@ -60,6 +60,7 @@ modules
   , Hom.HomFunctor
   , Idris.EitherAsCoProduct
   , Idris.FunctorAsCFunctor
+  , Idris.PairAsProduct
   , Idris.TypesAsCategory
   , Idris.TypesAsCategoryExtensional
   , Lens.Lens
