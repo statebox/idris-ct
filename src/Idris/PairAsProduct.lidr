@@ -26,6 +26,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 > import Limits.Product
 >
+> %access public export
+> %default total
+>
 > applyLeftAndRight :
 >      (a, b, c : Type)
 >   -> (f : ExtensionalTypeMorphism c a)
