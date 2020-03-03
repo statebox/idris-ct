@@ -51,22 +51,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> extCompose c (Pair a b) b (applyLeftAndRight a b c f g) (MkExtensionalTypeMorphism Prelude.Basics.snd) = g
 > rightCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
 >
-> surjective_pairing : (c : (a, b))
+> surjectivePairing : (c : (a, b))
 >                   -> (c = (fst c, snd c))
-> surjective_pairing (a, b) = Refl
+> surjectivePairing (a, b) = Refl
 >
-> injective_projections : (p1 : (a, b)) -> (p2 : (a, b))
+> injectiveProjections : (p1 : (a, b)) -> (p2 : (a, b))
 >                      -> Prelude.Basics.fst p1 = Prelude.Basics.fst p2
 >                      -> Prelude.Basics.snd p1 = Prelude.Basics.snd p2
 >                      -> p1 = p2
-> injective_projections (a, b) p2 hfst hsnd =
+> injectiveProjections (a, b) p2 hfst hsnd =
 >   rewrite hfst in
 >   rewrite hsnd in
->   rewrite (surjective_pairing p2) in
+>   rewrite (surjectivePairing p2) in
 >   Refl
 >
-> equal_assoc : a = b -> b = a
-> equal_assoc Refl = Refl
+> equalAssoc : a = b -> b = a
+> equalAssoc Refl = Refl
 >
 > extensionalTypeMorphismEq : MkExtensionalTypeMorphism x = MkExtensionalTypeMorphism y
 >                          -> x = y
@@ -84,12 +84,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >        commutativityLeft
 >        commutativityRight =
 >   funExt(\x =>
->     rewrite surjective_pairing (h x) in
->     rewrite injective_projections
+>     rewrite surjectivePairing (h x) in
+>     rewrite injectiveProjections
 >               (fst (h x), snd (h x))
 >               (f x, g x)
->               (rewrite equal_assoc (extensionalTypeMorphismEq commutativityLeft) in Refl)
->               (rewrite equal_assoc (extensionalTypeMorphismEq commutativityRight) in Refl) in
+>               (rewrite equalAssoc (extensionalTypeMorphismEq commutativityLeft) in Refl)
+>               (rewrite equalAssoc (extensionalTypeMorphismEq commutativityRight) in Refl) in
 >     Refl
 >   )
 >
