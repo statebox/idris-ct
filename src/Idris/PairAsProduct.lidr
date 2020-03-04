@@ -30,55 +30,45 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > %default total
 >
 > applyLeftAndRight :
->      (a, b, c : Type)
->   -> (f : ExtensionalTypeMorphism c a)
+>      (f : ExtensionalTypeMorphism c a)
 >   -> (g : ExtensionalTypeMorphism c b)
 >   -> ExtensionalTypeMorphism c (Pair a b)
-> applyLeftAndRight a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) =
->   (MkExtensionalTypeMorphism (\c => (f c, g c)))
+> applyLeftAndRight (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) =
+>   (MkExtensionalTypeMorphism (\x => (f x, g x)))
 >
 > leftCompose :
->      (a, b, c : Type)
->   -> (f : ExtensionalTypeMorphism c a)
+>      (f : ExtensionalTypeMorphism c a)
 >   -> (g : ExtensionalTypeMorphism c b)
->   -> extCompose c (Pair a b) a (applyLeftAndRight a b c f g) (MkExtensionalTypeMorphism Prelude.Basics.fst) = f
-> leftCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
+>   -> extCompose c (Pair a b) a (applyLeftAndRight f g) (MkExtensionalTypeMorphism Basics.fst) = f
+> leftCompose (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
 >
 > rightCompose :
->      (a, b, c : Type)
->   -> (f : ExtensionalTypeMorphism c a)
+>      (f : ExtensionalTypeMorphism c a)
 >   -> (g : ExtensionalTypeMorphism c b)
->   -> extCompose c (Pair a b) b (applyLeftAndRight a b c f g) (MkExtensionalTypeMorphism Prelude.Basics.snd) = g
-> rightCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
+>   -> extCompose c (Pair a b) b (applyLeftAndRight f g) (MkExtensionalTypeMorphism Basics.snd) = g
+> rightCompose (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
 >
-> surjectivePairing : (c : (a, b))
->                   -> (c = (fst c, snd c))
+> surjectivePairing : (c : (a, b)) -> c = (fst c, snd c)
 > surjectivePairing (a, b) = Refl
 >
-> injectiveProjections : (p1 : (a, b)) -> (p2 : (a, b))
->                      -> Prelude.Basics.fst p1 = Prelude.Basics.fst p2
->                      -> Prelude.Basics.snd p1 = Prelude.Basics.snd p2
->                      -> p1 = p2
+> injectiveProjections :
+>      (p1, p2 : (a, b))
+>   -> Basics.fst p1 = Basics.fst p2
+>   -> Basics.snd p1 = Basics.snd p2
+>   -> p1 = p2
 > injectiveProjections (a, b) p2 hfst hsnd =
 >   rewrite hfst in
 >   rewrite hsnd in
 >   rewrite (surjectivePairing p2) in
 >   Refl
 >
-> equalAssoc : a = b -> b = a
-> equalAssoc Refl = Refl
->
-> extensionalTypeMorphismEq : MkExtensionalTypeMorphism x = MkExtensionalTypeMorphism y
->                          -> x = y
-> extensionalTypeMorphismEq Refl = Refl
->
 > unique :
 >      (f : ExtensionalTypeMorphism c a)
 >   -> (g : ExtensionalTypeMorphism c b)
 >   -> (h : ExtensionalTypeMorphism c (Pair a b))
->   -> (commutativityLeft : extCompose c (Pair a b) a h (MkExtensionalTypeMorphism Prelude.Basics.fst) = f)
->   -> (commutativityRight: extCompose c (Pair a b) b h (MkExtensionalTypeMorphism Prelude.Basics.snd) = g)
->   -> h = applyLeftAndRight a b c f g
+>   -> (commutativityLeft : extCompose c (Pair a b) a h (MkExtensionalTypeMorphism Basics.fst) = f)
+>   -> (commutativityRight: extCompose c (Pair a b) b h (MkExtensionalTypeMorphism Basics.snd) = g)
+>   -> h = applyLeftAndRight f g
 > unique (MkExtensionalTypeMorphism f)
 >        (MkExtensionalTypeMorphism g)
 >        (MkExtensionalTypeMorphism h)
@@ -87,17 +77,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   funExt(\x =>
 >     rewrite surjectivePairing (h x) in
 >     rewrite injectiveProjections
->               (fst (h x), snd (h x))
->               (f x, g x)
->               (rewrite equalAssoc (extensionalTypeMorphismEq commutativityLeft) in Refl)
->               (rewrite equalAssoc (extensionalTypeMorphismEq commutativityRight) in Refl) in
+>             (fst (h x), snd (h x))
+>             (f x, g x)
+>             (rewrite sym (extensionalTypeMorphismEq commutativityLeft) in Refl)
+>             (rewrite sym (extensionalTypeMorphismEq commutativityRight) in Refl) in
 >     Refl
 >   )
 >
-> pairToProduct : (a, b : Type) -> Product Idris.TypesAsCategoryExtensional.typesAsCategoryExtensional a b
+> pairToProduct : (a, b : Type) -> Product TypesAsCategoryExtensional.typesAsCategoryExtensional a b
 > pairToProduct a b = MkCoProduct
 >   (Pair a b)
 >   (MkExtensionalTypeMorphism Prelude.Basics.fst)
 >   (MkExtensionalTypeMorphism Prelude.Basics.snd)
->   (\c, f, g => MkCommutingMorphism (applyLeftAndRight a b c f g) (leftCompose a b c f g) (rightCompose a b c f g))
+>   (\c, f, g => MkCommutingMorphism (applyLeftAndRight f g) (leftCompose f g) (rightCompose f g))
 >   (\c, f, g, h => unique f g (challenger h) (commutativityLeft h) (commutativityRight h))
