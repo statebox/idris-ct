@@ -30,6 +30,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   constructor MkExtensionalTypeMorphism
 >   func : a -> b
 >
+> extensionalTypeMorphismEq : MkExtensionalTypeMorphism x = MkExtensionalTypeMorphism y -> x = y
+> extensionalTypeMorphismEq Refl = Refl
+>
 > postulate
 > funExt : {f, g : ExtensionalTypeMorphism a b} -> ((x : a) -> func f x = func g x) -> f = g
 >
