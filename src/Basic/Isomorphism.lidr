@@ -65,10 +65,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > isomorphismEq :
 >      {cat : Category}
 >   -> {a, b : obj cat}
->   -> (hom : mor cat a b)
+>   -> {hom : mor cat a b}
 >   -> (iso1, iso2 : Isomorphism cat a b hom)
 >   -> iso1 = iso2
-> isomorphismEq {cat} {a} {b} hom = allEq where
+> isomorphismEq {cat} {a} {b} {hom} = allEq where
 >   inversesEq : (iso1, iso2 : Isomorphism cat a b hom) -> inverse iso1 = inverse iso2
 >   inversesEq (MkIsomorphism inv1 im1) (MkIsomorphism inv2 im2) =
 >     inv1
@@ -115,7 +115,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> (morphism iso1 = morphism iso2)
 >   -> iso1 = iso2
 > isomorphicEq (MkIsomorphic hom iso1) (MkIsomorphic hom iso2) Refl =
->   cong {f = MkIsomorphic hom} (isomorphismEq hom iso1 iso2)
+>   cong {f = MkIsomorphic hom} (isomorphismEq iso1 iso2)
 >
 > idIsomorphic : {cat : Category} -> (a : obj cat) -> Isomorphic cat a a
 > idIsomorphic {cat} a = buildIsomorphic
