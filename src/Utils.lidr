@@ -26,3 +26,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > cong2 : {f : t -> u -> v} -> a = b -> c = d -> f a c = f b d
 > cong2 Refl Refl = Refl
+>
+> dPairEq : {x, y : DPair a b}
+>        -> fst x = fst y
+>        -> snd x = snd y
+>        -> x = y
+> dPairEq {x=(n ** m)} {y=(n ** m)} Refl Refl = Refl
+>
+> pairEq : {x, y : (a, b)}
+>       -> fst x = fst y
+>       -> snd x = snd y
+>       -> x = y
+> pairEq {x=(n, m)} {y=(n, m)} Refl Refl = Refl
+>
+> equalitiesEqual : (p, q : x = y) -> p = q
+> equalitiesEqual {x = x} {y = _} Refl Refl = Refl
+
+We provide some helper functions, trans3, trans4, and so on; these make lengthy
+diagram chase proofs slightly easier to read.
+
+> trans3 : a = b -> b = c -> c = d -> a = d
+> trans3 Refl Refl Refl = Refl
+>
+> trans4 : a = b -> b = c -> c = d -> d = e -> a = e
+> trans4 Refl Refl Refl Refl = Refl
+>
+> trans5 : a = b -> b = c -> c = d -> d = e -> e = f -> a = f
+> trans5 Refl Refl Refl Refl Refl = Refl
+>
+> trans6 : a = b -> b = c -> c = d -> d = e -> e = f -> f = g -> a = g
+> trans6 Refl Refl Refl Refl Refl Refl = Refl
+>
+> trans7 : a = b -> b = c -> c = d -> d = e -> e = f -> f = g -> g = h -> a = h
+> trans7 Refl Refl Refl Refl Refl Refl Refl = Refl

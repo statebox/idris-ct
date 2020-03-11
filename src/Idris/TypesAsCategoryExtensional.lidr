@@ -30,6 +30,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   constructor MkExtensionalTypeMorphism
 >   func : a -> b
 >
+> extensionalTypeMorphismEq : MkExtensionalTypeMorphism x = MkExtensionalTypeMorphism y -> x = y
+> extensionalTypeMorphismEq Refl = Refl
+>
 > postulate
 > funExt : {f, g : ExtensionalTypeMorphism a b} -> ((x : a) -> func f x = func g x) -> f = g
 >
@@ -43,6 +46,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> ExtensionalTypeMorphism a c
 > extCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g)
 >   = MkExtensionalTypeMorphism (g . f)
+>
+> funcPreserveCompose :
+>      {a, b, c : Type}
+>   -> (f : ExtensionalTypeMorphism a b)
+>   -> (g : ExtensionalTypeMorphism b c)
+>   -> func (extCompose a b c f g) = func g . func f
+> funcPreserveCompose (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
 >
 > extLeftIdentity :
 >      (a, b : Type)

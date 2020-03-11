@@ -21,59 +21,79 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -}
 
-modules =
-  Basic.Category,
-  Basic.Functor,
-  Basic.Isomorphism,
-  Basic.NaturalIsomorphism,
-  Basic.NaturalTransformation,
-  Cats.CatsAsCategory,
-  Cats.FunctorsAsCategory,
-  CoLimits.CoCone,
-  CoLimits.CoConeCat,
-  CoLimits.CoLimit,
-  CoLimits.CoLimitAsInitialObject,
-  CoLimits.CoProduct,
-  CoLimits.InitialObject,
-  CoLimits.InitialObjectAsCoLimit,
-  CommutativeDiagram.Diagram,
-  Discrete.DiscreteCategory,
-  Discrete.FunctionAsFunctor,
-  Dual.DualCategory,
-  Dual.DualFunctor,
-  Empty.EmptyCategory,
-  Empty.EmptyFunctor,
-  Free.Graph,
-  Free.Path,
-  Free.PathCategory,
-  Free.FreeFunctor,
-  Idris.EitherAsCoProduct,
-  Idris.FunctorAsCFunctor,
-  Idris.TypesAsCategory,
-  Idris.TypesAsCategoryExtensional,
-  Monad.IOMonad,
-  Monad.VerifiedMonadAsMonad,
-  Monad.Monad,
-  Monad.KleisliCategory,
-  Monoid.Monoid,
-  Monoid.MonoidAsCategory,
-  Monoid.MonoidMorphism,
-  Monoid.MonoidMorphismAsFunctor,
-  Monoid.MonoidsCategory,
-  MonoidalCategory.MonoidalCategory,
-  MonoidalCategory.MonoidalCategoryHelpers,
-  MonoidalCategory.StrictMonoidalCategory,
-  MonoidalCategory.SymmetricMonoidalCategory,
-  MonoidalCategory.SymmetricMonoidalCategoryHelpers,
-  PointedTypes.PointedTypesAsCategory,
-  Preorder.MonotoneMap,
-  Preorder.MonotoneMapAsFunctor,
-  Preorder.PreorderAsCategory,
-  Preorder.UniquePreorder,
-  Product.ProductCategory,
-  Product.ProductFunctor,
-  CategoryReasoning,
-  Utils
+modules
+  = Basic.Category
+  , Basic.DiagonalFunctor
+  , Basic.Functor
+  , Basic.Isomorphism
+  , Basic.NaturalIsomorphism
+  , Basic.NaturalTransformation
+  , Booleans.BooleanCoLimits
+  , Booleans.BooleanLimits
+  , Booleans.Booleans
+  , Cats.CatsAsCategory
+  , Cats.FunctorsAsCategory
+  , CoLimits.CoCone
+  , CoLimits.CoConeCat
+  , CoLimits.CoLimit
+  , CoLimits.CoLimitAsInitialObject
+  , CoLimits.CoProduct
+  , CoLimits.InitialObject
+  , CoLimits.InitialObjectAsCoLimit
+  , CoLimits.Pushout
+  , Comma.CommaCategory
+  , Comma.OverCategory
+  , Comma.UnderCategory
+  , CommutativeDiagram.Diagram
+  , Comonad.Comonad
+  , Day.CovariantDayConvolution
+  , Discrete.DiscreteCategory
+  , Discrete.DiscreteFunctor
+  , Dual.DualCategory
+  , Dual.DualFunctor
+  , Empty.EmptyCategory
+  , Empty.EmptyFunctor
+  , Free.FreeFunctor
+  , Free.Graph
+  , Free.Path
+  , Free.PathCategory
+  , Hom.HomFunctor
+  , Idris.EitherAsCoProduct
+  , Idris.FunctorAsCFunctor
+  , Idris.PairAsProduct
+  , Idris.TypesAsCategory
+  , Idris.TypesAsCategoryExtensional
+  , Lens.Lens
+  , Lens.SimpleLens
+  , Limits.Limit
+  , Limits.Pullback
+  , Limits.TerminalObject
+  , Monad.IOMonad
+  , Monad.KleisliCategory
+  , Monad.Monad
+  , Monad.VerifiedMonadAsMonad
+  , Monoid.Monoid
+  , Monoid.MonoidAsCategory
+  , Monoid.MonoidMorphism
+  , Monoid.MonoidMorphismAsFunctor
+  , Monoid.MonoidsCategory
+  , MonoidalCategory.MonoidalCategory
+  , MonoidalCategory.MonoidalCategoryHelpers
+  , MonoidalCategory.MonoidalFunctor
+  , MonoidalCategory.StrictMonoidalCategory
+  , MonoidalCategory.SymmetricMonoidalCategory
+  , MonoidalCategory.SymmetricMonoidalCategoryHelpers
+  , PointedTypes.PointedTypesAsCategory
+  , Preorder.MonotoneMap
+  , Preorder.MonotoneMapAsFunctor
+  , Preorder.PreorderAsCategory
+  , Preorder.UniquePreorder
+  , Product.ProductCategory
+  , Product.ProductFunctor
+  , Profunctors.Profunctor
+  , Unit.UnitCategory
+  , CategoryReasoning
+  , Utils
 
 sourcedir = src
 

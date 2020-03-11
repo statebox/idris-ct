@@ -19,32 +19,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
-> module Discrete.FunctionAsFunctor
+> module Lens.SimpleLens
 >
 > import Basic.Category
-> import Basic.Functor
-> import Discrete.DiscreteCategory
+> import Lens.Lens
 >
 > %access public export
 > %default total
 >
-> functionMapMor : (f : a -> b) -> (x, y : a) -> DiscreteMorphism x y -> DiscreteMorphism (f x) (f y)
-> functionMapMor f x x Refl = Refl
+> SimpleLens : Type -> Type -> Type
+> SimpleLens s a = Lens s s a a
 >
-> functionPreserveCompose :
->      (f : a -> b)
->   -> (x, y, z : a)
->   -> (g : DiscreteMorphism x y)
->   -> (h : DiscreteMorphism y z)
->   -> functionMapMor f x z (discreteCompose x y z g h)
->    = discreteCompose (f x) (f y) (f z) (functionMapMor f x y g) (functionMapMor f y z h)
-> functionPreserveCompose f x x x Refl Refl = Refl
->
-> functionAsFunctor :
->      (f : a -> b)
->   -> CFunctor (discreteCategory a) (discreteCategory b)
-> functionAsFunctor f = MkCFunctor
->   f
->   (functionMapMor f)
->   (\_ => Refl)
->   (functionPreserveCompose f)
+> simpleLensesAsCategory : Category
+> simpleLensesAsCategory = MkCategory
+>   Type
+>   SimpleLens
+>   (\s => identityLens {s = s} {t = s})
+>   (\_, _, _ => lensComposition)
+>   (\_, _, (MkLens g p) => rewrite (funExtOnPairs p) in Refl)
+>   (\_, _, (MkLens g p) => rewrite (funExtOnPairs p) in Refl)
+>   (\_, _, _, _, _, _, _ => Refl)

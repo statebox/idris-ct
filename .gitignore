@@ -20,3 +20,5 @@
 *.ibc
 target
 elba.lock
+build
+compare

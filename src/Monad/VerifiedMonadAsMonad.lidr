@@ -29,7 +29,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Idris.FunctorAsCFunctor
 > import Idris.TypesAsCategoryExtensional
 > import Monad.Monad as M
-> import Syntax.PreorderReasoning
 >
 > -- contrib
 > import Interfaces.Verified
@@ -127,6 +126,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > verifiedMonadAssociativityComp {m} x =
 >   rewrite verifiedMonadMapAsBind {m} x (\y => y >>= Basics.id) in
 >   rewrite monadAssociativity x (\y => pure (y >>= Basics.id)) Basics.id in
+>   -- rewrite functorIdentity (map Basics.id) (\v => functorIdentity Basics.id (\w => Refl) v) x in
 >   rewrite monadAssociativity x Basics.id Basics.id in
 >   cong {f = (>>=) x} (verifiedMonadLeftIdentityExt' {m})
 >
