@@ -66,6 +66,7 @@ modules
   , Lens.Lens
   , Lens.SimpleLens
   , Limits.Limit
+  , Limits.Product
   , Limits.Pullback
   , Limits.TerminalObject
   , Monad.IOMonad
