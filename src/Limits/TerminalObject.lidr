@@ -30,3 +30,24 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > TerminalObject : Category -> Type
 > TerminalObject cat = InitialObject (dualCategory cat)
+>
+> composeTerminalMorphisms :
+>      (cat : Category)
+>   -> (a, b : TerminalObject cat)
+>   -> mor cat (carrier a) (carrier a)
+> composeTerminalMorphisms cat a b =
+>   let
+>     x = carrier a
+>     y = carrier b
+>   in
+>     compose cat x y x (exists b x) (exists a y)
+>
+> terminalObjectsAreIsomorphic :
+>      (cat : Category)
+>   -> (a, b : TerminalObject cat)
+>   -> Isomorphic cat (carrier a) (carrier b)
+> terminalObjectsAreIsomorphic cat a b = buildIsomorphic
+>   (exists b (carrier a))
+>   (exists a (carrier b))
+>   (unique a (carrier a) (composeTerminalMorphisms cat a b) (identity cat (carrier a)))
+>   (unique b (carrier b) (composeTerminalMorphisms cat b a) (identity cat (carrier b)))
