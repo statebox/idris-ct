@@ -24,6 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Basic.Category
 > import public CoLimits.InitialObject
 > import public Dual.DualCategory
+> import Basic.Isomorphism
 >
 > %access public export
 > %default total
