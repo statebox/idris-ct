@@ -120,3 +120,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >              (idFunctor (dualCategory $ dualCategory cat))
 >              (\_ => Refl)
 >              (\_, _, _ => Refl))
+>
+> dualPreservesIsomorphic :
+>      Isomorphic (dualCategory cat) a b
+>   -> Isomorphic cat a b
+> dualPreservesIsomorphic
+>   (MkIsomorphic
+>     morphism
+>     (MkIsomorphism inverse
+>       (MkInverseMorphisms lawLeft lawRight))) =
+>   MkIsomorphic
+>     inverse
+>     (MkIsomorphism
+>       morphism
+>       (MkInverseMorphisms lawLeft lawRight))
