@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > module Limits.Product
 >
 > import Basic.Category
+> import Basic.Isomorphism
 > import public CoLimits.CoProduct
 > import public Dual.DualCategory
 >
