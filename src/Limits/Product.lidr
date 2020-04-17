@@ -30,3 +30,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > Product : (cat : Category) -> (a : obj cat) -> (b : obj cat) -> Type
 > Product cat a b = CoProduct (dualCategory cat) a b
+>
+> productsAreIsomorphic :
+>      (a, b : Product cat l r)
+>   -> Isomorphic cat (carrier a) (carrier b)
+> productsAreIsomorphic {cat} {l} {r} a b =
+>   dualPreservesIsomorphic (coProductsAreIsomorphic (dualCategory cat) l r a b)
