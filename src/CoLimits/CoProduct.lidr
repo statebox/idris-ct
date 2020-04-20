@@ -58,7 +58,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >     -> (g : mor cat r c)
 >     -> (h : CommutingMorphism cat l r carrier c inl inr f g)
 >     -> challenger h = challenger (exists c f g)
-> 
+>
 > coProductMorphism :
 >      (cat : Category)
 >   -> (l, r : obj cat)
@@ -69,7 +69,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >        (inl a) (inr a)
 >        (inl b) (inr b)
 > coProductMorphism cat l r a b = exists a (carrier b) (inl b) (inr b)
-> 
+>
 > composeCoProductMorphisms :
 >      (cat : Category)
 >   -> (l, r : obj cat)
@@ -95,7 +95,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                (inr a) (challenger mor) (challenger inv) in
 >        rewrite commutativityRight mor in
 >        rewrite commutativityRight inv in Refl)
-> 
+>
 > idCommutingMorphism :
 >      (cat : Category)
 >   -> (l, r : obj cat)
@@ -109,7 +109,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   (identity cat (carrier a))
 >   (rightIdentity cat l (carrier a) (inl a))
 >   (rightIdentity cat r (carrier a) (inr a))
-> 
+>
 > coProductsAreIsomorphic :
 >      (cat : Category)
 >   -> (l, r : obj cat)
