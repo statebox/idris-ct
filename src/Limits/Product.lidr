@@ -37,3 +37,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >   -> Isomorphic cat (carrier a) (carrier b)
 > productsAreIsomorphic {cat} {l} {r} a b =
 >   dualPreservesIsomorphic (coProductsAreIsomorphic (dualCategory cat) l r a b)
+>
+> BinaryProduct : Category -> Type
+> BinaryProduct cat = BinaryCoProduct (dualCategory cat)

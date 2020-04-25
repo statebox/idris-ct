@@ -131,3 +131,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                         (composeCoProductMorphisms cat l r b a) in
 >        rewrite unique b (carrier b) (inl b) (inr b)
 >                         (idCommutingMorphism cat l r b) in Refl)
+>
+> BinaryCoProduct : Category -> Type
+> BinaryCoProduct cat = (l, r : obj cat) -> CoProduct cat l r
