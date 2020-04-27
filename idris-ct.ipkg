@@ -63,10 +63,12 @@ modules
   , Idris.PairAsProduct
   , Idris.TypesAsCategory
   , Idris.TypesAsCategoryExtensional
+  , Idris.UnitAsTerminalObject
   , Lens.Lens
   , Lens.SimpleLens
   , Limits.Limit
   , Limits.Pullback
+  , Limits.Product
   , Limits.TerminalObject
   , Monad.IOMonad
   , Monad.KleisliCategory
