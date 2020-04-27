@@ -38,6 +38,7 @@ modules
   , CoLimits.CoLimit
   , CoLimits.CoLimitAsInitialObject
   , CoLimits.CoProduct
+  , CoLimits.FiniteCoProduct
   , CoLimits.InitialObject
   , CoLimits.InitialObjectAsCoLimit
   , CoLimits.Pushout
@@ -66,6 +67,7 @@ modules
   , Idris.UnitAsTerminalObject
   , Lens.Lens
   , Lens.SimpleLens
+  , Limits.FiniteProduct
   , Limits.Limit
   , Limits.Pullback
   , Limits.Product
