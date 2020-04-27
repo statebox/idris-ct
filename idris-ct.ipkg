@@ -81,6 +81,7 @@ modules
   , Monoid.MonoidMorphism
   , Monoid.MonoidMorphismAsFunctor
   , Monoid.MonoidsCategory
+  , MonoidalCategory.CartesianCategory
   , MonoidalCategory.MonoidalCategory
   , MonoidalCategory.MonoidalCategoryHelpers
   , MonoidalCategory.MonoidalFunctor
