@@ -27,6 +27,7 @@ idrisPackages.build-idris-package {
 
   idrisDeps = with idrisPackages; [
     contrib
+    pruviloj
   ];
 
   meta = {
