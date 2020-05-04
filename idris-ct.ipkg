@@ -69,8 +69,8 @@ modules
   , Lens.SimpleLens
   , Limits.FiniteProduct
   , Limits.Limit
-  , Limits.Pullback
   , Limits.Product
+  , Limits.Pullback
   , Limits.TerminalObject
   , Monad.IOMonad
   , Monad.KleisliCategory
