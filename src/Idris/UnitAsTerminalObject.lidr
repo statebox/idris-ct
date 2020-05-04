@@ -24,10 +24,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > import Idris.TypesAsCategoryExtensional
 > import Basic.Category
 > import Limits.TerminalObject
-> 
+>
 > %access public export
 > %default total
-> 
+>
 > unitFunctionIsUnit :
 >      (f : a -> Unit)
 >   -> (x : a)
@@ -35,11 +35,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 > unitFunctionIsUnit f x with (f x)
 >   unitFunctionIsUnit f x | prf = case prf of
 >                                       MkUnit => Refl
-> 
+>
 > unitToTerminalObject : TerminalObject TypesAsCategoryExtensional.typesAsCategoryExtensional
 > unitToTerminalObject = MkInitialObject
 >   Unit
 >   (\a => MkExtensionalTypeMorphism (\b => MkUnit))
->   (\a, (MkExtensionalTypeMorphism f), (MkExtensionalTypeMorphism g) => 
+>   (\a, (MkExtensionalTypeMorphism f), (MkExtensionalTypeMorphism g) =>
 >     funExt (\x => rewrite unitFunctionIsUnit f x in
 >                   rewrite unitFunctionIsUnit g x in Refl))

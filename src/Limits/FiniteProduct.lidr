@@ -27,6 +27,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > %access public export
 > %default total
-> 
+>
 > FiniteProduct : Category -> Type
-> FiniteProduct cat = FiniteCoProduct (dualCategory cat)   
+> FiniteProduct cat = FiniteCoProduct (dualCategory cat)

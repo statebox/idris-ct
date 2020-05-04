@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > %access public export
 > %default total
-> 
+>
 > record FiniteCoProduct (cat : Category) where
 >   constructor MkFiniteCoProduct
 >   binaryCoProduct : BinaryCoProduct cat
