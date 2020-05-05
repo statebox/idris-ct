@@ -44,7 +44,7 @@ extRightIdentity :
      (a, b : Type)
   -> (f : ExtensionalTypeMorphism a b)
   -> extCompose a b b f (extIdentity b) = f
-extRightIdentity a b (MkExtensionalTypeMorphism func) = Refl
+extRightIdentity a b (MkExtensionalTypeMorphism func) = funExt (\_ => Refl)
 
 public export
 extAssociativity :

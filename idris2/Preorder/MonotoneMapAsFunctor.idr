@@ -14,8 +14,8 @@ monotoneMapToFunctor {t1} {po1} {t2} {po2} (MkMonotoneMap fun fRespectsOrd) =
   MkCFunctor
     fun
     fRespectsOrd
-    (\a => unique (fun a) (fun a) (fRespectsOrd a a (reflexive a)) (reflexive (fun a)))
+    (\a => unique {t=t2} {po=po2} (fun a) (fun a) (fRespectsOrd a a (reflexive a)) (reflexive (fun a)))
     (\a, b, c, f, g =>
-      unique (fun a) (fun c)
+      unique {t=t2} {po=po2} (fun a) (fun c)
         (fRespectsOrd a c (transitive a b c f g))
         (transitive (fun a) (fun b) (fun c) (fRespectsOrd a b f) (fRespectsOrd b c g)))

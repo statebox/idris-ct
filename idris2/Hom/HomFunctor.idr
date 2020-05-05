@@ -13,7 +13,7 @@ public export
 homFunctor : (cat : Category) -> Profunctor cat cat
 homFunctor cat = MkCFunctor
   (\a => mor cat (fst a) (snd a))
-  (\a, b, f => MkExtensionalTypeMorphism (\h => compose cat (fst b) (fst a) (snd b)
+  (\a, b, f => Idris.MkExtensionalTypeMorphism (\h => compose cat (fst b) (fst a) (snd b)
                                                         (pi1 f)
                                                         (compose cat (fst a) (snd a) (snd b) h (pi2 f))))
   (\a => Idris.funExt (\x => trans (leftIdentity cat (fst a) (snd a) _) (rightIdentity cat (fst a) (snd a) x)))
@@ -28,7 +28,7 @@ homFunctor cat = MkCFunctor
 postCompose : (cat : Category) -> (a : obj cat) -> CFunctor cat Idris.typesAsCategoryExtensional
 postCompose cat a = MkCFunctor
   (\b => mor cat a b)
-  (\b, c, g => MkExtensionalTypeMorphism (\f => compose cat a b c f g))
+  (\b, c, g => Idris.MkExtensionalTypeMorphism (\f => compose cat a b c f g))
   (\b => Idris.funExt (\f => rightIdentity cat a b f))
   (\b, c, d, g, h => Idris.funExt (\f => associativity cat a b c d f g h))
 
@@ -36,7 +36,7 @@ postCompose cat a = MkCFunctor
 preCompose : (cat : Category) -> (a : obj cat) -> CFunctor (dualCategory cat) Idris.typesAsCategoryExtensional
 preCompose cat a = MkCFunctor
   (\b => mor cat b a)
-  (\b, c, g => MkExtensionalTypeMorphism (\f => compose cat c b a g f))
+  (\b, c, g => Idris.MkExtensionalTypeMorphism (\f => compose cat c b a g f))
   (\b => Idris.funExt (\f => leftIdentity cat b a f))
   (\b, c, d, g, h => Idris.funExt (\f => sym (associativity cat d c b a h g f)))
 

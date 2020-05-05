@@ -19,7 +19,7 @@ leftCompose :
   -> (f : ExtensionalTypeMorphism a c)
   -> (g : ExtensionalTypeMorphism b c)
   -> extCompose a (Either a b) c (MkExtensionalTypeMorphism Left) (applyLeftOrRight a b c f g) = f
-leftCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
+leftCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = funExt (\_ => Refl)
 
 public export
 rightCompose :
@@ -27,7 +27,7 @@ rightCompose :
   -> (f : ExtensionalTypeMorphism a c)
   -> (g : ExtensionalTypeMorphism b c)
   -> extCompose b (Either a b) c (MkExtensionalTypeMorphism Right) (applyLeftOrRight a b c f g) = g
-rightCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = Refl
+rightCompose a b c (MkExtensionalTypeMorphism f) (MkExtensionalTypeMorphism g) = funExt (\_ => Refl)
 
 public export
 applyExtWith :

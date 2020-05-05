@@ -21,7 +21,6 @@ modules = Utils
         , Hom.HomFunctor
         , Idris.EitherAsCoProduct
         , Idris.FunctorAsCFunctor
-        , Idris.TypesAsCategory
         , Idris.TypesAsCategoryExtensional
         , Monoid.Monoid
         , Monoid.MonoidAsCategory
@@ -33,7 +32,6 @@ modules = Utils
         , MonoidalCategory.StrictMonoidalCategory
         , MonoidalCategory.SymmetricMonoidalCategory
         , MonoidalCategory.SymmetricMonoidalCategoryHelpers
-        , PointedTypes.PointedTypesCategory
         , Preorder.MonotoneMap
         , Preorder.MonotoneMapAsFunctor
         , Preorder.PreorderAsCategory

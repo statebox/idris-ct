@@ -30,7 +30,7 @@ rightIdentity :
      (a, b : Type)
   -> (f : TypeMorphism a b)
   -> (identity b) . f = f
-rightIdentity a b f = Refl
+rightIdentity a b f = ?qwer
 
 public export
 associativity :
@@ -48,6 +48,6 @@ typesAsCategory = MkCategory
   TypeMorphism
   identity
   (\a => compose a)
-  leftIdentity
+  ?asdf
   rightIdentity
   associativity
