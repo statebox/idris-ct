@@ -20,77 +20,51 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \fi
 
 > module Product.ProductCategory
->
+> 
 > import Basic.Category
 > import Basic.Functor
-> import Utils
->
+> import Data.Vect
+> 
 > %access public export
 > %default total
->
-> record ProductMorphism
->   (cat1 : Category)
->   (cat2 : Category)
->   (a : (obj cat1, obj cat2))
->   (b : (obj cat1, obj cat2))
->   where
->     constructor MkProductMorphism
->     pi1 : mor cat1 (fst a) (fst b)
->     pi2 : mor cat2 (snd a) (snd b)
->
-> productIdentity :
->      (a : (obj cat1, obj cat2))
->   -> ProductMorphism cat1 cat2 a a
-> productIdentity {cat1} {cat2} a = MkProductMorphism (identity cat1 (fst a)) (identity cat2 (snd a))
->
-> productCompose :
->      (a, b, c : (obj cat1, obj cat2))
->   -> (f : ProductMorphism cat1 cat2 a b)
->   -> (g : ProductMorphism cat1 cat2 b c)
->   -> ProductMorphism cat1 cat2 a c
-> productCompose {cat1} {cat2} a b c f g = MkProductMorphism
->   (compose cat1 (fst a) (fst b) (fst c) (pi1 f) (pi1 g))
->   (compose cat2 (snd a) (snd b) (snd c) (pi2 f) (pi2 g))
->
-> productLeftIdentity :
->      (a, b : (obj cat1, obj cat2))
->   -> (f : ProductMorphism cat1 cat2 a b)
->   -> productCompose a a b (productIdentity a) f = f
-> productLeftIdentity {cat1} {cat2} a b (MkProductMorphism f1 f2)
->   = cong2 {f = MkProductMorphism} (leftIdentity cat1 (fst a) (fst b) f1) (leftIdentity cat2 (snd a) (snd b) f2)
->
-> productRightIdentity :
->      (a, b : (obj cat1, obj cat2))
->   -> (f : ProductMorphism cat1 cat2 a b)
->   -> productCompose a b b f (productIdentity b) = f
-> productRightIdentity {cat1} {cat2} a b (MkProductMorphism f1 f2)
->   = cong2 {f = MkProductMorphism} (rightIdentity cat1 (fst a) (fst b) f1) (rightIdentity cat2 (snd a) (snd b) f2)
->
-> productAssociativity :
->      (a, b, c, d : (obj cat1, obj cat2))
->   -> (f : ProductMorphism cat1 cat2 a b)
->   -> (g : ProductMorphism cat1 cat2 b c)
->   -> (h : ProductMorphism cat1 cat2 c d)
->   -> productCompose a b d f (productCompose b c d g h) = productCompose a c d (productCompose a b c f g) h
-> productAssociativity {cat1} {cat2} a b c d f g h = cong2 {f = MkProductMorphism}
->   (associativity cat1 (fst a) (fst b) (fst c) (fst d) (pi1 f) (pi1 g) (pi1 h))
->   (associativity cat2 (snd a) (snd b) (snd c) (snd d) (pi2 f) (pi2 g) (pi2 h))
->
-> productCategory : (cat1, cat2 : Category) -> Category
-> productCategory cat1 cat2 = MkCategory
->   (obj cat1, obj cat2)
->   (ProductMorphism cat1 cat2)
->   (productIdentity {cat1} {cat2})
->   (productCompose {cat1} {cat2})
->   (productLeftIdentity {cat1} {cat2})
->   (productRightIdentity {cat1} {cat2})
->   (productAssociativity {cat1} {cat2})
->
-> productAssociator :
->      (cat1, cat2, cat3 : Category)
->   -> CFunctor (productCategory cat1 (productCategory cat2 cat3)) (productCategory (productCategory cat1 cat2) cat3)
-> productAssociator cat1 cat2 cat3 = MkCFunctor
->   (\abc => ((fst abc, fst (snd abc)), (snd (snd abc))))
->   (\abc1, abc2, f => MkProductMorphism (MkProductMorphism (pi1 f) (pi1 (pi2 f))) (pi2 (pi2 f)))
->   (\abc => Refl)
->   (\abc1, abc2, abc3, f, g => Refl)
+> 
+> productObject : (cats : Vect n Category) -> Type
+> productObject [] = ()
+> productObject (cat :: cats) = (obj cat, productObject cats)
+> 
+> productMorphism : (cats : Vect n Category) -> (a, b : productObject cats) -> Type
+> productMorphism [] _ _ = ()
+> productMorphism (cat :: cats) (a, as) (b, bs) = (mor cat a b, productMorphism cats as bs)
+> 
+> productIdentity : (cats : Vect n Category) -> (a : productObject cats) -> productMorphism cats a a
+> productIdentity [] _ = ()
+> productIdentity (cat :: cats) (a, as) = (identity cat a, productIdentity cats as)
+> 
+> productCompose : (cats : Vect n Category) -> (a, b, c : productObject cats) -> (f : productMorphism cats a b) -> (g : productMorphism cats b c) -> productMorphism cats a c
+> productCompose [] _ _ _ _ _ = ()
+> productCompose (cat :: cats) (a, as) (b, bs) (c, cs) (f, fs) (g, gs) = (compose cat a b c f g, productCompose cats as bs cs fs gs)
+> 
+> pairEq : (a = b, as = bs) -> (a, as) = (b, bs)
+> pairEq (Refl, Refl) = Refl
+> 
+> productLeftIdentity : (cats : Vect n Category) -> (a, b : productObject cats) -> (f : productMorphism cats a b) -> productCompose cats a a b (productIdentity cats a) f = f
+> productLeftIdentity [] _ _ () = Refl
+> productLeftIdentity (cat :: cats) (a, as) (b, bs) (f, fs) = pairEq (leftIdentity cat a b f, productLeftIdentity cats as bs fs)
+> 
+> productRightIdentity : (cats : Vect n Category) -> (a, b : productObject cats) -> (f : productMorphism cats a b) -> productCompose cats a b b f (productIdentity cats b) = f
+> productRightIdentity [] _ _ () = Refl
+> productRightIdentity (cat :: cats) (a, as) (b, bs) (f, fs) = pairEq (rightIdentity cat a b f, productRightIdentity cats as bs fs)
+> 
+> productAssociativity : (cats : Vect n Category) -> (a, b, c, d : productObject cats) -> (f : productMorphism cats a b) -> (g : productMorphism cats b c) -> (h : productMorphism cats c d) -> productCompose cats a b d f (productCompose cats b c d g h) = productCompose cats a c d (productCompose cats a b c f g) h
+> productAssociativity [] _ _ _ _ _ _ _ = Refl
+> productAssociativity (cat :: cats) (a, as) (b, bs) (c, cs) (d, ds) (f, fs) (g, gs) (h, hs) = pairEq (associativity cat a b c d f g h, productAssociativity cats as bs cs ds fs gs hs)
+> 
+> productCategory : (cats : Vect n Category) -> Category
+> productCategory cats = MkCategory
+>   (productObject cats)
+>   (productMorphism cats)
+>   (productIdentity cats)
+>   (productCompose cats)
+>   (productLeftIdentity cats)
+>   (productRightIdentity cats)
+>   (productAssociativity cats)
