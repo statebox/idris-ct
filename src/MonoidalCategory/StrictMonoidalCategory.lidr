@@ -23,7 +23,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 > import Basic.Category
 > import Basic.Functor
+> import Monoid.Monoid
 > import Product.ProductCategory
+>
+> -- contrib
+> import Interfaces.Verified
 >
 > %access public export
 > %default total
@@ -49,3 +53,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >                                   (mapObj tensor (a,c), e)
 >                                   (mapObj tensor (b,d), f)
 >                                   (MkProductMorphism (mapMor tensor (a,c) (b,d) (MkProductMorphism g h)) k)
+>
+> smcObjectMonoid : StrictMonoidalCategory -> Monoid.Monoid
+> smcObjectMonoid smc = MkMonoid
+>   (obj (cat smc))
+>   ?asdf
